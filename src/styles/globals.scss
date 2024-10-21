@@ -1,0 +1,491 @@
+@use "theme" as *;
+@use "layout" as *;
+@use "style" as *;
+@use "layout" as *;
+@use "typography" as *;
+@use "overrides" as *;
+// @import 'bootstrap/dist/css/bootstrap.min.css';
+// @import 'nprogress/nprogress.css';
+// @import 'react-quill/dist/quill.snow.css';
+// ==================================== Global CSS ====================================
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+#nprogress .bar {
+  background: $primary !important;
+}
+.songs-detail-img {
+  .ant-image {
+    width: 100% !important;
+  }
+  img {
+    height: 250px !important;
+    object-fit: cover;
+  }
+}
+.tabsContainer {
+  display: inline-block;
+  padding: 10px;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.3s ease;
+}
+
+.customTabs {
+  border-radius: 10px; /* This will apply the radius to the tabs area */
+}
+
+.tabsContainer:hover {
+  box-shadow: 0px 6px 30px rgba(0, 0, 0, 0.2); /* Optional: Slightly stronger shadow on hover */
+}
+
+.card {
+  border-radius: 10px;
+  transition: box-shadow 0.3s ease;
+}
+
+.card:hover {
+  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
+}
+.Custom_tost {
+  padding: 15px;
+  border-radius: 10px;
+  background: #f9f9f9;
+  border: 1px solid rgba(191, 191, 191, 0.25);
+  margin: 0px 0px 20px;
+  display: flex;
+  justify-content: space-between;
+  /* justify-content: start; */
+  column-gap: 30px;
+  box-shadow: rgba(0, 0, 0, 0.3) 0px 4px 8px;
+  flex-wrap: wrap;
+  row-gap: 10px;
+}
+.Custom_tost a {
+  background: rgb(0, 0, 0);
+  padding: 5px 12px;
+  border-radius: 5px;
+  font-size: 14px;
+  text-align: center;
+  margin: 0px 0px 10px;
+  width: 100%;
+  max-width: fit-content;
+  display: block;
+  color: #fff !important;
+  font-weight: 400;
+  transition: .5s all;
+}
+.Custom_tost a:hover{
+background: transparent;
+color: #000 !important;
+}
+.Custom_tost > div.Btns {
+  column-gap: 10px;
+  flex-wrap: wrap;
+}
+.Custom_tost > div.Btns > a:hover:last-child {
+  background: #000;
+  color: #fff !important;
+}
+.Custom_tost > div.Btns>a:last-child {
+  background: rgba(255, 255, 255, 0);
+  border-color: #000000 !important;
+  border: 1px solid;
+  color: #000000 !important;
+  padding: 3px 12px;
+  font-weight: 400;
+}
+.Custom_tost>div {
+  font-size: 16px;
+  color: #000;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+}
+
+.Custom_tost>div span {
+  background: #4bb543;
+  width: 22px;
+  height: 22px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px;
+}
+.Custom_tost > div span svg {
+  fill: #fff;
+}
+.overlay-image {
+  position: absolute;
+  width: 100%;
+  inset: 0;
+  height: 100%;
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.2) 100%);
+  border-radius: 10px;
+  background-size: cover;
+}
+.tooltip-img {
+  .ant-tooltip {
+      display: none !important;
+  }
+}
+:where(.css-dev-only-do-not-override-f7vrd6).ant-select-dropdown .ant-select-item-option-selected:not(.ant-select-item-option-disabled) {
+  background-color: #F0F0F0 !important
+}
+
+:where(.css-dev-only-do-not-override-f7vrd6).ant-btn-default:not(:disabled):not(.ant-btn-disabled):hover {
+  color: #ebf3f3 !important;
+  border-color:#eff7f7 !important;
+}
+:where(.css-dev-only-do-not-override-f7vrd6).ant-input-search .ant-input:hover, :where(.css-dev-only-do-not-override-f7vrd6).ant-input-search .ant-input:focus {
+  border-color: #040707 !important;
+}
+:where(.css-dev-only-do-not-override-f7vrd6).ant-menu-light .ant-menu-item-selected{
+  background-color: #F8F9FA;
+}
+.ant-select-focused:where(.css-dev-only-do-not-override-f7vrd6).ant-select-outlined:not(.ant-select-disabled):not(.ant-select-customize-input):not(.ant-pagination-size-changer) .ant-select-selector{
+  border-color: #040707 !important;
+  box-shadow: none  !important;
+}
+input:focus,
+input:focus-visible{
+  outline: none !important;
+  box-shadow: none !important;
+}
+:where(.css-dev-only-do-not-override-f7vrd6).ant-btn-primary {
+border: 1px solid #000 !important;
+  background: #040707 !important;
+   box-shadow: none !important;
+   max-width: 200px ;
+}
+:where(.css-dev-only-do-not-override-f7vrd6).ant-menu-light .ant-menu-item-selected {
+  background: #f5f7f7 !important;
+  color: #fff !important;
+}
+i.fa-pen-to-square,
+i.fa-trash-can{
+  font-size: 17px;
+}
+
+.primaryBtn{
+  background: #000000 !important;
+}
+.ant-btn-primary{
+  background: #000000 !important;
+}
+.ant-menu-item-selected{
+  color: #000000 !important;
+}
+.ant-menu-submenu-title{
+  color: #000000 !important;
+}
+
+.ant-table-content tbody.ant-table-tbody tr:nth-child(even) {
+  background: #FAFAFA;
+}
+.ant-table-thead tr th {
+  background: #E5E5E5 !important;
+  color: #000 !important;
+}
+.ant-spin-container {
+  box-shadow: 0 0 10px rgb(144 143 143 / 20%);
+}
+:where(.css-dev-only-do-not-override-f7vrd6).ant-table-wrapper .ant-table-pagination-right {
+  padding: 10px !important;
+}
+.ViewMore {
+  background: transparent !important;
+  color: #000 !important;
+  font-size: 20px;
+  border: 0 !important;
+  padding: 0 4px;
+  box-shadow: none;
+}
+.blackViewBtn {
+  color: #fff !important;
+  background-color: #000 !important;
+  padding: 8px 20px;
+  height: auto;
+  transition: all .3s ease-in;
+}
+.blackViewBtn:hover{
+  background-color: transparent !important;
+  color: #000 !important;
+}
+:where(.css-dev-only-do-not-override-f7vrd6).ant-btn:not(:disabled):focus-visible {
+  outline: none !important;
+}
+.paginationCenter .ant-pagination{
+  justify-content: center !important;
+}
+a.forgotPassword {
+  color: #000;
+  text-decoration: none;
+  margin: -10px 0 10px;
+  display: inline-block;
+}
+.signBtn {
+  border: 0;
+  outline: 0;
+  padding: 0;
+  margin-left: 6px;
+}
+.signBtn:hover{
+  text-decoration: underline;
+}
+:where(.css-dev-only-do-not-override-f7vrd6).ant-input-outlined:focus, :where(.css-dev-only-do-not-override-f7vrd6).ant-input-outlined:focus-within,
+:where(.css-dev-only-do-not-override-f7vrd6).ant-input-outlined:hover {
+  border-color: #000000;
+  box-shadow: none;
+  outline: 0;
+  background-color: #FFFFFF;
+}
+.ant-divider-horizontal {
+  border: 0 !important;
+  margin: 10px 0 !important;
+}
+.auth-pages .form-wrapper {
+  border-radius: 40px;
+  box-shadow: none !important;
+}
+.loginAuth.auth-pages .form-wrapper {
+  border-radius: 0 40px 40px 0;
+}
+.forgot-auth.auth-pages .form-wrapper {
+  border-radius: 40px;
+}
+:where(.css-dev-only-do-not-override-f7vrd6).ant-input-affix-wrapper-lg {
+  padding: 7px 10px;
+}
+:where(.css-dev-only-do-not-override-f7vrd6).ant-input-affix-wrapper .ant-input-prefix {
+  margin-inline-end: 8px;
+}
+.labelSignup{
+  font-size: 15px;
+  margin-bottom: 12px;
+}
+.dashboradTable .ant-card .ant-card-body {
+  padding: 6px 0 !important;
+}
+:where(.css-dev-only-do-not-override-f7vrd6).ant-picker-outlined {
+  padding: 7.5px 11px;
+}
+:where(.css-dev-only-do-not-override-f7vrd6).ant-picker-outlined:focus ,
+:where(.css-dev-only-do-not-override-f7vrd6).ant-picker-outlined:hover,
+:where(.css-dev-only-do-not-override-f7vrd6).ant-picker-outlined:focus-within {
+  border-color: #000000 !important;
+  box-shadow: none !important;
+  outline: 0;
+}
+.heightCenter{
+  height:calc(100vh - 10vh) ;
+  align-items: center;
+}
+:where(.css-dev-only-do-not-override-f7vrd6).ant-btn-primary:hover {
+  border: 1px solid #000 !important;
+    background: transparent !important;
+    color: #000 !important;
+  }
+  :where(.css-dev-only-do-not-override-f7vrd6).ant-select-outlined:not(.ant-select-disabled):not(.ant-select-customize-input):not(.ant-pagination-size-changer):hover .ant-select-selector,
+  :where(.css-dev-only-do-not-override-98ntnt).ant-input-outlined:hover {
+    border-color: #000000  !important;
+}
+:where(.css-dev-only-do-not-override-f7vrd6).ant-menu-light:not(.ant-menu-horizontal) .ant-menu-item:not(.ant-menu-item-selected):active{
+  background-color: #F0F0F0 !important;
+}
+.archiveBtn{
+  background: #FF4D4F  !important;
+}
+
+.archiveBtn:hover{
+  border-color: #FF4D4F !important;
+  color: #FF4D4F !important;
+  background: transparent  !important;
+}
+.activateBtn{
+  background-color: transparent !important;
+  color: #FF4D4F !important;
+  border-color: #FF4D4F !important;
+  transition: all .3s ease-in;
+}
+.activateBtn:hover{
+  color: #fff !important;
+  background-color: #FF4D4F !important;
+}
+.Div_contact .react-calendar {
+  max-width: 100% !important;
+}
+:where(.css-dev-only-do-not-override-98ntnt).ant-menu-light .ant-menu-item-selected{
+  background-color: #000000 !important;
+    color: #fff !important;
+}
+:where(.css-dev-only-do-not-override-98ntnt).ant-input-outlined:focus, :where(.css-dev-only-do-not-override-98ntnt).ant-input-outlined:focus-within {
+  border-color: #000000;
+  box-shadow: none !important;
+}
+.ant-pagination{
+  justify-content: center;
+}
+.remove_row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  font-weight: 400;
+}
+
+:where(.css-dev-only-do-not-override-98ntnt).ant-btn-dashed:not(:disabled):not(.ant-btn-disabled):hover {
+  color: #000000 !important;
+  border-color: #000000 !important;
+}
+:where(.css-dev-only-do-not-override-98ntnt).ant-btn:not(:disabled):focus-visible {
+  outline: 0 !important;
+}
+:where(.css-dev-only-do-not-override-98ntnt).ant-picker {
+  padding: 8px 11px !important;
+}
+:where(.css-dev-only-do-not-override-98ntnt).ant-select-outlined:not(.ant-select-disabled):not(.ant-select-customize-input):not(.ant-pagination-size-changer):hover .ant-select-selector {
+  border-color: #000000 !important;
+}
+.tabs-wrapper .ant-table-container{
+  width: 100%;
+  overflow: hidden;
+  overflow-x: auto;
+  scrollbar-width: thin !important;
+}
+.blackViewBtn:hover{
+  border-color: #000000 !important;
+}
+:where(.css-dev-only-do-not-override-98ntnt).ant-table-wrapper .ant-table-pagination.ant-pagination {
+  padding: 13px 20px !important;
+  gap: 7px !important;
+}
+:where(.css-dev-only-do-not-override-98ntnt).ant-pagination .ant-pagination-item {
+ 
+  min-width: 22px !important;
+  height: 22px !important;
+  margin-inline-end: 5px !important;
+  line-height: 20px !important;
+  font-size: 12px !important; 
+  user-select: none !important;
+}
+
+:where(.css-dev-only-do-not-override-98ntnt).ant-pagination .ant-pagination-prev,
+:where(.css-dev-only-do-not-override-98ntnt).ant-pagination .ant-pagination-next{
+  min-width: 26px !important;
+  height: 24px !important;
+  line-height: 20px !important;
+  text-align: center !important;
+  vertical-align: middle !important;
+  list-style: none !important;
+  border-radius: 6px !important;
+  transition: all 0.2s !important;
+  background: rgb(235 235 235 / 24%) !important;
+}
+.trigger, .ant-pagination .ant-pagination-item-active{
+  background: #040707 !important;
+  border-color: #000 !important;
+}
+:where(.css-dev-only-do-not-override-98ntnt).ant-popover .ant-popover-content {
+  right: 25px;
+}
+:where(.css-dev-only-do-not-override-98ntnt).ant-popconfirm .ant-popconfirm-message .ant-popconfirm-description {
+  margin-top: 0;
+}
+.ant-popconfirm-buttons{
+  margin-top: 15px;
+}
+.ant-popover-inner{
+  padding: 12px 14px 14px 12px;
+}
+:where(.css-dev-only-do-not-override-98ntnt).ant-popconfirm .ant-popconfirm-buttons button:first-child:hover{
+  color: #000;
+  border-color: #000;
+}
+.antShadow .ant-card .ant-card-body{
+  padding: 0 !important;
+}
+.cardButtons .ant-btn-primary {
+  flex: 1;
+}
+:where(.css-98ntnt).ant-table-wrapper .ant-table-pagination.ant-pagination {
+  padding: 16px 0 !important;
+  margin: 0 !important;
+}
+:where(.css-98ntnt).ant-popconfirm.ant-popover {
+  font-size: 14px;
+  right: 25px !important;
+  left: unset !important;
+}
+:where(.css-98ntnt).ant-menu-light .ant-menu-item-selected, :where(.css-98ntnt).ant-menu-light>.ant-menu .ant-menu-item-selected {
+  background-color: #d3d3d3 !important;
+}
+
+.borderBtn{
+  background: #ffffff;
+  border-color: #d9d9d9;
+  color: rgba(0, 0, 0, 0.88);
+  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.02);
+  transition: all .3s ease-in;
+}
+.borderBtn:hover{
+  border-color: #000 !important;
+  color: rgba(0, 0, 0, 0.88) !important;
+  outline: 0 !important;
+  box-shadow: none !important;
+}
+
+
+@media screen and (max-width:1290px) {
+  .auth-pages .image-wrapper{
+    max-height: 520px;
+    padding: 0 30px;
+  }
+}
+@media screen and (max-width:991x) {
+  .ant-card .ant-card-body {
+    overflow: hidden;
+    overflow-x: scroll;
+    scrollbar-width: thin;
+}
+.heightCenter{
+  height:100% ;
+}
+}
+@media screen and (max-width:767px) {
+  .flexWrapper{
+    flex-wrap: wrap;
+    gap: 0 !important;
+  }
+  .flexWrapper .ant-form-item{
+    width: 100%;
+  }
+  .auth-pages .form-wrapper {
+    padding-top: 25px !important;
+    padding-bottom: 25px !important;
+    border-radius:40px !important ;
+}
+.common-card {
+  padding: 14px;
+}
+}
+@media screen and (max-width:575px) {
+  :where(.css-dev-only-do-not-override-f7vrd6).ant-btn-primary {
+    max-width: 100%;
+}
+.club_member .ant-col.ant-col-sm-22.ant-col-md-24.ant-col-lg-16.ant-col-xl-16.ant-col-xxl-12 {
+  width: 100%;
+}
+
+}
+
+@media screen and (max-width:480px) {
+.responiveSelect{
+  top: -3px !important;
+  width: 80px !important;
+  height: 28px;
+}
+}
