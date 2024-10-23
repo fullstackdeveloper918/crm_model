@@ -215,11 +215,11 @@ const handleLinkClick = () => {
     {
       key: henceofrthEnums.Roles.USERS,
       view: getItem(
-        <Link href="/" className="text-decoration-none"  onClick={handleLinkClick}>
+        <Link href="/admin/purposal" className="text-decoration-none"  onClick={handleLinkClick}>
           {/* {getUserdata?.is_admin == false ? "User" : "Archive Members"} */}
-          Sent Purposal
+          Purposals
         </Link>,
-        "archive",
+        "purposal",
         <UserOutlined style={iconSize} />
       ),
     },

@@ -3,20 +3,44 @@ import React, { useState } from 'react';
 import { Row, Col, Form, Input, Button } from 'antd';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import api from '@/utils/api';
+import { toast } from 'react-toastify';
 const Sigin = () => {
   const [loading, setLoading] = useState(false);
 const router= useRouter()
-  const onFinish = (values: any) => {
+  const onFinish = async(values: any) => {
     console.log('Received values:', values);
+  try {
+    let item={
+      email:values?.email,
+      password:values?.password
+    } as any
+    const res = await api.Auth.login(item)
+    toast.success(res?.messange)
+    console.log(res,"ressss"); 
     setLoading(true);
+    api.setToken(res?.token)
     router.push("admin/pearls")
-    // Simulate login process
-    setTimeout(() => {
-      setLoading(false);
-    }, 1500);
+  } catch (error) {
+    console.log(error,"sldjsdfjlj");
+    
+  }
   };
 
-
+  // const onFinish = (values: any) => {
+  //   console.log('Received values:', values);
+  //   let item={
+  //     email:values?.email,
+  //     password:values?.password
+  //   } as any
+  //   const res =  axios.post('http://localhost:3001/login', {item})
+  //   .then(function (response) {
+  //     console.log(response,'jldsjflgsjdflgjsldfg');
+  //   });
+  //   console.log(res,"ressss"); 
+  //   setLoading(true);
+  //   router.push("admin/pearls")
+  // };
   return (
     <section
     className="auth-pages d-flex align-items-center mt-5 h-100"

@@ -5,7 +5,7 @@ import { parseCookies } from 'nookies';
 import { info } from "console";
 
 // const API_ROOT = 'https://app-uilsndszlq-uc.a.run.app/';
-const API_ROOT = 'https://frontend.goaideme.com/';
+const API_ROOT = 'http://localhost:3001/';
 
 const BUCKET_ROOT = `https://shared2.fra1.digitaloceanspaces.com/shared2/`;
 
@@ -48,8 +48,10 @@ const requests = {
 };
 
 const Auth = {
-  login: () =>
-    requests.get('single-user'),
+  // login: () =>
+  //   requests.get('login'),
+  login: (info: any) =>
+    requests.post('login', info),
   signUp: (items: any) => requests.post(`register`, items),
   loginAsUser: (info: any) =>
     requests.post('admin/users/login_as_user', info),
@@ -66,6 +68,10 @@ const Auth = {
   edit: (info: any) =>
     requests.patch('profile', info),
 };
+
+const Leads={
+  listing:()=>requests.get(`leads-api`)
+}
 const dashboard={
   upcoming: () =>
     requests.get(`upcoming-meeting`),
@@ -378,6 +384,7 @@ const henceforthApi = {
   Search,
   token,
   User,
+  Leads,
   encode,
   dashboard,
   setToken: (_token?: string) => { token = _token; }
