@@ -15,6 +15,7 @@ const router= useRouter()
       email:values?.email,
       password:values?.password
     } as any
+    setLoading(true)
     const res = await api.Auth.login(item)
     toast.success(res?.messange)
     console.log(res,"ressss"); 
@@ -22,7 +23,8 @@ const router= useRouter()
     api.setToken(res?.token)
     router.push("admin/pearls")
   } catch (error) {
-    console.log(error,"sldjsdfjlj");
+    setLoading(false)
+  }finally{
     
   }
   };

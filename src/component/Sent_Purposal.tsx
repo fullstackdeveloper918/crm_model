@@ -2,10 +2,11 @@
 import { Button, Input, Upload, Row, Col, Card, List, Avatar, Form } from 'antd';
 import { UploadOutlined, LeftOutlined } from '@ant-design/icons';
 import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
 const Sent_Purposal = () => {
     const [fileList, setFileList] = useState<any>([])
     // console.log(fileList[0].originFileObj,"fileList");
-    
+    const router= useRouter()
     const recentLeads = [
         { name: 'Jenny Wilson', email: 'j.wilson@example.com', amount: '$11,234', location: 'Austin' },
         { name: 'Devon Lane', email: 'd.lane@example.com', amount: '$11,159', location: 'New York' },
@@ -24,6 +25,8 @@ const Sent_Purposal = () => {
         setFileList(fileList);
       };
       const onFinish = (values: any) => {
+        router.push(`/admin/purposal/sent_purposal_list`)
+
         const formData:any = new FormData();
         console.log(values, "values");
     
@@ -45,7 +48,8 @@ const Sent_Purposal = () => {
             };
     
             reader.readAsArrayBuffer(file);
-        } else {
+       
+          } else {
             console.error("No file found in values.upload.file");
         }
         console.log(formData,"formData");

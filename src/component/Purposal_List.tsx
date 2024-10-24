@@ -286,7 +286,7 @@ const router= useRouter()
 const getData=async()=>{
     try {
         // const res =await api.Leads.listing()
-        const res = await axios.get(`http://localhost:3001/leads-api`);
+        const res = await api.Leads.listing();
         console.log(res,"kkkk");
         
     } catch (error) {

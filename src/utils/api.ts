@@ -5,7 +5,7 @@ import { parseCookies } from 'nookies';
 import { info } from "console";
 
 // const API_ROOT = 'https://app-uilsndszlq-uc.a.run.app/';
-const API_ROOT = 'http://localhost:3001/';
+const API_ROOT = 'http://srv626615.hstgr.cloud:3000/';
 
 const BUCKET_ROOT = `https://shared2.fra1.digitaloceanspaces.com/shared2/`;
 

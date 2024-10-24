@@ -1,9 +1,12 @@
 "use client"
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Layout, Row, Col, Card, Button, Select, Space, Typography, Avatar, Divider, Badge, Tabs } from 'antd';
 import { MailOutlined, PhoneOutlined, UserOutlined } from '@ant-design/icons';
 import Link from 'next/link';
-
+import api from '@/utils/api';
+import dayjs from "dayjs"
+import { capFirst, replaceUnderScore } from '@/utils/validation';
+// import remUndrscore from "../utils/validation/replaceUnderScore"
 const { Header, Content, Sider } = Layout;
 const { Title, Text } = Typography;
 const { Option } = Select;
@@ -149,7 +152,10 @@ const leads = [
   // Add more leads
 ];
 
-const Pearl_diver_leads = () => {
+const Pearl_diver_leads = ({data}:any) => {
+console.log(data,"data");
+
+  
   return (
     <Layout style={{ minHeight: '100vh' }}>
       <Content style={{ padding: '20px' }}>
@@ -177,7 +183,32 @@ const Pearl_diver_leads = () => {
         <Row gutter={[16, 16]}>
           <Col xs={24} md={18}>
             <Row gutter={[16, 16]}>
-              {leads.map((lead, index) => (
+              {data?.data.map((lead:any, index:number) => (
+                <Col xs={24} sm={12} md={8} lg={6} key={index}>
+                  <Link href={`/admin/pearls/${lead?.user_uuid}`}>
+                  <Card
+                    hoverable
+                    style={{ borderRadius: '10px' }}
+                    actions={[
+                      <Button type="primary" key="action" size="small">
+                        {capFirst(replaceUnderScore(lead.status))}
+                      </Button>,
+                    ]}
+                  >
+                    <Space direction="vertical" size="small">
+                      
+                      <Title level={5}><Avatar size={34} icon={<UserOutlined />} src={`https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTEg09MmHvC-78aaRxyd52HabsZqI1-u8R6-w&s`} /> {lead?.firstName?`${lead?.firstName} ${lead?.lastName}`:"N/A"}</Title>
+                      <Text>{dayjs(lead?.created_at).format("DD-MM-YYYY")}</Text>
+                      {/* <Text>Today 10:30 PM</Text> */}
+                      <Divider></Divider>
+                      <Text><PhoneOutlined /> {lead.phone||"N/A"}</Text>
+                      <Text><MailOutlined /> {lead.email}</Text>
+                    </Space>
+                  </Card>
+                  </Link>
+                </Col>
+              ))}
+              {/* {leads.map((lead, index) => (
                 <Col xs={24} sm={12} md={8} lg={6} key={index}>
                   <Link href={`/admin/pearls/view`}>
                   <Card
@@ -200,7 +231,7 @@ const Pearl_diver_leads = () => {
                   </Card>
                   </Link>
                 </Col>
-              ))}
+              ))} */}
 
             </Row>
           </Col>

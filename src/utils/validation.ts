@@ -185,7 +185,7 @@ export const capFirst = (str: string) => {
     }
 }
 export const replaceUnderScore = (str: string) => {
-    let newStr = str?.split("_")?.join(" ")
+    let newStr = str?.split("-")?.join(" ")
     return newStr
 }
 const validation = {

@@ -1,6 +1,6 @@
 "use client";
 
-import {LogoutOutlined, MailOutlined, BellOutlined } from "@ant-design/icons";
+import { LogoutOutlined, MailOutlined, BellOutlined } from "@ant-design/icons";
 import { Avatar, Grid, Layout, MenuProps, Popconfirm } from "antd";
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
@@ -36,28 +36,28 @@ const MainLayout = ({ children }: any) => {
   const screens = Grid.useBreakpoint();
   const router = useRouter();
   useEffect(() => {
-    const scroll=() => {
+    const scroll = () => {
       const header: any = document.querySelector(".ant-layout-header");
       if (window.scrollY >= 64) {
         header?.classList.add("sticky-top", "z-3", "transition-smooth");
       } else {
         header?.classList.remove("sticky-top", "z-3", "transition-smooth");
       }
-    }
-    const resize=() => {
+    };
+    const resize = () => {
       if (window.innerWidth <= 991) {
         setCollapsed(true);
       } else {
         setCollapsed(false);
       }
-    }
-    window.addEventListener("scroll", scroll);  
+    };
+    window.addEventListener("scroll", scroll);
     window.addEventListener("resize", resize);
-    return()=>{
+    return () => {
       window.removeEventListener("scroll", scroll);
-      window.removeEventListener("resize", resize);  
-    }
-  },[]);
+      window.removeEventListener("resize", resize);
+    };
+  }, []);
 
   const items: MenuProps["items"] = [
     {
@@ -95,55 +95,55 @@ const MainLayout = ({ children }: any) => {
   ];
   const [accessToken, setAccessToken] = useState<string | null>(null);
 
-  
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
   const handleLogout = async () => {
     try {
-      setLoading(true)
-     
-       router.push("/signin");
-      
+      setLoading(true);
+
+      router.push("/signin");
     } catch (error) {
-      setLoading(false)
+      setLoading(false);
     }
   };
   const setCookie = (name: string, value: string, days?: number) => {
     const expires = new Date();
-    if(days){
+    if (days) {
       expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000);
     }
-    document.cookie = `${name}=${value};${days?`expires=${expires.toUTCString()};`:''}path=/`;
+    document.cookie = `${name}=${value};${
+      days ? `expires=${expires.toUTCString()};` : ""
+    }path=/`;
   };
 
   const createSessionCookie = (idToken: string) => {
     try {
       setCookie("COOKIES_USER_ACCESS_TOKEN", idToken, 30); // 30 days
-    } catch (error) {
-    }
+    } catch (error) {}
   };
   const refreshTokenAndSchedule = async (auth: any) => {
     try {
       const check = auth.currentUser;
       if (check) {
         const uid = check.uid;
-  
-        const expirationTime = parseInt(localStorage.getItem("loginExpiryTime") || "0");
+
+        const expirationTime = parseInt(
+          localStorage.getItem("loginExpiryTime") || "0"
+        );
         const currentTime = Date.now();
-  
+
         if (expirationTime < currentTime) {
           const newIdToken = await check.getIdToken(true);
           const newExpirationTime = Date.now() + 1 * 60 * 1000;
           localStorage.setItem("loginExpiryTime", newExpirationTime.toString());
           createSessionCookie(newIdToken);
           setCookie("expirationTime", newExpirationTime.toString());
-          api.setToken(newIdToken)
-          // setTimeout(() => refreshTokenAndSchedule(auth), 1 * 60 * 1000); 
+          api.setToken(newIdToken);
+          // setTimeout(() => refreshTokenAndSchedule(auth), 1 * 60 * 1000);
         }
       }
-    } catch (error: any) {
-    }
+    } catch (error: any) {}
   };
-  
+
   return (
     <>
       <ToastContainer
@@ -158,31 +158,31 @@ const MainLayout = ({ children }: any) => {
         pauseOnHover
       />
       <Layout className="layout" hasSider>
-       {!collapsed && <Sider
-          trigger={null}
-          collapsible
-          collapsed={collapsed}
-          theme="light"
-          width={"250px"}
-          breakpoint="lg"
-          collapsedWidth="0"
-          onBreakpoint={(broken) => {
-          }}
-          onCollapse={(collapsed, type) => {
-          }}
-          style={{
-            overflow: "auto",
-            height: screens.lg ? "100vh" : "100%",
-            position: "fixed",
-            background: "#ffffff",
-            left: 0,
-            top: 0,
-            bottom: 0,
-            zIndex: screens.lg ? 1 : 9,
-          }}
-        >
-           <MenuBar collapsed={collapsed} setCollapsed={setCollapsed}/>
-        </Sider>}
+        {!collapsed && (
+          <Sider
+            trigger={null}
+            collapsible
+            collapsed={collapsed}
+            theme="light"
+            width={"250px"}
+            breakpoint="lg"
+            collapsedWidth="0"
+            onBreakpoint={(broken) => {}}
+            onCollapse={(collapsed, type) => {}}
+            style={{
+              overflow: "auto",
+              height: screens.lg ? "100vh" : "100%",
+              position: "fixed",
+              background: "#ffffff",
+              left: 0,
+              top: 0,
+              bottom: 0,
+              zIndex: screens.lg ? 1 : 9,
+            }}
+          >
+            <MenuBar collapsed={collapsed} setCollapsed={setCollapsed} />
+          </Sider>
+        )}
         <Layout
           className="site-layout"
           style={{
@@ -192,19 +192,19 @@ const MainLayout = ({ children }: any) => {
         >
           {/* Header  */}
           <Header
-      className="site-layout-background"
-      style={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        padding: '0 24px',
-        background: '#fff',
-        boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.1)',
-        height: '64px',
-      }}
-    >
-      {/* Menu Icon */}
-      {/* <div>
+            className="site-layout-background"
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              padding: "0 24px",
+              background: "#fff",
+              boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.1)",
+              height: "64px",
+            }}
+          >
+            {/* Menu Icon */}
+            {/* <div>
         {React.createElement(collapsed ? CloseOutlined : MenuOutlined, {
           className: 'trigger',
           style: { fontSize: '20px' },
@@ -212,76 +212,81 @@ const MainLayout = ({ children }: any) => {
         })}
       </div> */}
 
-      {/* Search Bar */}
-      <div className="mt-2 " style={{ flex: 3, paddingLeft: '20px', marginTop:"30px"}}>
-        <Search
-          placeholder="Search"
-          allowClear
-          style={{
-            width: '100%',
-            maxWidth: '300px',
-            borderRadius: '20px',
-            // background: '#f5f5f5',
-            padding: '5px 10px',
-            marginTop: "5px"
-          }}
-        />
-      </div>
+            {/* Search Bar */}
+            <div
+              className="mt-2 "
+              style={{ flex: 3, paddingLeft: "20px", marginTop: "30px" }}
+            >
+              <Search
+                placeholder="Search"
+                allowClear
+                style={{
+                  width: "100%",
+                  maxWidth: "300px",
+                  borderRadius: "20px",
+                  // background: '#f5f5f5',
+                  padding: "5px 10px",
+                  marginTop: "5px",
+                }}
+              />
+            </div>
 
-      {/* Right Icons */}
-      <div
-        className="d-inline-flex gap-3 align-items-center"
-        style={{ display: 'flex', alignItems: 'center', gap: '16px' }}
-      >
-        {/* Mail Icon */}
-        <Button
-          type="text"
-          shape="circle"
-          icon={<MailOutlined style={{ fontSize: '18px' }} />}
-        />
+            {/* Right Icons */}
+            <div
+              className="d-inline-flex gap-3 align-items-center"
+              style={{ display: "flex", alignItems: "center", gap: "16px" }}
+            >
+              {/* Mail Icon */}
+              <Button
+                type="text"
+                shape="circle"
+                icon={<MailOutlined style={{ fontSize: "18px" }} />}
+              />
 
-        {/* Notification Icon */}
-        <Button
-          type="text"
-          shape="circle"
-          icon={<BellOutlined style={{ fontSize: '18px' }} />}
-        />
+              {/* Notification Icon */}
+              <Link href={`/admin/notifications`}>
+              <Button
+                type="text"
+                shape="circle"
+                icon={<BellOutlined style={{ fontSize: "18px" }} />}
+                />
+                </Link>
 
-        {/* User Section */}
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px',
-            borderLeft: '1px solid #f0f0f0',
-            paddingLeft: '16px',
-          }}
-        >
-          <span>Hi, Mike</span>
-          <Avatar
-            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTEg09MmHvC-78aaRxyd52HabsZqI1-u8R6-w&s"
-            alt="User Avatar"
-            style={{ cursor: 'pointer' }}
-          />
-        </div>
+              {/* User Section */}
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "8px",
+                  borderLeft: "1px solid #f0f0f0",
+                  paddingLeft: "16px",
+                }}
+              >
+                <span>Hi, Mike</span>
+                <Avatar
+                  src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTEg09MmHvC-78aaRxyd52HabsZqI1-u8R6-w&s"
+                  alt="User Avatar"
+                  style={{ cursor: "pointer" }}
+                />
+              </div>
 
-        {/* Logout Button */}
-        <Popconfirm
-          title="Logout"
-          onConfirm={handleLogout}
-          okText="Logout"
-          cancelText="Cancel"
-          okButtonProps={{ type: 'primary', danger: true }}
-        >
-          <Button
-            type="primary"
-            shape="circle"
-            icon={<LogoutOutlined />}
-            loading={loading}
-          />
-        </Popconfirm>
-      </div>
-    </Header>
+              {/* Logout Button */}
+              <Popconfirm
+                title="Logout"
+                onConfirm={handleLogout}
+                okText="Logout"
+                cancelText="Cancel"
+                okButtonProps={{ type: "primary", danger: true }}
+              >
+                <Button
+                  type="primary"
+                  shape="circle"
+                  icon={<LogoutOutlined />}
+                  loading={loading}
+                />
+              </Popconfirm>
+            </div>
+          </Header>
           <Content className="m-4">{children}</Content>
         </Layout>
       </Layout>
