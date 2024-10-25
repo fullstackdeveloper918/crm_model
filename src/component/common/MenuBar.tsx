@@ -158,7 +158,7 @@ const handleLinkClick = () => {
     {
       key: henceofrthEnums.Roles.DASHBOARD,
       view: getItem(
-        <Link href="/dashboard" className="text-decoration-none" onClick={handleLinkClick }>
+        <Link href="/admin/dashboard" className="text-decoration-none" onClick={handleLinkClick }>
           Dashboard
         </Link>,
         "dashboard",
@@ -182,7 +182,7 @@ const handleLinkClick = () => {
     {
       key: henceofrthEnums.Roles.USERS,
       view: getItem(
-        <Link href="/admin/pearls" className="text-decoration-none" onClick={handleLinkClick}>
+        <Link href="#" className="text-decoration-none" onClick={handleLinkClick}>
           {/* {getUserdata?.is_admin == false ? "User" : "Archive Members"} */}
          Opportunities
         </Link>,
@@ -209,7 +209,7 @@ const handleLinkClick = () => {
         <UsergroupAddOutlined style={iconSize} />,
         [
           getItem(
-            <Link href="/" className="text-decoration-none"  onClick={handleLinkClick}>
+            <Link href="#" className="text-decoration-none"  onClick={handleLinkClick}>
               Meta Leads
             </Link>,
             "meta_leads",

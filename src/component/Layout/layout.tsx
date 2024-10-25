@@ -66,7 +66,7 @@ const MainLayout = ({ children }: any) => {
         <Link
           rel="noopener noreferrer"
           className="text-decoration-none fw-semibold"
-          href="/profile"
+          href="#"
         >
           Profile
         </Link>
@@ -78,7 +78,7 @@ const MainLayout = ({ children }: any) => {
         <Link
           rel="noopener noreferrer"
           className="text-decoration-none fw-semibold"
-          href="/profile/password/change"
+          href="#"
         >
           Change Password
         </Link>

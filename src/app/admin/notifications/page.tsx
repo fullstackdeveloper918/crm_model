@@ -230,7 +230,7 @@ const page = () => {
                         </Button>
         </li>
         <li>
-          <Link href={`/admin/member/view`}>
+          <Link href={`#`}>
             <Tooltip title="View Details">
               <Button className="ViewMore">
                 <EyeOutlined />

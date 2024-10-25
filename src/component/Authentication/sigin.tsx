@@ -139,7 +139,7 @@ const router= useRouter()
 
         {/* Forgot Password Link */}
         <div className="text-end mb-3">
-          <Link href="/auth/forgot-password" style={{ color: '#a0a0a0' }}>
+          <Link href="#" style={{ color: '#a0a0a0' }}>
             Forgot Password?
           </Link>
         </div>

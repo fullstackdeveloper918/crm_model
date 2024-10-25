@@ -27,7 +27,7 @@ const Purposal_List = () => {
       action: (
         <ul className="m-0 list-unstyled d-flex gap-2">
           <li>
-            <Link href={`/admin/member/view`}>
+            <Link href={`#`}>
               {" "}
               <Tooltip title="View Details">
                 <Button className="ViewMore">
@@ -48,7 +48,7 @@ const Purposal_List = () => {
       action: (
         <ul className="m-0 list-unstyled d-flex gap-2">
           <li>
-            <Link href={`/admin/member/view`}>
+            <Link href={`#`}>
               {" "}
               <Tooltip title="View Details">
                 <Button className="ViewMore">
@@ -69,7 +69,7 @@ const Purposal_List = () => {
       action: (
         <ul className="m-0 list-unstyled d-flex gap-2">
           <li>
-            <Link href={`/admin/member/view`}>
+            <Link href={`#`}>
               {" "}
               <Tooltip title="View Details">
                 <Button className="ViewMore">
@@ -90,7 +90,7 @@ const Purposal_List = () => {
       action: (
         <ul className="m-0 list-unstyled d-flex gap-2">
           <li>
-            <Link href={`/admin/member/view`}>
+            <Link href={`#`}>
               {" "}
               <Tooltip title="View Details">
                 <Button className="ViewMore">
@@ -111,7 +111,7 @@ const Purposal_List = () => {
       action: (
         <ul className="m-0 list-unstyled d-flex gap-2">
           <li>
-            <Link href={`/admin/member/view`}>
+            <Link href={`#`}>
               {" "}
               <Tooltip title="View Details">
                 <Button className="ViewMore">
@@ -132,7 +132,7 @@ const Purposal_List = () => {
       action: (
         <ul className="m-0 list-unstyled d-flex gap-2">
           <li>
-            <Link href={`/admin/member/view`}>
+            <Link href={`#`}>
               {" "}
               <Tooltip title="View Details">
                 <Button className="ViewMore">
@@ -153,7 +153,7 @@ const Purposal_List = () => {
       action: (
         <ul className="m-0 list-unstyled d-flex gap-2">
           <li>
-            <Link href={`/admin/member/view`}>
+            <Link href={`#`}>
               {" "}
               <Tooltip title="View Details">
                 <Button className="ViewMore">
@@ -174,7 +174,7 @@ const Purposal_List = () => {
       action: (
         <ul className="m-0 list-unstyled d-flex gap-2">
           <li>
-            <Link href={`/admin/member/view`}>
+            <Link href={`#`}>
               {" "}
               <Tooltip title="View Details">
                 <Button className="ViewMore">
@@ -195,7 +195,7 @@ const Purposal_List = () => {
       action: (
         <ul className="m-0 list-unstyled d-flex gap-2">
           <li>
-            <Link href={`/admin/member/view`}>
+            <Link href={`#`}>
               {" "}
               <Tooltip title="View Details">
                 <Button className="ViewMore">
@@ -216,7 +216,7 @@ const Purposal_List = () => {
       action: (
         <ul className="m-0 list-unstyled d-flex gap-2">
           <li>
-            <Link href={`/admin/member/view`}>
+            <Link href={`#`}>
               {" "}
               <Tooltip title="View Details">
                 <Button className="ViewMore">
@@ -237,7 +237,7 @@ const Purposal_List = () => {
       action: (
         <ul className="m-0 list-unstyled d-flex gap-2">
           <li>
-            <Link href={`/admin/member/view`}>
+            <Link href={`#`}>
               {" "}
               <Tooltip title="View Details">
                 <Button className="ViewMore">

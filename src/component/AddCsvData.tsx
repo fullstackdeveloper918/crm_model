@@ -85,7 +85,7 @@ const AddCsvData = () => {
                 action: (
                   <ul className="m-0 list-unstyled d-flex gap-2">
                     <li>
-                      <Link href={`/admin/member/view`}>
+                      <Link href={`#`}>
                         {" "}
                         <Tooltip title="Export File">
                           <Button className="ViewMore">
@@ -94,7 +94,7 @@ const AddCsvData = () => {
                         </Tooltip>
                       </Link>
                     </li>
-                    <li>
+                    {/* <li>
                       <Link href={`/admin/member/view`}>
                         {" "}
                         <Tooltip title="View Details">
@@ -103,7 +103,7 @@ const AddCsvData = () => {
                           </Button>{" "}
                         </Tooltip>
                       </Link>
-                    </li>
+                    </li> */}
                   </ul>
                 ),
               
