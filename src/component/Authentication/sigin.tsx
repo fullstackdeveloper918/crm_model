@@ -5,7 +5,21 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import api from '@/utils/api';
 import { toast } from 'react-toastify';
+import { setCookie } from 'nookies';
 const Sigin = () => {
+  const setCookie = (name: string, value: string, days: number) => {
+    const expires = new Date();
+    expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000);
+    document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/`;
+  };
+
+  const createSessionCookie = (idToken: string) => {
+    try {
+      setCookie("COOKIES_USER_ACCESS_TOKEN", idToken, 30); // 30 days
+    } catch (error) {
+    }
+  };
+
   const [loading, setLoading] = useState(false);
 const router= useRouter()
   const onFinish = async(values: any) => {
@@ -20,10 +34,14 @@ const router= useRouter()
     toast.success(res?.messange)
     console.log(res,"ressss"); 
     setLoading(true);
+    // setCookie("Token", JSON.stringify(res?.token), 30);
+    createSessionCookie(res?.token);
     api.setToken(res?.token)
     router.push("admin/pearls")
   } catch (error) {
     setLoading(false)
+    console.log();
+    
   }finally{
     
   }

@@ -6,7 +6,7 @@ import React from 'react'
 const page = async() => {
 
   const api: any = {
-    url: "http://srv626615.hstgr.cloud:3000/leads-api",
+    url: "https://srv626615.hstgr.cloud/leads-api",
     method: "GET",
     // body: { key: 'value' }
     // comment only

@@ -185,7 +185,7 @@ console.log(data,"data");
             <Row gutter={[16, 16]}>
               {data?.data.map((lead:any, index:number) => (
                 <Col xs={24} sm={12} md={8} lg={6} key={index}>
-                  <Link href={`/admin/pearls/${lead?.user_uuid}`}>
+                  <Link href={`/admin/pearls/${lead?.pearl_id}`}>
                   <Card
                     hoverable
                     style={{ borderRadius: '10px' }}

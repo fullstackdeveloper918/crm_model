@@ -99,7 +99,7 @@ const MainLayout = ({ children }: any) => {
   const handleLogout = async () => {
     try {
       setLoading(true);
-
+      destroyCookie(null, "COOKIES_USER_ACCESS_TOKEN", { path: '/' });
       router.push("/signin");
     } catch (error) {
       setLoading(false);
