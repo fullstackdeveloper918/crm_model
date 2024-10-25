@@ -9,7 +9,6 @@ const page = async() => {
     url: "https://srv626615.hstgr.cloud/leads-api",
     method: "GET",
     // body: { key: 'value' }
-    // comment only
   };
 
   const data = await fetchFromServer(api);
