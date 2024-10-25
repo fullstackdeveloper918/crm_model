@@ -183,7 +183,7 @@ const AddCsvData = () => {
                 >
                  Import Meta Leads
                 </Button>
-                <Button
+                {/* <Button
                   type="primary"
                   htmlType="button"
                   size="large"
@@ -192,7 +192,7 @@ const AddCsvData = () => {
                 //   onClick={sent}
                 >
                  Export Meta Leads
-                </Button>
+                </Button> */}
                 {/* </Upload> */}
               </div>
             </div>

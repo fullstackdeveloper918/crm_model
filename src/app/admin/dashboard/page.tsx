@@ -6,7 +6,9 @@ import React from "react";
 const page = async() => {
   return (
     <>
-    jsgadfjasjdfgjasgfdjgassdjdfa
+<div className="">
+  <h5 className="">Welcome to Dashboard</h5>
+</div>
       {/* <AdminDashboard /> */}
     </>
   );
