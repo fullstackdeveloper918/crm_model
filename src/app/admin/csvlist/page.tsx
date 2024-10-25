@@ -28,7 +28,7 @@ const page = () => {
   }, []);
   return (
     <div>
-      <AddCsvData data={state}/>
+      <AddCsvData />
     </div>
   );
 };

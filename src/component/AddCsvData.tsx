@@ -1,5 +1,5 @@
 "use client"
-import React, { Fragment, useState } from 'react'
+import React, { Fragment, useEffect, useState } from 'react'
 import {
     Breadcrumb,
     Button,
@@ -19,8 +19,8 @@ import Dragger from 'antd/es/upload/Dragger';
 import api from '@/utils/api';
 import { toast } from 'react-toastify';
 import dayjs from 'dayjs';
-const AddCsvData = ({data}:any) => {
-    console.log(data?.data,"ttttt");
+import axios from 'axios';
+const AddCsvData = () => {
     // {
     //     key: "1",
     //     name: "Mike",
@@ -52,7 +52,7 @@ const AddCsvData = ({data}:any) => {
     //       </ul>
     //     ),
     //   },
-  
+    const [state, setState] = useState<any>();
       const columns = [
         {
           title: "Sr.no",
@@ -75,7 +75,7 @@ const AddCsvData = ({data}:any) => {
           key: "action",
         },
       ];
-      const dataSource = data?.data?.data.map((res: any, index: number) => {
+      const dataSource = state?.data?.data.map((res: any, index: number) => {
         return {
                 key: index+1,
                 name:res?.csv_name,
@@ -123,7 +123,16 @@ const AddCsvData = ({data}:any) => {
       const handleFileChange = (info:any) => {
         setFile(info.file.originFileObj); 
       };
-
+      const getData = async () => {
+        const res = await axios.get(
+          `https://srv626615.hstgr.cloud/imported-file-path`
+        );
+        console.log(res, "check");
+        setState(res);
+      };
+      useEffect(() => {
+        getData();
+      }, []);
       
       const submit=async()=>{
         const formData:any = new FormData();
@@ -134,14 +143,14 @@ const AddCsvData = ({data}:any) => {
         try {
             const res= await api.MetaLeads.importCsv(formData)
             toast.success(res?.message)
+            getData()
             setIsModalOpen(false);
         } catch (error) {
             
         }
       }
-      const GetData=()=>{
-        
-      }
+    
+    
   return (
     <Fragment>
     <section>

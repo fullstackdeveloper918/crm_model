@@ -31,7 +31,7 @@ const router= useRouter()
     } as any
     setLoading(true)
     const res = await api.Auth.login(item)
-    toast.success(res?.messange)
+    toast.success(res?.message)
     console.log(res,"ressss"); 
     setLoading(true);
     // setCookie("Token", JSON.stringify(res?.token), 30);
