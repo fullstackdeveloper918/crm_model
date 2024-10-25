@@ -7,7 +7,7 @@ import { Provider } from "react-redux";
 import { store, persistor } from "../lib/store";
 import { PersistGate } from "redux-persist/integration/react";
 import MainLayout from "@/component/Layout/layout";
-
+import 'react-toastify/dist/ReactToastify.css';
 
 export const metadata: Metadata = {
   title: "Create Next App",

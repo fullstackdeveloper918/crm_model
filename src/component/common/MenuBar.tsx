@@ -190,15 +190,42 @@ const handleLinkClick = () => {
         <UserOutlined style={iconSize} />
       ),
     },
+    // {
+    //   key: henceofrthEnums.Roles.USERS,
+    //   view: getItem(
+    //     <Link href="/" className="text-decoration-none"  onClick={handleLinkClick}>
+    //       {/* {getUserdata?.is_admin == false ? "User" : "Archive Members"} */}
+    //       Meta Leads
+    //     </Link>,
+    //     "archive",
+    //     <UserOutlined style={iconSize} />
+    //   ),
+    // },
     {
-      key: henceofrthEnums.Roles.USERS,
+      key: henceofrthEnums.Roles.PAGES,
       view: getItem(
-        <Link href="/" className="text-decoration-none"  onClick={handleLinkClick}>
-          {/* {getUserdata?.is_admin == false ? "User" : "Archive Members"} */}
-          Meta Leads
-        </Link>,
-        "archive",
-        <UserOutlined style={iconSize} />
+        "Meta Leads",
+        "sub1",
+        <UsergroupAddOutlined style={iconSize} />,
+        [
+          getItem(
+            <Link href="/" className="text-decoration-none"  onClick={handleLinkClick}>
+              Meta Leads
+            </Link>,
+            "meta_leads",
+            <OrderedListOutlined style={iconSize} />
+          ),
+          getItem(
+            <Link
+              href="/admin/csvlist"
+              className="text-decoration-none"
+            >
+            Csv
+            </Link>,
+            "csvlist",
+            <TeamOutlined  style={iconSize} />
+          ),     
+        ]
       ),
     },
     {
@@ -224,47 +251,7 @@ const handleLinkClick = () => {
       ),
     },
     // hasMeetingPermission && 
-    // {
-    //   key: henceofrthEnums.Roles.PAGES,
-    //   view: getItem(
-    //     "Meetings",
-    //     "sub1",
-    //     <UsergroupAddOutlined style={iconSize} />,
-    //     [
-    //       getItem(
-    //         <Link href="/admin/meetings" className="text-decoration-none"  onClick={handleLinkClick}>
-    //           Meta Leads
-    //         </Link>,
-    //         "meetings",
-    //         <OrderedListOutlined style={iconSize} />
-    //       ),
-    //       getItem(
-    //         <Link
-    //           href="/admin/meetings/past_meeting"
-    //           className="text-decoration-none"
-    //         >
-    //          Pearl diver leads
-    //         </Link>,
-    //         "past_meeting",
-    //         <TeamOutlined  style={iconSize} />
-    //       ),
-    //       // getUserdata?.is_admin &&
-    //         getItem(
-    //           <Link
-    //             href="/admin/manage_questions"
-    //             className="text-decoration-none"
-    //             onClick={handleLinkClick}
-    //           >
-    //            Sent Purposal
-    //           </Link>,
-    //           "manage_questions",
-    //           <AppstoreAddOutlined style={iconSize} />
-    //         ),
-       
-         
-    //     ]
-    //   ),
-    // },
+    
     // hasQUESTIONNAIREPermission && 
     // {
     //   key: henceofrthEnums.Roles.ORDER,

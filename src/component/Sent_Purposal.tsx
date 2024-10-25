@@ -25,12 +25,13 @@ const Sent_Purposal = () => {
         setFileList(fileList);
       };
       const onFinish = (values: any) => {
-        router.push(`/admin/purposal/sent_purposal_list`)
+        // router.push(`/admin/purposal/sent_purposal_list`)
 
         const formData:any = new FormData();
         console.log(values, "values");
     
         const file = values?.upload?.file;
+    console.log(file,"file");
     
         if (file) {
             formData.append('file', file);

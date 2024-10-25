@@ -7,7 +7,7 @@ import api from '@/utils/api';
 import dayjs from "dayjs"
 import { capFirst, replaceUnderScore } from '@/utils/validation';
 // import remUndrscore from "../utils/validation/replaceUnderScore"
-const { Header, Content, Sider } = Layout;
+const {Content, Sider } = Layout;
 const { Title, Text } = Typography;
 const { Option } = Select;
 const tabs = [
@@ -177,6 +177,7 @@ console.log(data,"data");
               <Option value="date">Date</Option>
               <Option value="name">Name</Option>
             </Select>
+            
           </Space>
         </Row>
 
@@ -201,7 +202,7 @@ console.log(data,"data");
                       <Text>{dayjs(lead?.created_at).format("DD-MM-YYYY")}</Text>
                       {/* <Text>Today 10:30 PM</Text> */}
                       <Divider></Divider>
-                      <Text><PhoneOutlined /> {lead.phone||"N/A"}</Text>
+                      <Text><PhoneOutlined />{lead.phone||"N/A"}</Text>
                       <Text><MailOutlined /> {lead.email}</Text>
                     </Space>
                   </Card>

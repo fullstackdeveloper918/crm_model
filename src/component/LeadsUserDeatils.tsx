@@ -56,7 +56,7 @@ const LeadsUserDeatils = ({data}:any) => {
         </div>
         {/* Align Button to the End */}
         <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '16px' }}>
-            <Link href={`/admin/purposal/sent_purposal/${data?.getByOne[0]?.pearl_id}`}>
+            <Link href={`/admin/purposal/sent_purposal?pearls_lead_id=${data?.getByOne[0]?.pearl_id}`}>
           <Button type="primary">
             Send Proposal
           </Button>

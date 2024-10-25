@@ -68,7 +68,10 @@ const Auth = {
   edit: (info: any) =>
     requests.patch('profile', info),
 };
-
+const MetaLeads={
+  importCsv: (info: any) =>
+    requests.post('import-metalead-data', info),
+}
 const Leads={
   listing:()=>requests.get(`leads-api`)
 }
@@ -374,6 +377,7 @@ const henceforthApi = {
   Questionnair,
   Manage_Question,
   Faq,
+  MetaLeads,
   Graph,
   Questionnaire,
   Genre,
