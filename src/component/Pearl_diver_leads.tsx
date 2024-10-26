@@ -1,5 +1,5 @@
 "use client"
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Layout, Row, Col, Card, Button, Select, Space, Typography, Avatar, Divider, Badge, Tabs } from 'antd';
 import { MailOutlined, PhoneOutlined, UserOutlined } from '@ant-design/icons';
 import Link from 'next/link';
@@ -153,8 +153,22 @@ const leads = [
 ];
 
 const Pearl_diver_leads = ({data}:any) => {
+  const[state,setState]=useState<any>([])
 console.log(data,"data");
-
+const getData=async()=>{
+  try {
+      // const res =await api.Leads.listing()
+      const res = await api.Leads.listing();
+      console.log(res,"kkkk");
+      setState(res)
+  } catch (error) {
+      console.log(error,"check error");
+      
+  }
+}
+useEffect(()=>{
+getData()
+},[])
   
   return (
     <Layout style={{ minHeight: '100vh' }}>
@@ -184,7 +198,7 @@ console.log(data,"data");
         <Row gutter={[16, 16]}>
           <Col xs={24} md={18}>
             <Row gutter={[16, 16]}>
-              {data?.data.map((lead:any, index:number) => (
+              {data.data.map((lead:any, index:number) => (
                 <Col xs={24} sm={12} md={8} lg={6} key={index}>
                   <Link href={`/admin/pearls/${lead?.pearl_id}`}>
                   <Card

@@ -1,8 +1,11 @@
+import Fields from '@/component/Fields'
 import React from 'react'
 
 const page = () => {
   return (
-    <div>page</div>
+    <div>
+      <Fields/>
+    </div>
   )
 }
 

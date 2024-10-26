@@ -9,6 +9,7 @@ export async function fetchFromServer(api: any): Promise<any> {
     headers: {
       "Content-Type": "application/json",
     },
+    cache: 'no-store',
   };
 
   if (body) {

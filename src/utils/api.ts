@@ -72,7 +72,14 @@ const MetaLeads={
   importCsv: (info: any) =>
     requests.post('import-metalead-data', info),
 }
-
+const Fields={
+  add: (info: any) =>
+    requests.post('add-fields', info),
+  edit: (info: any) =>
+    requests.post('field-update', info),
+  delete: (info: any) =>
+    requests.post('delete-field', info),
+}
 const Leads={
   listing:()=>requests.get(`leads-api`),
   sent_purposal:(info: any)=> requests.post('send-email', info),
@@ -390,6 +397,7 @@ const henceforthApi = {
   Search,
   token,
   User,
+  Fields,
   Leads,
   encode,
   dashboard,
