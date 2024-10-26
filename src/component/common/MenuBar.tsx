@@ -225,6 +225,16 @@ const handleLinkClick = () => {
             "csvlist",
             <TeamOutlined  style={iconSize} />
           ),     
+          getItem(
+            <Link
+              href="/admin/metalist"
+              className="text-decoration-none"
+            >
+            All Meta Data
+            </Link>,
+            "metalist",
+            <TeamOutlined  style={iconSize} />
+          ),     
         ]
       ),
     },
@@ -247,6 +257,17 @@ const handleLinkClick = () => {
           Purposals
         </Link>,
         "purposal",
+        <UserOutlined style={iconSize} />
+      ),
+    },
+    {
+      key: henceofrthEnums.Roles.USERS,
+      view: getItem(
+        <Link href="/admin/fields" className="text-decoration-none"  onClick={handleLinkClick}>
+          {/* {getUserdata?.is_admin == false ? "User" : "Archive Members"} */}
+          Fields
+        </Link>,
+        "fields",
         <UserOutlined style={iconSize} />
       ),
     },

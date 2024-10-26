@@ -1,11 +1,15 @@
 "use client"
 import { Button, Input, Upload, Row, Col, Card, List, Avatar, Form } from 'antd';
-import { UploadOutlined, LeftOutlined } from '@ant-design/icons';
+import { UploadOutlined, LeftOutlined, InboxOutlined } from '@ant-design/icons';
 import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useParams, useRouter, useSearchParams } from 'next/navigation';
+import Dragger from 'antd/es/upload/Dragger';
+import api from '@/utils/api';
 const Sent_Purposal = () => {
-    const [fileList, setFileList] = useState<any>([])
-    // console.log(fileList[0].originFileObj,"fileList");
+    const searchParam:any = useSearchParams();
+    const id = searchParam;
+    console.log(id,"searchParam");
+    
     const router= useRouter()
     const recentLeads = [
         { name: 'Jenny Wilson', email: 'j.wilson@example.com', amount: '$11,234', location: 'Austin' },
@@ -21,39 +25,25 @@ const Sent_Purposal = () => {
         { name: 'Jane Cooper', email: 'j.cooper@example.com', amount: '$10,483', location: 'Toledo' },
         { name: 'Dianne Russell', email: 'd.russell@example.com', amount: '$9,084', location: 'Naperville' },
       ];
-      const handleChange = ({ fileList }:any) => {
-        setFileList(fileList);
+      const [file, setFile] = useState<any>(null);
+      const handleFileChange = (info:any) => {
+        setFile(info.file.originFileObj); 
       };
-      const onFinish = (values: any) => {
-        // router.push(`/admin/purposal/sent_purposal_list`)
-
+      const onFinish = async(values: any) => {
         const formData:any = new FormData();
-        console.log(values, "values");
-    
-        const file = values?.upload?.file;
-    console.log(file,"file");
-    
-        if (file) {
-            formData.append('file', file);
+        formData.append('file', file);
+        for (const [key, value] of formData.entries()) {
+            console.log(`${key}:`, value);
+          }
+          let item={
+            // user_uuid:
+          }
+          try {
+            const res= await api.Leads.sent_purposal(formData)
+          } catch (error) {
+            console.log(error,"eroor");
             
-            // Log the FormData contents
-            for (const [key, value] of formData.entries()) {
-                console.log(key, value);
-            }
-    
-            const reader = new FileReader();
-            
-            reader.onload = (event) => {
-                const binaryData = event.target?.result;
-                console.log(binaryData, "binaryData");
-            };
-    
-            reader.readAsArrayBuffer(file);
-       
-          } else {
-            console.error("No file found in values.upload.file");
-        }
-        console.log(formData,"formData");
+          }
         
     };
   return (
@@ -81,13 +71,12 @@ const Sent_Purposal = () => {
         </Form.Item>
 
         <Form.Item name="upload" >
-        <Upload 
-            fileList={fileList} 
-            onChange={handleChange} 
-            beforeUpload={() => false} // Prevent automatic upload
-          >
-            <Button icon={<UploadOutlined />}>Upload Here</Button>
-          </Upload>
+        <Dragger   multiple={false} onChange={handleFileChange}>
+    <p className="ant-upload-drag-icon">
+      <InboxOutlined />
+    </p>
+    <p className="ant-upload-text">Click or drag file to this area to upload</p>
+  </Dragger>
         </Form.Item>
 
         <Form.Item>

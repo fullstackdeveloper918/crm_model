@@ -21,37 +21,6 @@ import { toast } from 'react-toastify';
 import dayjs from 'dayjs';
 import axios from 'axios';
 const AddCsvData = () => {
-    // {
-    //     key: "1",
-    //     name: "Mike",
-    //     date: "12-10-2024",
-    //     product: "10 Downing Street",
-    //     description: "qwertyuiopqwertyui",
-    //     action: (
-    //       <ul className="m-0 list-unstyled d-flex gap-2">
-    //         <li>
-    //           <Link href={`/admin/member/view`}>
-    //             {" "}
-    //             <Tooltip title="Export File">
-    //               <Button className="ViewMore">
-    //                 <ExportOutlined />
-    //               </Button>{" "}
-    //             </Tooltip>
-    //           </Link>
-    //         </li>
-    //         <li>
-    //           <Link href={`/admin/member/view`}>
-    //             {" "}
-    //             <Tooltip title="View Details">
-    //               <Button className="ViewMore">
-    //                 <EyeOutlined />
-    //               </Button>{" "}
-    //             </Tooltip>
-    //           </Link>
-    //         </li>
-    //       </ul>
-    //     ),
-    //   },
     const [state, setState] = useState<any>();
       const columns = [
         {

@@ -72,8 +72,10 @@ const MetaLeads={
   importCsv: (info: any) =>
     requests.post('import-metalead-data', info),
 }
+
 const Leads={
-  listing:()=>requests.get(`leads-api`)
+  listing:()=>requests.get(`leads-api`),
+  sent_purposal:(info: any)=> requests.post('send-email', info),
 }
 const dashboard={
   upcoming: () =>
