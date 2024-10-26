@@ -6,9 +6,9 @@ import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import Dragger from 'antd/es/upload/Dragger';
 import api from '@/utils/api';
 const Sent_Purposal = () => {
-    const searchParam:any = useSearchParams();
-    const id = searchParam;
-    console.log(id,"searchParam");
+    // const searchParam:any = useSearchParams();
+    // const id = searchParam;
+    // console.log(id,"searchParam");
     
     const router= useRouter()
     const recentLeads = [
