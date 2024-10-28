@@ -13,7 +13,14 @@ const page = async() => {
       };
     
       const data = await fetchFromServer(api);
-      console.log(data,"imported-meta-list");
+    const api1: any = {
+        url: "https://srv626615.hstgr.cloud/field-list",
+        method: "GET",
+        // body: { key: 'value' }
+      };
+    
+      const data1 = await fetchFromServer(api);
+      console.log(data1,"imported-meta-list");
      
   return (
     // imported-meta-list
