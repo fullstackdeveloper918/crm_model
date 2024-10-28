@@ -15,10 +15,17 @@ const page = async({params}:any) => {
 
   const data = await fetchFromServer(api);
   console.log(data,"data");
-  
+  const api1: any = {
+    url: `https://srv626615.hstgr.cloud/leads-api`,
+    method: "GET",
+    // body: { key: 'value' }
+  };
+
+  const data1 = await fetchFromServer(api1);
+  console.log(data,"sdfasdffasd");
   return (
    <div className="">
-    <LeadsUserDeatils data={data}/>
+    <LeadsUserDeatils data={data} data1={data1}/>
    </div>
   )
 }

@@ -144,7 +144,7 @@ const Sent_Purposal = ({ data1 }: any) => {
           <Button icon={<LeftOutlined />} type="link">
             Back
           </Button>
-          <h2>Sent Proposal</h2>
+          <h2>Send Proposal</h2>
           <Tabs
             defaultActiveKey="all"
             items={tabs}

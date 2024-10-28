@@ -20,8 +20,23 @@ const leadsData = {
       { name: 'Dianne Russell', email: 'curtis.d@example.com', amount: '$9,084', location: 'Naperville' },
     ]
   };
-const LeadsUserDeatils = ({data}:any) => {
+const LeadsUserDeatils = ({data}:any,{data1}:any)=> {
     console.log(data,"rrerer");
+    const phoneValue = data?.getByOne[0]?.phone || "[]"; // Default to empty array if phone is undefined
+    let phoneNumber = "N/A"; // Default to "N/A"
+  
+    try {
+      // Parse the phone value
+      const parsedValue = JSON.parse(phoneValue);
+      
+      // Check if parsedValue is an array and has at least one element
+      if (Array.isArray(parsedValue) && parsedValue.length > 0) {
+        phoneNumber = parsedValue[0]?.number || "N/A"; // Fallback to "N/A" if number is undefined
+      }
+    } catch (error) {
+      console.error("Failed to parse phone value:", error);
+    }
+    console.log(phoneValue,"phoneValue");
     
   return (
     <Layout style={{ minHeight: '100vh', padding: '24px' }}>
@@ -51,7 +66,7 @@ const LeadsUserDeatils = ({data}:any) => {
             <MailOutlined /> {data?.getByOne[0]?.email||"N/A"}
           </div>
           <div>
-            <PhoneOutlined /> {data?.getByOne[0]?.phone||"N/A"}
+            <PhoneOutlined />{"+12697605426"}
           </div>
         </div>
         {/* Align Button to the End */}
@@ -91,7 +106,7 @@ const LeadsUserDeatils = ({data}:any) => {
       </Card>
 
       {/* Call Leads Card */}
-      <Card title="Call Leads (Monthly)" style={{ marginBottom: '24px' }}>
+      {/* <Card title="Call Leads (Monthly)" style={{ marginBottom: '24px' }}>
         <List
           dataSource={leadsData.callLeads}
           renderItem={(item) => (
@@ -111,10 +126,10 @@ const LeadsUserDeatils = ({data}:any) => {
             </List.Item>
           )}
         />
-      </Card>
+      </Card> */}
 
       {/* Mail Leads Card */}
-      <Card title="Mail Leads (Monthly)">
+      {/* <Card title="Mail Leads (Monthly)">
         <List
           dataSource={leadsData.mailLeads}
           renderItem={(item) => (
@@ -134,7 +149,7 @@ const LeadsUserDeatils = ({data}:any) => {
             </List.Item>
           )}
         />
-      </Card>
+      </Card> */}
     </Sider>
   </Layout>
   )

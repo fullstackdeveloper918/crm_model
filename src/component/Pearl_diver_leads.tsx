@@ -242,16 +242,16 @@ const colorMap:any = {
     <Layout style={{ minHeight: '100vh' }}>
       <Content style={{ padding: '20px' }}>
 
-      <Tabs
+      {/* <Tabs
       defaultActiveKey="all"
       items={tabs}
       activeKey={activeKey}
       onChange={handleChange}
       style={{ backgroundColor: '#f5f5f5', padding: '10px', borderRadius: '5px' }}
-    />
+    /> */}
         <Title level={3}>All Pearl Diver Leads</Title>
 
-        <Row justify="space-between" style={{ marginBottom: '20px' }}>
+        {/* <Row justify="space-between" style={{ marginBottom: '20px' }}>
           <Space>
             <Select defaultValue="All Leads" style={{ width: 120 }}>
               <Option value="all">All Leads</Option>
@@ -263,7 +263,7 @@ const colorMap:any = {
             </Select>
             
           </Space>
-        </Row>
+        </Row> */}
 
         <Row gutter={[16, 16]}>
         <Col xs={24} md={18}>
@@ -291,7 +291,7 @@ const colorMap:any = {
                   </Title>
                   <Text>{dayjs(lead?.created_at).format('DD-MM-YYYY')}</Text>
                   <Divider />
-                  <Text><PhoneOutlined /> {lead.phone || 'N/A'}</Text>
+                  <Text><PhoneOutlined /> {lead.phones.map((res:any,index:number)=>res.number) || 'N/A'}</Text>
                   <Text><MailOutlined /> {lead.email}</Text>
                 </Space>
               </Card>
@@ -307,18 +307,16 @@ const colorMap:any = {
       </Row>
     </Col>
 
-          <Col xs={24} md={6}> {/* Adjusted Col for sidebar */}
-            {/* <Sider width={300} style={{ background: 'transparent',  }}> */}
+          <Col xs={24} md={6}> 
               <Recent_card data={data}/>
-              <Card title="Call Leads" style={{ marginBottom: '20px' }}>
+              {/* <Card title="Call Leads" style={{ marginBottom: '20px' }}>
                 <Space direction="vertical">
                 
                   <Text><Avatar size={25} icon={<UserOutlined />}  /> Jane Cooper - Toledo</Text>
                   <Text><Avatar size={25} icon={<UserOutlined />}  /> Dianne Russell - Naperville</Text>
                   <Button type="link">See All Call Leads</Button>
                 </Space>
-              </Card>
-            {/* </Sider> */}
+              </Card> */}
           </Col>
         </Row>
       </Content>

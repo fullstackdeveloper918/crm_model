@@ -155,16 +155,16 @@ const handleLinkClick = () => {
 };
   const mainMenu = [
     // hasDashboardPermission && 
-    {
-      key: henceofrthEnums.Roles.DASHBOARD,
-      view: getItem(
-        <Link href="/admin/dashboard" className="text-decoration-none" onClick={handleLinkClick }>
-          Dashboard
-        </Link>,
-        "dashboard",
-        <DashboardOutlined style={iconSize} />
-      ),
-    },
+    // {
+    //   key: henceofrthEnums.Roles.DASHBOARD,
+    //   view: getItem(
+    //     <Link href="/admin/dashboard" className="text-decoration-none" onClick={handleLinkClick }>
+    //       Dashboard
+    //     </Link>,
+    //     "dashboard",
+    //     <DashboardOutlined style={iconSize} />
+    //   ),
+    // },
    
     // hasClubMemberPermission &&
     //  {
@@ -179,17 +179,17 @@ const handleLinkClick = () => {
     //   ),
     // },
     // hasClubMemberPermission && 
-    {
-      key: henceofrthEnums.Roles.USERS,
-      view: getItem(
-        <Link href="#" className="text-decoration-none" onClick={handleLinkClick}>
-          {/* {getUserdata?.is_admin == false ? "User" : "Archive Members"} */}
-         Opportunities
-        </Link>,
-        "archive",
-        <UserOutlined style={iconSize} />
-      ),
-    },
+    // {
+    //   key: henceofrthEnums.Roles.USERS,
+    //   view: getItem(
+    //     <Link href="#" className="text-decoration-none" onClick={handleLinkClick}>
+    //       {/* {getUserdata?.is_admin == false ? "User" : "Archive Members"} */}
+    //      Opportunities
+    //     </Link>,
+    //     "archive",
+    //     <UserOutlined style={iconSize} />
+    //   ),
+    // },
     // {
     //   key: henceofrthEnums.Roles.USERS,
     //   view: getItem(
