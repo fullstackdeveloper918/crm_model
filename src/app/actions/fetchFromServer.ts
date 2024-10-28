@@ -19,9 +19,9 @@ export async function fetchFromServer(api: any): Promise<any> {
   try {
     const res = await fetch(url, options);
 
-    if (!res.ok) {
-      throw new Error(`Failed to fetch: ${res.status}`);
-    }
+    // if (!res.ok) {
+    //   throw new Error(`Failed to fetch: ${res.status}`);
+    // }
 
     const data = await res.json();
     return data;

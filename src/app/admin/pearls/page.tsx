@@ -3,10 +3,15 @@ import Pearl_diver_leads from '@/component/Pearl_diver_leads'
 import axios from 'axios'
 import React from 'react'
 
-const page = async() => {
+const page = async({ searchParams }: { searchParams: any }) => {
+  console.log(searchParams, "params");
+  
+  const currentPage = searchParams.page ? Number(searchParams.page) : 1; // Default to 1 if not found
+  console.log(currentPage, "currentPage");
 
+  
   const api: any = {
-    url: "https://srv626615.hstgr.cloud/leads-api?page=1",
+    url: `https://srv626615.hstgr.cloud/leads-api?page=${currentPage}limit:100`,
     method: "GET",
     // body: { key: 'value' }
   };

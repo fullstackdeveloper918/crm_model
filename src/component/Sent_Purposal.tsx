@@ -1,15 +1,46 @@
 "use client"
-import { Button, Input, Upload, Row, Col, Card, List, Avatar, Form } from 'antd';
+import { Button, Input, Upload, Row, Col, Card, List, Avatar, Form, Tabs, Badge, Modal } from 'antd';
 import { UploadOutlined, LeftOutlined, InboxOutlined } from '@ant-design/icons';
 import React, { useState } from 'react';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import Dragger from 'antd/es/upload/Dragger';
 import api from '@/utils/api';
+import { capFirst } from '@/utils/validation';
+const tabs = [
+  {
+    key: 'email',
+    label: (
+      <span>
+      Email
+      </span>
+    ),
+  },
+  {
+    key: 'sms',
+    label: (
+      <span>
+       SMS
+      </span>
+    ),
+  }
+];
 const Sent_Purposal = () => {
     // const searchParam:any = useSearchParams();
     // const id = searchParam;
     // console.log(id,"searchParam");
-    
+    const [isModalVisible, setIsModalVisible] = useState(false);
+
+    const showModal = () => {
+      setIsModalVisible(true);
+    };
+  
+    const handleOk = () => {
+      setIsModalVisible(false);
+    };
+  
+    const handleCancel = () => {
+      setIsModalVisible(false);
+    };
     const router= useRouter()
     const recentLeads = [
         { name: 'Jenny Wilson', email: 'j.wilson@example.com', amount: '$11,234', location: 'Austin' },
@@ -46,6 +77,11 @@ const Sent_Purposal = () => {
           }
         
     };
+    const [activeKey,setActiveKey]=useState<any>("")
+    const handleChange = (key:any) => {
+      setActiveKey(key);
+      console.log("Selected tab:", key); // This will log the selected tab value
+    };
   return (
     <div style={{ padding: '20px' }}>
       <Row gutter={16}>
@@ -53,9 +89,24 @@ const Sent_Purposal = () => {
           <Button icon={<LeftOutlined />} type="link">
             Back
           </Button>
-          <h2>View Proposal</h2>
+          <h2>Sent Proposal</h2>
+          <Tabs
+      defaultActiveKey="all"
+      items={tabs}
+      onChange={handleChange}
+      style={{ backgroundColor: '#f5f5f5', padding: '10px', borderRadius: '5px' }}
+    />
+          <Card
+      title={`${capFirst(activeKey||"Email")} Form`}
+      extra={
+        <Button type="primary" onClick={showModal}>
+         Preview
+        </Button>
+      }
 
-          <Form onFinish={onFinish}>
+      style={{ width: 800, margin: 'auto', marginTop: '20px' }}
+    >
+      <Form onFinish={onFinish}>
         <Form.Item
           name="productName"
           rules={[{ required: true, message: 'Please input the product name!' }]}
@@ -70,13 +121,13 @@ const Sent_Purposal = () => {
           <Input.TextArea placeholder="Label" rows={4} style={{ marginBottom: '16px' }} />
         </Form.Item>
 
-        <Form.Item name="upload" >
-        <Dragger   multiple={false} onChange={handleFileChange}>
-    <p className="ant-upload-drag-icon">
-      <InboxOutlined />
-    </p>
-    <p className="ant-upload-text">Click or drag file to this area to upload</p>
-  </Dragger>
+        <Form.Item name="upload">
+          <Dragger multiple={false} onChange={handleFileChange}>
+            <p className="ant-upload-drag-icon">
+              <InboxOutlined />
+            </p>
+            <p className="ant-upload-text">Click or drag file to this area to upload</p>
+          </Dragger>
         </Form.Item>
 
         <Form.Item>
@@ -85,6 +136,7 @@ const Sent_Purposal = () => {
           </Button>
         </Form.Item>
       </Form>
+    </Card>
         </Col>
 
         <Col span={8}>
@@ -144,6 +196,53 @@ const Sent_Purposal = () => {
           </Card>
         </Col>
       </Row>
+      <Modal
+      title={`${capFirst(activeKey||"Email")} Form`}
+        visible={isModalVisible}
+        onOk={handleOk}
+        onCancel={handleCancel}
+      >
+           <Card
+      
+      // style={{ width: 800, margin: 'auto', marginTop: '20px' }}
+    >
+      <Form onFinish={onFinish}>
+      <label>Product Name :</label>
+        <Form.Item
+          name="productName"
+          // label="Product Name"
+          // rules={[{ required: true, message: 'Please input the product name!' }]}
+        >
+        asdfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+        asdfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+        </Form.Item>
+<label>Label :</label>
+        <Form.Item
+          name="label"
+          // label="Label"
+          // rules={[{ required: true, message: 'Please input the label!' }]}
+        >
+       asdfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+       asdfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+        </Form.Item>
+
+        <Form.Item name="upload">
+          <Dragger multiple={false} onChange={handleFileChange}>
+            <p className="ant-upload-drag-icon">
+              <InboxOutlined />
+            </p>
+            <p className="ant-upload-text">Click or drag file to this area to upload</p>
+          </Dragger>
+        </Form.Item>
+
+        {/* <Form.Item>
+          <Button type="primary" htmlType="submit" style={{ marginTop: '16px' }}>
+            Submit
+          </Button>
+        </Form.Item> */}
+      </Form>
+    </Card>
+      </Modal>
     </div>
   )
 }
