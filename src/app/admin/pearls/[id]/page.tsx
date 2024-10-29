@@ -9,8 +9,6 @@ const page = async({params}:any) => {
   const api: any = {
     url: `https://srv626615.hstgr.cloud/get_one_audience?pearlId=${params.id}`,
     method: "GET",
-    // body: { key: 'value' }
-    // comment only
   };
 
   const data = await fetchFromServer(api);
@@ -22,7 +20,7 @@ const page = async({params}:any) => {
   };
 
   const data1 = await fetchFromServer(api1);
-  console.log(data,"sdfasdffasd");
+  console.log(data1,"qwerty");
   return (
    <div className="">
     <LeadsUserDeatils data={data} data1={data1}/>

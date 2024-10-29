@@ -12,7 +12,9 @@ const Recent_card = ({data}:any) => {
     <Card title="Recent leads" style={{ marginBottom: '20px' }}>
     <Space direction="vertical">
         {data?.data?.slice(0,2).map((res:any, index:number)=>
-      <Text><Avatar size={25} icon={<UserOutlined />}  /> {res?.firstName||"N/A"} {res?.lastName||"N/A"} - Austin</Text>
+      <Text><Avatar size={25} icon={<UserOutlined />}  /> {res?.firstName||"N/A"} {res?.lastName||"N/A"} - {res?.addresses.map((res:any)=> 
+      <span className="">{res?.city}, {res?.state}, {`(${res?.zip })`}</span>
+      )}</Text>
         )}
       {/* <Text><Avatar size={25} icon={<UserOutlined />}  /> Devon Lane - New York</Text> */}
       <Button type="link">See All Recent Leads</Button>
