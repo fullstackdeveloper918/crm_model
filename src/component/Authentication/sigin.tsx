@@ -38,7 +38,7 @@ const router= useRouter()
     createSessionCookie(res?.data?.token);
     setCookie("user_uuid", res?.data?.user_uuid, 30);
     api.setToken(res?.token)
-    router.push("admin/pearls")
+    router.push("admin/pearls?filter=all")
   } catch (error) {
     setLoading(false)
     console.log();

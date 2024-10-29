@@ -241,7 +241,7 @@ const handleLinkClick = () => {
     {
       key: henceofrthEnums.Roles.USERS,
       view: getItem(
-        <Link href="/admin/pearls" className="text-decoration-none"  onClick={handleLinkClick}>
+        <Link href="/admin/pearls?filter=all" className="text-decoration-none"  onClick={handleLinkClick}>
           {/* {getUserdata?.is_admin == false ? "User" : "Archive Members"} */}
           Pearl diver leads
         </Link>,
