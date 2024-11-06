@@ -7,9 +7,7 @@ import {
   Button,
   List,
   Layout,
-  Breadcrumb,
   Tooltip,
-  Popconfirm,
 } from "antd";
 import {
   DownloadOutlined,
@@ -70,7 +68,10 @@ const leadsData = {
   ],
 };
 const LeadsUserDeatils = ({ data }: any, { data1 }: any) => {
+  const [loading,setLoading]=useState(false)
   console.log(data1, "rrerer");
+  console.log(data,"datadatadata");
+  
   const phoneValue = data?.getByOne[0]?.phone || "[]"; // Default to empty array if phone is undefined
   let phoneNumber = "N/A"; // Default to "N/A"
 
@@ -97,9 +98,14 @@ const LeadsUserDeatils = ({ data }: any, { data1 }: any) => {
 
   const router = useRouter();
   const send = () => {
+  try {
+    setLoading(true)
     router.push(
       `/admin/purposal/sent_purposal?pearls_lead_id=${data?.getByOne[0]?.pearl_id}`
     );
+  } catch (error) {
+    setLoading(false)
+  }
   };
 const [state,setState]= useState<any>([])
   const getData=async()=>{
@@ -196,7 +202,7 @@ getData()
             </div>
             <div>
               <Tooltip title="Send Mail">
-                <Button className="ViewMore" onClick={send}>
+                <Button className="ViewMore" loading={loading} onClick={send}>
                   <span className="">{<MailOutlined />}</span>
                 </Button>
               </Tooltip>

@@ -254,7 +254,7 @@ const handleLinkClick = () => {
       view: getItem(
         <Link href="/admin/purposal" className="text-decoration-none"  onClick={handleLinkClick}>
           {/* {getUserdata?.is_admin == false ? "User" : "Archive Members"} */}
-          Purposals
+          Proposals
         </Link>,
         "purposal",
         <UserOutlined style={iconSize} />

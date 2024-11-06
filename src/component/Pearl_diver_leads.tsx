@@ -342,38 +342,6 @@ const Pearl_diver_leads = ({ data, fetchData }: any) => {
 
         <Row gutter={[16, 16]}>
           <Col xs={24} md={18}>
-            {/* <Row gutter={[16, 16]}>
-        {data?.data?.map((lead: any, index: number) => (
-          <Col xs={24} sm={12} md={8} lg={6} key={index}>
-            <Link href={`/admin/pearls/${lead?.pearl_id}`}>
-              <Card
-                hoverable
-                style={{ borderRadius: '10px' }}
-                actions={[
-                  <Button style={{color:colorMap[lead.status] || '#000000', backgroundColor:backgroundcolorMap[lead.status] || 'rgb(187 181 181)'}} key="action" size="small">
-                    {capFirst(replaceUnderScore(lead.status))}
-                  </Button>,
-                ]}
-              >
-                <Space direction="vertical" size="small">
-                  <Title level={5}>
-                    <Avatar
-                      size={34}
-                      icon={<UserOutlined />}
-                      src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTEg09MmHvC-78aaRxyd52HabsZqI1-u8R6-w&s"
-                    />
-                    {lead?.firstName ? `${lead?.firstName} ${lead?.lastName}` : 'N/A'}
-                  </Title>
-                  <Text>{dayjs(lead?.created_at).format('DD-MM-YYYY')}</Text>
-                  <Divider />
-                  <Text><PhoneOutlined /> {lead.phones.map((res:any,index:number)=>res.number) || 'N/A'}</Text>
-                  <Text><MailOutlined /> {lead.email}</Text>
-                </Space>
-              </Card>
-            </Link>
-          </Col>
-        ))}
-      </Row> */}
             <Row gutter={[16, 16]}>
               {data?.data?.map((lead: any, index: number) => (
                 <Col xs={24} sm={12} md={8} lg={6} key={index}>

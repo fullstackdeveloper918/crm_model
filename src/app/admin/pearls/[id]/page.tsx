@@ -12,7 +12,7 @@ const page = async({params}:any) => {
   };
 
   const data = await fetchFromServer(api);
-  console.log(data,"data");
+  console.log(data,"qwqwqwqw");
   const api1: any = {
     url: `https://srv626615.hstgr.cloud/leads-api`,
     method: "GET",

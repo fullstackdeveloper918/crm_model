@@ -40,8 +40,11 @@ const Sent_Purposal = ({ data1 }: any) => {
   // const id = searchParam;
   // console.log(id,"searchParam");
   const [isModalVisible, setIsModalVisible] = useState(false);
-
-  const showModal = () => {
+  const [state, setState] = useState<any>("");
+  console.log(state,"state");
+  
+  const showModal = (values: any) => {
+    setState(values)
     setIsModalVisible(true);
   };
 
@@ -98,24 +101,40 @@ const Sent_Purposal = ({ data1 }: any) => {
     },
   ];
   const [file, setFile] = useState<any>(null);
+  // const handleFileChange = (info: any) => {
+  //   setFile(info.file.originFileObj);
+  // };
   const handleFileChange = (info: any) => {
     setFile(info.file.originFileObj);
   };
   const onFinish = async (values: any) => {
+    console.log("Form submitted with values:", file, values);
+
     const formData: any = new FormData();
-    formData.append("file", file);
+
+    // Ensure 'file' is correctly set from file input
+    if (file) {
+      formData.append("file", file);
+    }
+
+    // Append other form values to FormData
+    for (const key in values) {
+      formData.append(key, values[key]);
+    }
+
+    // Log FormData entries
     for (const [key, value] of formData.entries()) {
       console.log(`${key}:`, value);
     }
-    let item = {
-      // user_uuid:
-    };
+
     try {
       const res = await api.Leads.sent_purposal(formData);
+      console.log("Response:", res);
     } catch (error) {
-      console.log(error, "eroor");
+      console.log("Error:", error);
     }
   };
+
   const [activeKey, setActiveKey] = useState<any>("");
   const handleChange = (key: any) => {
     setActiveKey(key);
@@ -134,9 +153,21 @@ const Sent_Purposal = ({ data1 }: any) => {
   }, [data1]);
   console.log(filedTypes, "filedTypes");
   const targetName = "Document";
-  const textCount = data1?.data.filter((item:any) => item.type === "text" && item.name === targetName).length;
-  console.log(textCount,"textCount");
-  
+  const textCount = data1?.data.filter(
+    (item: any) => item.type === "text" && item.name === targetName
+  ).length;
+  console.log(textCount, "textCount");
+  const handleFinish = (values: any) => {
+    onFinish(values); // pass values to onFinish
+    showModal(values);
+  };
+  const fileValidator = (_:any, value: any) => {
+    if (!value || value.file.length === 0) {
+      return Promise.reject(new Error("Please upload a file"));
+    }
+    return Promise.resolve();
+  };
+
   return (
     <div style={{ padding: "20px" }}>
       <Row gutter={16}>
@@ -144,7 +175,7 @@ const Sent_Purposal = ({ data1 }: any) => {
           <Button icon={<LeftOutlined />} type="link">
             Back
           </Button>
-          <h2>Send Proposal</h2>
+          <h2>Send </h2>
           <Tabs
             defaultActiveKey="all"
             items={tabs}
@@ -164,82 +195,136 @@ const Sent_Purposal = ({ data1 }: any) => {
             }
             style={{ width: 800, margin: "auto", marginTop: "20px" }}
           >
-             <Form layout="vertical">
-      {data1.data.map((item:any, index:any) => {
-        switch (item.filed_type) {
-          case "textarea":
-            return (
-              <Form.Item key={index} label={item.filed_name}>
-                <TextArea placeholder={`Enter text area ${index + 1}`} />
-              </Form.Item>
-            );
-          case "number":
-            return (
-              <Form.Item key={index} label={item.filed_name}>
-                <Input type="number" placeholder={`Enter number ${index + 1}`} />
-              </Form.Item>
-            );
-          case "text":
-            return (
-              <Form.Item key={index} label={item.filed_name}>
-                <Input placeholder={`Enter text ${index + 1}`} />
-              </Form.Item>
-            );
-          case "radio":
-            return (
-              <Form.Item key={index} label={item.filed_name}>
-                <Radio.Group>
-                  <Radio value="option1">Option 1</Radio>
-                  <Radio value="option2">Option 2</Radio>
-                </Radio.Group>
-              </Form.Item>
-            );
-          case "dropDown":
-            return (
-              <Form.Item key={index} label={item.filed_name}>
-                <Select placeholder={`Select an option ${index + 1}`}>
-                  <Select.Option value="option1">Option 1</Select.Option>
-                  <Select.Option value="option2">Option 2</Select.Option>
-                </Select>
-              </Form.Item>
-            );
-          case "checkbox":
-            return (
-              <Form.Item key={index} label={item.filed_name}>
-                <Checkbox>Check this box</Checkbox>
-              </Form.Item>
-            );
-          case "image":
-            return (
-              <Form.Item key={index} label={item.filed_name}>
-                <Dragger multiple={false} onChange={handleFileChange}>
-                    <p className="ant-upload-drag-icon">
-                      <InboxOutlined />
-                    </p>
-                    <p className="ant-upload-text">
-                      Click or drag file to this area to upload
-                    </p>
-                  </Dragger>
-              </Form.Item>
-            );
-          default:
-            return null;
-        }
-      })}
+            <Form layout="vertical" onFinish={handleFinish}>
+              <>
+              {/* <Button type="primary" htmlType="submit">
+                Preview
+              </Button> */}
+              {data1.data.map((item: any, index: any) => {
+                switch (item.filed_type) {
+                  case "textarea":
+                    return (
+                      <Form.Item
+                        key={index}
+                        name={item.filed_name}
+                        label={item.filed_name}
+                        rules={[{ required: true, message: `Please fill ${item.filed_name}!` }]}
+                      >
+                        <TextArea
+                          placeholder={`Enter text area ${index + 1}`}
+                        />
+                      </Form.Item>
+                    );
+                  case "number":
+                    return (
+                      <Form.Item
+                        key={index}
+                        name={item.filed_name}
+                        label={item.filed_name}
+                        rules={[{ required: true, message: `Please fill ${item.filed_name}!` }]}
+                      >
+                        <Input
+                          type="number"
+                          placeholder={`Enter number ${index + 1}`}
+                        />
+                      </Form.Item>
+                    );
+                  case "text":
+                    return (
+                      <Form.Item
+                        key={index}
+                        name={item.filed_name}
+                        label={item.filed_name}
+                        rules={[{ required: true, message: `Please fill ${item.filed_name}!` }]}
+                      >
+                        <Input placeholder={`Enter text ${index + 1}`} />
+                      </Form.Item>
+                    );
+                  case "radio":
+                    return (
+                      <Form.Item
+                        key={index}
+                        name={item.filed_name}
+                        label={item.filed_name}
 
-      {/* Render text inputs explicitly based on the textCount */}
-      {Array.from({ length: textCount }).map((_, i) => (
-        <Form.Item key={`dynamic-text-${i}`} label={`Text Input for ${targetName}`}>
-          <Input placeholder={`Enter text for ${targetName}`} />
-        </Form.Item>
-      ))}
+                        rules={[{ required: true, message: `Please fill ${item.filed_name}!` }]}
+                      >
+                        <Radio.Group>
+                          <Radio value="option1">Option 1</Radio>
+                          <Radio value="option2">Option 2</Radio>
+                        </Radio.Group>
+                      </Form.Item>
+                    );
+                  case "dropDown":
+                    return (
+                      <Form.Item
+                        key={index}
+                        name={item.filed_name}
+                        label={item.filed_name}
+                        rules={[{ required: true, message: `Please fill ${item.filed_name}!` }]}
+                      >
+                        <Select placeholder={`Select an option ${index + 1}`}>
+                          <Select.Option value="option1">
+                            Option 1
+                          </Select.Option>
+                          <Select.Option value="option2">
+                            Option 2
+                          </Select.Option>
+                        </Select>
+                      </Form.Item>
+                    );
+                  case "checkbox":
+                    return (
+                      <Form.Item
+                        key={index}
+                        name={item.filed_name}
+                        valuePropName="checked"
+                        label={item.filed_name}
+                        rules={[{ required: true, message: `Please fill ${item.filed_name}!` }]}
+                      >
+                        <Checkbox>Check this box</Checkbox>
+                      </Form.Item>
+                    );
+                  case "image":
+                    return (
+                      <Form.Item key={index} label={item.filed_name}  rules={[
+                        { 
+                          validator: fileValidator, // Custom validator function
+                        }
+                      ]} >
+                        <Dragger multiple={false} onChange={handleFileChange}  maxCount={1} >
+                          <p className="ant-upload-drag-icon">
+                            <InboxOutlined />
+                          </p>
+                          <p className="ant-upload-text">
+                            Click or drag file to this area to upload
+                          </p>
+                        </Dragger>
+                      </Form.Item>
+                    );
+                  default:
+                    return null;
+                }
+              })}
 
-      <Form.Item>
-        <Button type="primary" htmlType="submit">
-          Submit
-        </Button>
-      </Form.Item>
-    </Form>
+              {Array.from({ length: textCount }).map((_, i) => (
+                <Form.Item
+                  key={`dynamic-text-${i}`}
+                  name={`dynamicText-${i}`}
+                  label={`Text Input for ${targetName}`}
+                  rules={[{ required: true, message: `Please fill ${targetName}!` }]}
+                >
+                  <Input placeholder={`Enter text for ${targetName}`} />
+                </Form.Item>
+              ))}
+
+              <Form.Item style={{ margin: "auto" }}>
+                <Button type="primary" htmlType="submit">
+                  Send
+                </Button>
+              </Form.Item>
+              </>
+            </Form>
           </Card>
         </Col>
 

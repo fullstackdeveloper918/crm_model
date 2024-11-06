@@ -107,7 +107,7 @@ const userId = cookies.user_uuid;
             filed_id:id
         }
         const res= await api.Fields.delete(item)
-        console.log(res,"iooio");
+        
         getData()
         toast.success(res?.message)
     } catch (error) {
@@ -181,7 +181,6 @@ console.log(selectType,"tytytyt");
    }
     try {
      const res= await api.Fields.add(items)
-     console.log(res,"oopopopo");
      toast.success(res?.message)
      getData()
      setIsModalOpen(false);
@@ -195,7 +194,6 @@ console.log(selectType,"tytytyt");
        }
         try {
          const res= await api.Fields.edit(items)
-         console.log(res,"oopopopo");
          toast.success(res?.message)
          getData()
          setIsModalOpen(false);
@@ -302,9 +300,9 @@ console.log(selectType,"tytytyt");
             <Option value="text">Text</Option>
             <Option value="textarea">Textarea</Option>
             <Option value="number">Number</Option>
-            <Option value="radio">Radio</Option>
-            <Option value="dropDown">DropDown</Option>
-            <Option value="checkbox">Checkbox</Option>
+            {/* <Option value="radio">Radio</Option> */}
+            {/* <Option value="dropDown">DropDown</Option> */}
+            {/* <Option value="checkbox">Checkbox</Option> */}
             <Option value="image">Image</Option>
           </Select>
         </Form.Item>
