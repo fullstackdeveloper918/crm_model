@@ -58,7 +58,7 @@ const MetaList = ({data}:any) => {
           key: "action",
         },
       ];
-      const dataSource = data?.data.map((res: any, index: number) => {
+      const dataSource = data?.data?.map((res: any, index: number) => {
         return {
                 key: index+1,
                 name:res?.full_name,
@@ -85,7 +85,7 @@ const MetaList = ({data}:any) => {
     );
     const backgroundcolorMap: any = {
       prioritize: "#ffddbe",
-      potential: "#e9cece",
+      potential: "#e           9cece",
       mails: "#4094F7",
       call: "#22C55E",
       target: "#9897FF",
@@ -124,7 +124,7 @@ const MetaList = ({data}:any) => {
             <Row gutter={[20, 20]}>
           <Col xs={24} md={24}>
             <Row gutter={[16, 16]}>
-              {data?.data?.slice(0,12).map((lead: any, index: number) => (
+              {data?.data?.map((lead: any, index: number) => (
                 <Col xs={24} sm={12} md={8} lg={6} key={index}>
                   <Link href={`/admin/metalist/${lead?.user_uuid}`}>
                     <Card
@@ -174,9 +174,9 @@ const MetaList = ({data}:any) => {
             </Row>
 
             {/* Centered Pagination */}
-            {/* <Row justify="center">
-              <Pagination totalItems={data?.data?.length} limit={10} />
-            </Row> */}
+            <Row justify="center">
+              <Pagination totalItems={data?.pagination?.totalCount} limit={12} />
+            </Row>
           </Col>
 
           

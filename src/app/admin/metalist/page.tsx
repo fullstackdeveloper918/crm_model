@@ -5,9 +5,10 @@ import { Button, Card, Col, Divider, Row, Table, Tooltip } from 'antd';
 import dayjs from 'dayjs';
 import Link from 'next/link';
 
-const page = async() => {
+const page = async({ searchParams }: { searchParams: any }) => {
+  const currentPage = searchParams.page ? Number(searchParams.page) : 1; 
     const api: any = {
-        url: "https://srv626615.hstgr.cloud/imported-meta-list?",
+        url: `https://srv626615.hstgr.cloud/imported-meta-list?page=${currentPage}`,
         method: "GET",
         // body: { key: 'value' }
       };

@@ -1,14 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import {
-  Card,
-  Avatar,
-  Typography,
-  Button,
-  List,
-  Layout,
-  Tooltip,
-} from "antd";
+import { Card, Avatar, Typography, Button, List, Layout, Tooltip } from "antd";
 import {
   DownloadOutlined,
   MailOutlined,
@@ -68,10 +60,10 @@ const leadsData = {
   ],
 };
 const LeadsUserDeatils = ({ data }: any, { data1 }: any) => {
-  const [loading,setLoading]=useState(false)
+  const [loading, setLoading] = useState(false);
   console.log(data1, "rrerer");
-  console.log(data,"datadatadata");
-  
+  console.log(data, "datadatadata");
+
   const phoneValue = data?.getByOne[0]?.phone || "[]"; // Default to empty array if phone is undefined
   let phoneNumber = "N/A"; // Default to "N/A"
 
@@ -98,43 +90,43 @@ const LeadsUserDeatils = ({ data }: any, { data1 }: any) => {
 
   const router = useRouter();
   const send = () => {
-  try {
-    setLoading(true)
-    router.push(
-      `/admin/purposal/sent_purposal?pearls_lead_id=${data?.getByOne[0]?.pearl_id}`
-    );
-  } catch (error) {
-    setLoading(false)
-  }
-  };
-const [state,setState]= useState<any>([])
-  const getData=async()=>{
     try {
-      const res=await axios.get(`https://srv626615.hstgr.cloud/leads-api`)
-      setState(res?.data)
+      setLoading(true);
+      router.push(
+        `/admin/purposal/sent_purposal?pearls_lead_id=${data?.getByOne[0]?.pearl_id}`
+      );
     } catch (error) {
-      
+      setLoading(false);
     }
-  }
+  };
+  const [state, setState] = useState<any>([]);
+  const getData = async () => {
+    try {
+      const res = await axios.get(`https://srv626615.hstgr.cloud/leads-api`);
+      setState(res?.data);
+    } catch (error) {}
+  };
 
-  useEffect(()=>{
-getData()
-  },[])
-  console.log(state,"state");
-  const dataSource = state?.data?.slice(0,2)?.map((res: any, index: number) => {
-    return {
-      key: index + 1,
-      name: `${res?.firstName || "N/A"} ${res?.lastName || "N/A"}`, // Correctly formatted name
-      email: res?.email || "N/A",
-      amount: `$ ${res?.max_value || "0"}`, // Handle max_value with a fallback
-      // location: res?.addresses?.slice(0,2)?.map((res1: any, index1: number) => 
-      //   <span className="" key={index1}>
-      //     {res1?.city}, {res1?.state}, ({res1?.zip})
-      //   </span>
-      // ) || "N/A", // Fallback if addresses is undefined
-    };
-  });
-  
+  useEffect(() => {
+    getData();
+  }, []);
+  console.log(state, "state");
+  const dataSource = state?.data
+    ?.slice(0, 2)
+    ?.map((res: any, index: number) => {
+      return {
+        key: index + 1,
+        name: `${res?.firstName || "N/A"} ${res?.lastName || "N/A"}`, // Correctly formatted name
+        email: res?.email || "N/A",
+        amount: `$ ${res?.max_value || "0"}`, // Handle max_value with a fallback
+        // location: res?.addresses?.slice(0,2)?.map((res1: any, index1: number) =>
+        //   <span className="" key={index1}>
+        //     {res1?.city}, {res1?.state}, ({res1?.zip})
+        //   </span>
+        // ) || "N/A", // Fallback if addresses is undefined
+      };
+    });
+
   return (
     <Layout style={{ minHeight: "100vh", padding: "24px" }}>
       {/* Left Main Content */}
@@ -200,15 +192,21 @@ getData()
                 {data?.getByOne[0]?.lastName || " "} Details
               </Typography.Title>
             </div>
-            <div>
+            <div className="flex gap-3">
               <Tooltip title="Send Mail">
                 <Button className="ViewMore" loading={loading} onClick={send}>
-                  <span className="">{<MailOutlined />}</span>
+                  <span style={{ fontSize: "20px" }}>
+                    <MailOutlined />
+                  </span>
                 </Button>
               </Tooltip>
-              {/* <Tooltip title="Share Pdf link">
-      <Button className='ViewMore'><ShareAltOutlined /></Button>
-    </Tooltip> */}
+              <Tooltip title="Call">
+                <Button className="ViewMore">
+                  <span style={{ fontSize: "20px" }}>
+                    <PhoneOutlined />
+                  </span>
+                </Button>
+              </Tooltip>
             </div>
           </div>
 
@@ -234,7 +232,7 @@ getData()
                 <Typography.Text
                   style={{ marginLeft: "0.5rem", textTransform: "capitalize" }}
                 >
-                  {data?.getByOne[0]?.gender==="M"? "Male":"Female"}
+                  {data?.getByOne[0]?.gender === "M" ? "Male" : "Female"}
                 </Typography.Text>
               </li>
               <li style={{ marginBottom: "0.5rem" }}>
@@ -266,13 +264,15 @@ getData()
               <li style={{ marginBottom: "0.5rem" }}>
                 <Typography.Text>Latest Activity Date:</Typography.Text>
                 <Typography.Text style={{ marginLeft: "0.5rem" }}>
-                {dayjs(data?.getByOne[0]?.latestActivityDate).format("MM-DD-YYYY") || "N/A"}
+                  {dayjs(data?.getByOne[0]?.latestActivityDate).format(
+                    "MM-DD-YYYY"
+                  ) || "N/A"}
                 </Typography.Text>
               </li>
               <li style={{ marginBottom: "0.5rem" }}>
                 <Typography.Text>Income Range:</Typography.Text>
                 <Typography.Text style={{ marginLeft: "0.5rem" }}>
-                {data?.getByOne[0]?.incomeRange || "N/A"}
+                  {data?.getByOne[0]?.incomeRange || "N/A"}
                 </Typography.Text>
               </li>
             </ul>
@@ -293,7 +293,7 @@ getData()
         <Card title="Recent Leads" style={{ marginBottom: "24px" }}>
           <List
             dataSource={dataSource}
-            renderItem={(item:any) => (
+            renderItem={(item: any) => (
               <List.Item>
                 <List.Item.Meta
                   avatar={
