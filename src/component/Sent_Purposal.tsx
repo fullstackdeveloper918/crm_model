@@ -19,7 +19,7 @@ import {
   Typography,
   Space,
 } from "antd";
-import { TwitterOutlined, FacebookOutlined } from '@ant-design/icons';
+import { TwitterOutlined, FacebookOutlined } from "@ant-design/icons";
 import { UploadOutlined, LeftOutlined, InboxOutlined } from "@ant-design/icons";
 import React, { useEffect, useState } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
@@ -123,52 +123,63 @@ const Sent_Purposal = ({ data1 }: any) => {
     if (info.fileList.length > 0) {
       const imageFile = info.fileList[0].originFileObj;
       const reader = new FileReader();
-      
+
       reader.onloadend = () => {
         const imageBase64 = reader.result as string;
-        
+
         // Update the form state with the base64 image
         setFormValues({
           ...formValues,
           Attachment: [imageBase64], // Store as array
         });
       };
-      
+
       reader.readAsDataURL(imageFile);
     }
   };
   const onFinish = async (values: any) => {
     console.log("Form submitted with values:", file, values);
-  
+
     const formData: any = new FormData();
-  
+
     // Ensure 'file' is correctly set from file input
     if (file) {
       formData.append("file", file);
     }
-    
+
     formData.append("user_uuid", pearlsLeadId); // Append user_uuid directly to FormData
-    formData.append("subject", values?.subject);  // Append 'subject' directly to FormData
-    formData.append("productName", values?.productName);  // Append 'productName' directly to FormData
-  
+    formData.append("subject", values?.subject); // Append 'subject' directly to FormData
+    formData.append("productName", values?.productName); // Append 'productName' directly to FormData
+
     // Create an object for otherFields but exclude 'subject' and 'productName' from it
-    const otherFields: any = {};
-  
-    // Loop over the values and add them to 'otherFields' but exclude 'subject' and 'productName'
+    // const otherFields: any = {};
+
+    // for (const key in values) {
+    //   if (key !== "subject" && key !== "productName" && key !== "file") {
+    //     otherFields[key] = values[key];
+    //   }
+    // }
+
+    // formData.append("otherFields", JSON.stringify(otherFields));
+    let otherFieldsString = "{";
+
+    // Loop over the values and build the string for 'otherFields'
     for (const key in values) {
       if (key !== "subject" && key !== "productName" && key !== "file") {
-        otherFields[key] = values[key];
+        // Append key-value pair to the string (without quotes around the keys)
+        otherFieldsString += `${key}:${JSON.stringify(values[key])},`;
       }
     }
   
-    // Serialize the otherFields object to a JSON string
-    formData.append("otherFields", JSON.stringify(otherFields));
+    // Remove the trailing comma and close the curly brace
+    otherFieldsString = otherFieldsString.replace(/,$/, "") + "}";
   
-    // Log FormData entries to verify the structure
+    // Append the custom string to FormData
+    formData.append("otherFields", otherFieldsString);
     for (const [key, value] of formData.entries()) {
       console.log(`${key}:`, value);
     }
-  
+
     try {
       const res = await api.Leads.sent_purposal(formData);
       console.log("Response:", res);
@@ -176,7 +187,6 @@ const Sent_Purposal = ({ data1 }: any) => {
       console.log("Error:", error);
     }
   };
-  
 
   const [activeKey, setActiveKey] = useState<any>("");
   const handleChange = (key: any) => {
@@ -245,19 +255,23 @@ const Sent_Purposal = ({ data1 }: any) => {
     );
   };
   const handleClearLocalStorage = () => {
-    localStorage.removeItem('formValues');  
+    localStorage.removeItem("formValues");
   };
   const entriesArray = Object.entries(formValues);
-  console.log(entriesArray,"formValues");
+  console.log(entriesArray, "formValues");
   return (
     <div style={{ padding: "20px" }}>
       <Row gutter={16}>
         <Col span={16}>
-        <Link href={`/admin/pearls/${pearlsLeadId}`}>
-          <Button icon={<LeftOutlined />} type="link" onClick={handleClearLocalStorage}>
-            Back
-          </Button>
-        </Link>
+          <Link href={`/admin/pearls/${pearlsLeadId}`}>
+            <Button
+              icon={<LeftOutlined />}
+              type="link"
+              onClick={handleClearLocalStorage}
+            >
+              Back
+            </Button>
+          </Link>
           <h2>Send </h2>
           <Tabs
             defaultActiveKey="all"
@@ -602,52 +616,73 @@ const Sent_Purposal = ({ data1 }: any) => {
         // style={{ width: 800, margin: 'auto', marginTop: '20px' }}
         >
           {formValues ? (
-            <div>
-             <div style={{ width: '100%', backgroundColor: '#ffffff', padding: '20px' }}>
-      {/* Main Wrapper */}
-      <Row justify="center">
-        <Col span={24} style={{ backgroundColor: '#ffffff' }}>
-          {/* Header Section */}
-          <Row justify="center" style={{ backgroundColor: '#70bbd9', padding: '40px 0 30px 0' }}>
-            <Col>
-              <img
-                src="https://assets.codepen.io/210284/h1.png"
-                alt="Logo"
-                width={300}
-                style={{ height: 'auto', display: 'block' }}
-              />
-            </Col>
-          </Row>
+           
+              <div
+                style={{
+                  width: "100%",
+                  backgroundColor: "#ffffff",
+                  padding: "20px",
+                }}
+              >
+                {/* Main Wrapper */}
+                <Row justify="center">
+                  <Col span={24} style={{ backgroundColor: "#ffffff" }}>
+                    {/* Header Section */}
+                    <Row
+                      justify="center"
+                      style={{
+                        backgroundColor: "#70bbd9",
+                        padding: "40px 0 30px 0",
+                      }}
+                    >
+                      <Col>
+                        <img
+                          src="https://assets.codepen.io/210284/h1.png"
+                          alt="Logo"
+                          width={300}
+                          style={{ height: "auto", display: "block" }}
+                        />
+                      </Col>
+                    </Row>
 
-          {/* Main Content Section */}
-          <Row justify="center">
-            {entriesArray?.map((res:any, index:number)=>
-            <Col span={16} key={index} style={{ padding: '36px 30px 42px 30px' }}>
-              <Title level={1} style={{ color: '#153643', fontSize: '24px' }}>
-                {res[0]}
-              </Title>
-              <Text style={{ fontSize: '16px', lineHeight: '24px' }}>
-                {res[0]=="Attachment"?
-                formValues.Attachment && formValues.Attachment[0] ? (
-                  renderImage(formValues.Attachment[0]) // Render the image using base64
-                ) : (
-                  <p>No attachment found</p>
-                ):res[1]}
-              </Text>
-              <br />
-              {/* <Text style={{ fontSize: '16px', lineHeight: '24px' }}>
+                    {/* Main Content Section */}
+                    <Row justify="start">
+                      {entriesArray?.map((res: any, index: number) => (
+                        <Col
+                          span={16}
+                          key={index}
+                          style={{ padding: "36px 30px 42px" }}
+                        >
+                          <Title
+                            level={1}
+                            style={{ color: "#153643", fontSize: "24px" }}
+                          >
+                            {res[0]}
+                          </Title>
+                          <Text style={{ fontSize: "16px" }}>
+                            {res[0] == "Attachment" ? (
+                              formValues.Attachment &&
+                              formValues.Attachment[0] ? (
+                                renderImage(formValues.Attachment[0]) // Render the image using base64
+                              ) : (
+                                <p>No attachment found</p>
+                              )
+                            ) : (
+                              res[1]
+                            )}
+                          </Text>
+                          <br />
+                          {/* <Text style={{ fontSize: '16px', lineHeight: '24px' }}>
                 <a href="http://www.example.com" style={{ color: '#ee4c50', textDecoration: 'underline' }}>
                   In tempus felis blandit
                 </a>
               </Text> */}
+                        </Col>
+                      ))}
+                    </Row>
 
-            
-            </Col>
-            )}
-          </Row>
-
-          {/* Footer Section */}
-          {/* <Row justify="center" style={{ backgroundColor: '#ee4c50', padding: '30px' }}>
+                    {/* Footer Section */}
+                    {/* <Row justify="center" style={{ backgroundColor: '#ee4c50', padding: '30px' }}>
             <Col span={16}>
               <Row justify="space-between">
                 <Col>
@@ -672,28 +707,10 @@ const Sent_Purposal = ({ data1 }: any) => {
               </Row>
             </Col>
           </Row> */}
-        </Col>
-      </Row>
-    </div>
-              {/* <p>
-                <strong>Project:</strong> {formValues.Project}
-              </p>
-              <p>
-                <strong>Contact Number:</strong> {formValues.Contact_number}
-              </p>
-              <p>
-                <strong>Check:</strong> {formValues.check}
-              </p> */}
-
-              {/* <div>
-                <strong>Attachment:</strong>
-                {formValues.Attachment && formValues.Attachment[0] ? (
-                  renderImage(formValues.Attachment[0]) // Render the image using base64
-                ) : (
-                  <p>No attachment found</p>
-                )}
-              </div> */}
-            </div>
+                  </Col>
+                </Row>
+              </div>
+          
           ) : (
             <p>No stored data found.</p>
           )}
