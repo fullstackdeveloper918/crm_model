@@ -275,6 +275,11 @@ const Pearl_diver_leads = ({ data, fetchData }: any) => {
       color: "orange",
     },
     {
+      label: "Potential leads",
+      count: fetchData?.data?.potentialLeads,
+      color: "green",
+    },
+    {
       label: "Non Potential leads",
       count: fetchData?.data?.nonPotentialLeads,
       color: "red",
