@@ -18,20 +18,27 @@ import {
   Layout,
   Typography,
   Space,
+  Popconfirm,
 } from "antd";
-import { TwitterOutlined, FacebookOutlined } from "@ant-design/icons";
+import {
+  TwitterOutlined,
+  FacebookOutlined,
+  InstagramOutlined,
+  YoutubeOutlined,
+} from "@ant-design/icons";
 import { UploadOutlined, LeftOutlined, InboxOutlined } from "@ant-design/icons";
 import React, { useEffect, useState } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import Dragger from "antd/es/upload/Dragger";
 import api from "@/utils/api";
-import { capFirst } from "@/utils/validation";
+import validation, { capFirst, replaceUnderScore } from "@/utils/validation";
 import EmailEditor from "./EmailEditor";
 import EmailPreview from "./EmailPreview";
 import Link from "next/link";
 const { TextArea } = Input;
 const { Title, Text } = Typography;
 const { Header, Content } = Layout;
+const { Option } = Select;
 const tabs = [
   {
     key: "email",
@@ -46,12 +53,21 @@ const Sent_Purposal = ({ data1 }: any) => {
   console.log(data1, "data1");
 
   const searchParams = useSearchParams();
-
+  const [hiddenFields, setHiddenFields] = useState<any>({});
+  const handleDeleteField = (fieldName: string) => {
+    setHiddenFields((prevState:any) => ({
+      ...prevState,
+      [fieldName]: true,  // Mark this field as hidden
+    }));
+  };
   // Get the pearls_lead_id from the URL query string
   const pearlsLeadId = searchParams.get("pearls_lead_id");
+  const userId = searchParams.get("user_id");
+  const field_for:any=searchParams.get("field_for");
 
   // Log the pearlsLeadId to the console
   console.log(pearlsLeadId, "searchParam");
+  console.log(userId, "userId");
 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [state, setState] = useState<any>("");
@@ -139,45 +155,28 @@ const Sent_Purposal = ({ data1 }: any) => {
   };
   const onFinish = async (values: any) => {
     console.log("Form submitted with values:", file, values);
-
     const formData: any = new FormData();
-
-    // Ensure 'file' is correctly set from file input
     if (file) {
       formData.append("file", file);
     }
 
-    formData.append("user_uuid", pearlsLeadId); // Append user_uuid directly to FormData
-    formData.append("subject", values?.subject); // Append 'subject' directly to FormData
-    formData.append("productName", values?.productName); // Append 'productName' directly to FormData
+    formData.append("user_uuid", userId);
+    formData.append("pearl_id", pearlsLeadId);
+    formData.append("subject", values?.subject);
+    formData.append("productName", values?.productName);
 
-    // Create an object for otherFields but exclude 'subject' and 'productName' from it
-    // const otherFields: any = {};
+    let otherFieldsObject: any = {};
 
-    // for (const key in values) {
-    //   if (key !== "subject" && key !== "productName" && key !== "file") {
-    //     otherFields[key] = values[key];
-    //   }
-    // }
-
-    // formData.append("otherFields", JSON.stringify(otherFields));
-    let otherFieldsString = "{";
-
-    // Loop over the values and build the string for 'otherFields'
     for (const key in values) {
       if (key !== "subject" && key !== "productName" && key !== "file") {
-        // Append key-value pair to the string (without quotes around the keys)
-        otherFieldsString += `${key}:${JSON.stringify(values[key])},`;
+        otherFieldsObject[key] = values[key];
       }
     }
-  
+    console.log(JSON.stringify(otherFieldsObject), "otherFieldsObject");
     // Remove the trailing comma and close the curly brace
-    otherFieldsString = otherFieldsString.replace(/,$/, "") + "}";
-  
-    // Append the custom string to FormData
-    formData.append("otherFields", otherFieldsString);
+    formData.append("otherFields", JSON.stringify(otherFieldsObject));
     for (const [key, value] of formData.entries()) {
-      console.log(`${key}:`, value);
+      console.log(`${key}:`, typeof value);
     }
 
     try {
@@ -191,7 +190,7 @@ const Sent_Purposal = ({ data1 }: any) => {
   const [activeKey, setActiveKey] = useState<any>("");
   const handleChange = (key: any) => {
     setActiveKey(key);
-    console.log("Selected tab:", key); // This will log the selected tab value
+    console.log("Selected tab:", key);
   };
   console.log(data1?.data, "data1?.data");
   const [filedTypes, setFiledTypes] = useState<any>([]);
@@ -259,6 +258,17 @@ const Sent_Purposal = ({ data1 }: any) => {
   };
   const entriesArray = Object.entries(formValues);
   console.log(entriesArray, "formValues");
+  const filterData = data1?.data?.filter((res: any) => res?.field_for === (validation.toLowCase(field_for)));
+  const handleSelectChange = (value: string) => {
+    // Get current query parameters from the URL
+    const currentParams = new URLSearchParams(window.location.search);
+    
+    // Set the new query parameter `field_for`
+    currentParams.set('field_for', value);
+
+    // Update the URL with the new query string
+    router.push(`?${currentParams.toString()}`);
+  };
   return (
     <div style={{ padding: "20px" }}>
       <Row gutter={16}>
@@ -294,6 +304,30 @@ const Sent_Purposal = ({ data1 }: any) => {
           >
             <Form layout="vertical" onFinish={onFinish}>
               <>
+              <Form.Item
+                  name="field_for"
+                  label="Field Type"
+                  rules={[
+                    { required: true, message: "Please select a field Template!" },
+                  ]}
+                >
+                  <Select
+                    placeholder="Select an option"
+                    style={{ width: "100%" }}
+                    defaultValue={"welcome"}
+                    onChange={handleSelectChange}
+                  >
+                    <Option value="welcome">Welcome</Option>
+                    <Option value="offer">Offer</Option>
+                    <Option value="proposal">Proposal</Option>
+                    <Option value="gift">Gift</Option>
+                    {/* <Option value="number">Proposal</Option> */}
+                    {/* <Option value="radio">Radio</Option> */}
+                    {/* <Option value="dropDown">DropDown</Option> */}
+                    {/* <Option value="checkbox">Checkbox</Option> */}
+                    <Option value="image">Image</Option>
+                  </Select>
+                </Form.Item>
                 <Form.Item
                   // key={index}
                   name={"subject"}
@@ -313,6 +347,25 @@ const Sent_Purposal = ({ data1 }: any) => {
                     } // Update value on change
                   />
                 </Form.Item>
+                {/* <ul className="m-0 list-unstyled d-flex gap-2">
+                  <li>
+                    <Popconfirm
+                      title="Delete"
+                      description="Are you sure you want to delete ?"
+                      // onConfirm={(event: any) => { archive(res?._id) }}
+                      // okButtonProps={{ loading: deleteLoading == res._id, danger: true }}
+                    >
+                      <Button
+                        type="text"
+                        danger
+                        htmlType="button"
+                        className="px-0"
+                      >
+                        <i className="fa-solid fa-trash-can"></i>
+                      </Button>
+                    </Popconfirm>
+                  </li>
+                </ul> */}
                 <Form.Item
                   // key={index}
                   name={"productName"}
@@ -332,74 +385,155 @@ const Sent_Purposal = ({ data1 }: any) => {
                     } // Update value on change
                   />
                 </Form.Item>
-                {data1.data.map((item: any, index: any) => {
+                {/* <ul className="m-0 list-unstyled d-flex gap-2">
+                  <li>
+                    <Popconfirm
+                      title="Delete"
+                      description="Are you sure you want to delete ?"
+                      // onConfirm={(event: any) => { archive(res?._id) }}
+                      // okButtonProps={{ loading: deleteLoading == res._id, danger: true }}
+                    >
+                      <Button
+                        type="text"
+                        danger
+                        htmlType="button"
+                        className="px-0"
+                      >
+                        <i className="fa-solid fa-trash-can"></i>
+                      </Button>
+                    </Popconfirm>
+                  </li>
+                </ul> */}
+                {filterData?.map((item: any, index: any) => {
+                   if (hiddenFields[item.filed_name]) return null;
+                   const validationRules = hiddenFields[item.filed_name]
+                   ? []  // No validation if the field is hidden
+                   : [{ required: true, message: `Please fill ${item.filed_name}!` }];
                   switch (item.filed_type) {
                     case "textarea":
                       return (
-                        <Form.Item
-                          key={index}
-                          name={item.filed_name}
-                          label={item.filed_name}
-                          rules={[
-                            {
-                              required: true,
-                              message: `Please fill ${item.filed_name}!`,
-                            },
-                          ]}
-                        >
-                          <TextArea
-                            placeholder={`Enter text area ${index + 1}`}
-                            value={formValues[item.filed_name]} // Bind the value to state
-                            onChange={(e) =>
-                              handleFieldChange(item.filed_name, e.target.value)
-                            } // Update value on change
-                          />
-                        </Form.Item>
+                        <>
+                          <Form.Item
+                            key={index}
+                            name={item.filed_name}
+                            label={item.filed_name}
+                            rules={validationRules}
+                          >
+                            <TextArea
+                              placeholder={`Enter text area ${index + 1}`}
+                              value={formValues[item.filed_name]} // Bind the value to state
+                              onChange={(e) =>
+                                handleFieldChange(
+                                  item.filed_name,
+                                  e.target.value
+                                )
+                              } // Update value on change
+                            />
+                          </Form.Item>
+                          <ul className="m-0 list-unstyled d-flex gap-2">
+                            <li>
+                              <Popconfirm
+                                title="Delete"
+                                description="Are you sure you want to delete ?"
+                                onConfirm={() => handleDeleteField(item.filed_name)} 
+                                // okButtonProps={{ loading: deleteLoading == res._id, danger: true }}
+                              >
+                                <Button
+                                  type="text"
+                                  danger
+                                  htmlType="button"
+                                  className="px-0"
+                                >
+                                  <i className="fa-solid fa-trash-can"></i>
+                                </Button>
+                              </Popconfirm>
+                            </li>
+                          </ul>
+                        </>
                       );
                     case "number":
                       return (
-                        <Form.Item
-                          key={index}
-                          name={item.filed_name}
-                          label={item.filed_name}
-                          rules={[
-                            {
-                              required: true,
-                              message: `Please fill ${item.filed_name}!`,
-                            },
-                          ]}
-                        >
-                          <Input
-                            type="number"
-                            placeholder={`Enter number ${index + 1}`}
-                            value={formValues[item.filed_name]} // Bind the value to state
-                            onChange={(e) =>
-                              handleFieldChange(item.filed_name, e.target.value)
-                            } // Update value on change
-                          />
-                        </Form.Item>
+                        <>
+                          <Form.Item
+                            key={index}
+                            name={item.filed_name}
+                            label={item.filed_name}
+                            rules={validationRules}
+                          >
+                            <Input
+                              type="number"
+                              placeholder={`Enter number ${index + 1}`}
+                              value={formValues[item.filed_name]} // Bind the value to state
+                              onChange={(e) =>
+                                handleFieldChange(
+                                  item.filed_name,
+                                  e.target.value
+                                )
+                              } // Update value on change
+                            />
+                          </Form.Item>
+                          <ul className="m-0 list-unstyled d-flex gap-2">
+                            <li>
+                              <Popconfirm
+                                title="Delete"
+                                description="Are you sure you want to delete ?"
+                                onConfirm={() => handleDeleteField(item.filed_name)} 
+                                // okButtonProps={{ loading: deleteLoading == res._id, danger: true }}
+                              >
+                                <Button
+                                  type="text"
+                                  danger
+                                  htmlType="button"
+                                  className="px-0"
+                                >
+                                  <i className="fa-solid fa-trash-can"></i>
+                                </Button>
+                              </Popconfirm>
+                            </li>
+                          </ul>
+                        </>
                       );
                     case "text":
                       return (
-                        <Form.Item
-                          key={index}
-                          name={item.filed_name}
-                          label={item.filed_name}
-                          rules={[
-                            {
-                              required: true,
-                              message: `Please fill ${item.filed_name}!`,
-                            },
-                          ]}
-                        >
-                          <Input
-                            placeholder={`Enter text ${index + 1}`}
-                            value={formValues[item.filed_name]} // Bind the value to state
-                            onChange={(e) =>
-                              handleFieldChange(item.filed_name, e.target.value)
-                            } // Update value on change
-                          />
-                        </Form.Item>
+                        <>
+                          <Form.Item
+                            key={index}
+                            name={item.filed_name}
+                            label={item.filed_name}
+                            rules={validationRules}
+                          >
+                            <Input
+                              placeholder={`Enter text ${index + 1}`}
+                              value={formValues[item.filed_name]} // Bind the value to state
+                              onChange={(e) =>
+                                handleFieldChange(
+                                  item.filed_name,
+                                  e.target.value
+                                )
+                              } // Update value on change
+                            />
+                          </Form.Item>
+                          <ul className="m-0 list-unstyled d-flex gap-2">
+                            <li>
+                              <Popconfirm
+                                title="Delete"
+                                description="Are you sure you want to delete ?"
+                                // onConfirm={(event: any) => { archive(res?._id) }}
+                                onConfirm={() => handleDeleteField(item.filed_name)} 
+                              >
+                                <Button
+                                  type="text"
+                                  danger
+                                  htmlType="button"
+                                  className="px-0"
+                                  
+                                >
+                                  <i className="fa-solid fa-trash-can"></i>
+                                </Button>
+                              </Popconfirm>
+                            </li>
+                          </ul>
+                        </>
                       );
                     case "radio":
                       return (
@@ -483,25 +617,26 @@ const Sent_Purposal = ({ data1 }: any) => {
                       );
                     case "image":
                       return (
-                        <Form.Item
-                          key={index}
-                          label={item.filed_name}
-                          rules={[{ validator: fileValidator }]} // Custom validator function
-                        >
-                          <Dragger
-                            // multiple={false} // Only allow one image
-                            onChange={handleFileChange}
-                            // maxCount={1} // Limit to 1 image upload
+                        <>
+                          <Form.Item
+                            key={index}
+                            label={item.filed_name}
+                            rules={[{ validator: fileValidator }]} // Custom validator function
                           >
-                            <p className="ant-upload-drag-icon">
-                              <InboxOutlined />
-                            </p>
-                            <p className="ant-upload-text">
-                              Click or drag file to this area to upload
-                            </p>
-                          </Dragger>
-                          {/* Display the uploaded image */}
-                          {/* {formValues[item.filed_name] &&
+                            <Dragger
+                              // multiple={false} // Only allow one image
+                              onChange={handleFileChange}
+                              // maxCount={1} // Limit to 1 image upload
+                            >
+                              <p className="ant-upload-drag-icon">
+                                <InboxOutlined />
+                              </p>
+                              <p className="ant-upload-text">
+                                Click or drag file to this area to upload
+                              </p>
+                            </Dragger>
+                            {/* Display the uploaded image */}
+                            {/* {formValues[item.filed_name] &&
                           formValues[item.filed_name][0] && (
                             <div style={{ marginTop: "10px" }}>
                               <img
@@ -511,7 +646,27 @@ const Sent_Purposal = ({ data1 }: any) => {
                               />
                             </div>
                           )} */}
-                        </Form.Item>
+                          </Form.Item>
+                          <ul className="m-0 list-unstyled d-flex gap-2">
+                            <li>
+                              <Popconfirm
+                                title="Delete"
+                                description="Are you sure you want to delete ?"
+                                onConfirm={() => handleDeleteField(item.filed_name)} 
+                                // okButtonProps={{ loading: deleteLoading == res._id, danger: true }}
+                              >
+                                <Button
+                                  type="text"
+                                  danger
+                                  htmlType="button"
+                                  className="px-0"
+                                >
+                                  <i className="fa-solid fa-trash-can"></i>
+                                </Button>
+                              </Popconfirm>
+                            </li>
+                          </ul>
+                        </>
                       );
                     default:
                       return null;
@@ -610,79 +765,81 @@ const Sent_Purposal = ({ data1 }: any) => {
         onOk={handleOk}
         onCancel={handleCancel}
         footer={null}
+        className="emailModal"
+        style={{ width: "720px" }}
       >
         <Card
 
         // style={{ width: 800, margin: 'auto', marginTop: '20px' }}
         >
           {formValues ? (
-           
-              <div
-                style={{
-                  width: "100%",
-                  backgroundColor: "#ffffff",
-                  padding: "20px",
-                }}
-              >
-                {/* Main Wrapper */}
-                <Row justify="center">
-                  <Col span={24} style={{ backgroundColor: "#ffffff" }}>
-                    {/* Header Section */}
-                    <Row
-                      justify="center"
-                      style={{
-                        backgroundColor: "#70bbd9",
-                        padding: "40px 0 30px 0",
-                      }}
-                    >
-                      <Col>
-                        <img
-                          src="https://assets.codepen.io/210284/h1.png"
-                          alt="Logo"
-                          width={300}
-                          style={{ height: "auto", display: "block" }}
-                        />
-                      </Col>
-                    </Row>
+            <div
+              style={{
+                width: "100%",
+                backgroundColor: "#ffffff",
+                padding: "20px",
+              }}
+              className="XYZ"
+            >
+              {/* Main Wrapper */}
+              <Row justify="center">
+                <Col span={24} style={{ backgroundColor: "#ffffff" }}>
+                  {/* Header Section */}
+                  <Row
+                    justify="center"
+                    style={{
+                      backgroundColor: "#70bbd9",
+                      padding: "40px 0 30px 0",
+                    }}
+                  >
+                    <Col>
+                      <img
+                        src="https://assets.codepen.io/210284/h1.png"
+                        alt="Logo"
+                        width={300}
+                        style={{ height: "auto", display: "block" }}
+                      />
+                    </Col>
+                  </Row>
 
-                    {/* Main Content Section */}
-                    <Row justify="start">
-                      {entriesArray?.map((res: any, index: number) => (
-                        <Col
-                          span={16}
-                          key={index}
-                          style={{ padding: "36px 30px 42px" }}
+                  {/* Main Content Section */}
+                  <Row justify="start">
+                    {entriesArray?.map((res: any, index: number) => (
+                      <Col
+                        span={16}
+                        key={index}
+                        style={{ padding: "36px 30px 42px" }}
+                      >
+                        <Title
+                          level={1}
+                          style={{ color: "#153643", fontSize: "24px" }}
                         >
-                          <Title
-                            level={1}
-                            style={{ color: "#153643", fontSize: "24px" }}
-                          >
-                            {res[0]}
-                          </Title>
-                          <Text style={{ fontSize: "16px" }}>
-                            {res[0] == "Attachment" ? (
-                              formValues.Attachment &&
-                              formValues.Attachment[0] ? (
-                                renderImage(formValues.Attachment[0]) // Render the image using base64
-                              ) : (
-                                <p>No attachment found</p>
-                              )
+                          {capFirst(replaceUnderScore(res[1]?res[0]:" "))}
+                        </Title>
+                        <Text style={{ fontSize: "16px" }}>
+                          {res[0] == "Attachment" ? (
+                            formValues.Attachment &&
+                            formValues.Attachment[0] ? (
+                              renderImage(formValues.Attachment[0]) // Render the image using base64
                             ) : (
-                              res[1]
-                            )}
-                          </Text>
-                          <br />
-                          {/* <Text style={{ fontSize: '16px', lineHeight: '24px' }}>
+                              <p>No attachment found</p>
+                            )
+                          ) : (
+                            res[1]
+                          )}
+                        </Text>
+                        <br />
+                        {/* <Text style={{ fontSize: '16px', lineHeight: '24px' }}>
                 <a href="http://www.example.com" style={{ color: '#ee4c50', textDecoration: 'underline' }}>
                   In tempus felis blandit
                 </a>
               </Text> */}
-                        </Col>
-                      ))}
-                    </Row>
+                      </Col>
+                    ))}
+                  </Row>
 
-                    {/* Footer Section */}
-                    {/* <Row justify="center" style={{ backgroundColor: '#ee4c50', padding: '30px' }}>
+                  {/* Footer Section */}
+                  {/* <Row justify="center" style={{ backgroundColor: '#ee4c50', padding: '30px' }}>
             <Col span={16}>
               <Row justify="space-between">
                 <Col>
@@ -707,13 +864,31 @@ const Sent_Purposal = ({ data1 }: any) => {
               </Row>
             </Col>
           </Row> */}
-                  </Col>
-                </Row>
-              </div>
-          
+                </Col>
+              </Row>
+            </div>
           ) : (
             <p>No stored data found.</p>
           )}
+
+          <div className="footer-email">
+            <h3>CRM Model</h3>
+            <div className="social-link">
+              <a href="#">
+                <FacebookOutlined />
+              </a>
+              <a href="#">
+                <InstagramOutlined />
+              </a>
+              <a href="#">
+                <YoutubeOutlined />
+              </a>
+              <a href="#">
+                <TwitterOutlined />
+              </a>
+            </div>
+            <p>1234 Example Street City, State 01234, Country</p>
+          </div>
         </Card>
       </Modal>
     </div>

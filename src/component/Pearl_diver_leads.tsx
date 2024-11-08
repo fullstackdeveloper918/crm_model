@@ -273,6 +273,7 @@ const Pearl_diver_leads = ({ data, fetchData }: any) => {
       label: "Priorities leads",
       count: fetchData?.data?.priorityLeads,
       color: "orange",
+      
     },
     {
       label: "Potential leads",
@@ -285,7 +286,7 @@ const Pearl_diver_leads = ({ data, fetchData }: any) => {
       color: "red",
     },
     { label: "All mails", count: "0", color: "blue" },
-    { label: "Call leads", count: "0", color: "green" },
+    { label: "Call leads", count: "0", color: "green",Link:`/admin/pearls?filter=call_lead` },
   ];
   return (
     <Layout style={{ minHeight: "100vh" }}>
@@ -335,6 +336,8 @@ const Pearl_diver_leads = ({ data, fetchData }: any) => {
               <Option value="priority">Priority Leads</Option>
               <Option value="potential">Potential Leads</Option>
               <Option value="non_potential">Non-Potential Leads</Option>
+              <Option value="call_lead">Call Leads</Option>
+              <Option value="mail">Email Leads</Option>
               {/* <Option value="mail">Mail Leads</Option>
               <Option value="call">Call Leads</Option> */}
             </Select> 

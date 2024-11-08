@@ -263,6 +263,17 @@ const handleLinkClick = () => {
     {
       key: henceofrthEnums.Roles.USERS,
       view: getItem(
+        <Link href="/admin/template" className="text-decoration-none"  onClick={handleLinkClick}>
+          {/* {getUserdata?.is_admin == false ? "User" : "Archive Members"} */}
+          Email Template
+        </Link>,
+        "template",
+        <UserOutlined style={iconSize} />
+      ),
+    },
+    {
+      key: henceofrthEnums.Roles.USERS,
+      view: getItem(
         <Link href="/admin/fields" className="text-decoration-none"  onClick={handleLinkClick}>
           {/* {getUserdata?.is_admin == false ? "User" : "Archive Members"} */}
           Fields

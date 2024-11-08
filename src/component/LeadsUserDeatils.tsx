@@ -13,6 +13,7 @@ import Link from "next/link";
 import validation from "@/utils/validation";
 import { useRouter } from "next/navigation";
 import axios from "axios";
+import api from "@/utils/api";
 const { Content, Sider } = Layout;
 const { Text, Title } = Typography;
 const leadsData = {
@@ -93,7 +94,7 @@ const LeadsUserDeatils = ({ data }: any, { data1 }: any) => {
     try {
       setLoading(true);
       router.push(
-        `/admin/purposal/sent_purposal?pearls_lead_id=${data?.getByOne[0]?.pearl_id}`
+        `/admin/purposal/sent_purposal?pearls_lead_id=${data?.getByOne[0]?.pearl_id}&user_id=${data?.getByOne[0]?.user_uuid}&field_for=welcome`
       );
     } catch (error) {
       setLoading(false);
@@ -127,6 +128,26 @@ const LeadsUserDeatils = ({ data }: any, { data1 }: any) => {
       };
     });
 
+
+    const ChangeState=async(statusType: number)=>{
+      console.log(statusType,"jlsdjf");
+      
+      try {
+        setLoading(false)
+        let items={
+          pearl_id:data?.getByOne[0]?.pearl_id,
+          status:statusType
+        } as any
+        const res= await api.PearlLeads.changeStatus(items)
+        if(statusType==2){
+          router.push(
+            `/admin/purposal/sent_purposal?pearls_lead_id=${data?.getByOne[0]?.pearl_id}`
+          );
+        }
+      } catch (error) {
+        setLoading(false)
+      }
+    }
   return (
     <Layout style={{ minHeight: "100vh", padding: "24px" }}>
       {/* Left Main Content */}
@@ -201,7 +222,7 @@ const LeadsUserDeatils = ({ data }: any, { data1 }: any) => {
                 </Button>
               </Tooltip>
               <Tooltip title="Call">
-                <Button className="ViewMore">
+                <Button className="ViewMore" onClick={() => ChangeState(3)}>
                   <span style={{ fontSize: "20px" }}>
                     <PhoneOutlined />
                   </span>

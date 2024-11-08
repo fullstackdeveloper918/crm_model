@@ -72,6 +72,11 @@ const MetaLeads={
   importCsv: (info: any) =>
     requests.post('import-metalead-data', info),
 }
+
+const PearlLeads={
+  changeStatus: (info: any) =>
+    requests.post('update-called-status', info),
+}
 const Fields={
   add: (info: any) =>
     requests.post('add-fields', info),
@@ -397,6 +402,7 @@ const henceforthApi = {
   Search,
   token,
   User,
+  PearlLeads,
   Fields,
   Leads,
   encode,

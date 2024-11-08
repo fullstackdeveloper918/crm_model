@@ -16,6 +16,8 @@ const currentFilter=searchParams?.filter
     non_potential: "0",
     potential: "1",
     priority: "2",
+    call_lead:"3",
+    mail:"4"
     // call: "4" // Assuming 'call' is the last option
   };
   const sendStatus = statusMap[currentFilter] || "0"; 

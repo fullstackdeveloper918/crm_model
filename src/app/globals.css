@@ -58,3 +58,73 @@ body {
 .blinking-card {
   animation: blink 1s infinite; /* Adjust duration and iteration as needed */
 }
+
+.emailModal .ant-modal-content {
+  PADDING: 20px 0px 0px;
+  width: 720px !important
+}
+
+.emailModal .ant-modal-content .ant-modal-header {
+  padding-left: 20px;
+}
+
+.emailModal .ant-modal-content .ant-card-body {
+  padding: 0px;
+}
+
+.emailModal .ant-modal-content .XYZ {
+  padding: 0px 0px 30px !important;
+}
+
+.emailModal .ant-modal-content .ant-row.ant-row-start {
+  width: 100%;
+}
+
+.emailModal .ant-modal-content .ant-col.ant-col-16 {
+  width: 100%;
+}
+
+.emailModal .ant-modal-content .ant-row.ant-row-start>div {
+  width: 100% !important;
+  max-width: 100% !important;
+  flex: 100% !important;
+  padding-bottom: 0px !important;
+}
+
+.emailModal .ant-modal-content .ant-row.ant-row-start>div span {
+  font-size: 13px !important;
+}
+
+.emailModal .ant-modal-content .ant-row.ant-row-start>div h1 {
+  font-size: 18px !important;
+}
+.footer-email {
+  background: #70bbd9;
+  padding: 20px;
+  color: #fff;
+  text-align: center;
+}
+
+.social-link {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.social-link a {
+  color: #fff;
+  border: 1px solid;
+  padding: 7px;
+  border-radius: 30px;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 15px 0px;
+}
+.footer-email p {
+  font-size: 12px;
+  margin: 0px;
+  padding: 0pc;
+}
