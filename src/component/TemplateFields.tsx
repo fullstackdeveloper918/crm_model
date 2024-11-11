@@ -37,13 +37,15 @@ import { useSearchParams } from "next/navigation";
 import validation from "@/utils/validation";
 const { Option } = Select;
 const TemplateFields = () => {
+  // const searchParams = useSearchParams();
+
   const cookies = parseCookies();
   const userId = cookies.user_uuid;
   const [form] = Form.useForm();
   const [state, setState] = useState<any>();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const searchParams = useSearchParams();
-  const type:any = searchParams.get("type");
+  // const type:any = searchParams.get("type");
+  const type:any = "rwey"
   console.log(type, "type");
   const getData = async () => {
     const res = await axios.get(`https://srv626615.hstgr.cloud/field-list`);

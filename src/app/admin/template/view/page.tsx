@@ -1,3 +1,4 @@
+// "use client"
 import TemplateFields from '@/component/TemplateFields'
 import React from 'react'
 
