@@ -128,3 +128,9 @@ body {
   margin: 0px;
   padding: 0pc;
 }
+.pearl_card_divider .ant-divider-horizontal {
+  display: flex;
+  clear: both;
+  width: 100%;
+  min-width: 100%;
+}

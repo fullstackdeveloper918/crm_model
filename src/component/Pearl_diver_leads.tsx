@@ -132,7 +132,7 @@ const leads = [
 const Pearl_diver_leads = ({ data, fetchData,fetchData1 }: any) => {
   const [activeKey, setActiveKey] = useState("all");
   const [clickedTabs, setClickedTabs] = useState<any>({});
-  console.log(fetchData1, "fetchData1");
+  console.log(data, "data");
   const router = useRouter();
   const handleChange1 = (value: string) => {
     // Update the URL with the selected value
@@ -252,42 +252,46 @@ const Pearl_diver_leads = ({ data, fetchData,fetchData1 }: any) => {
   useEffect(() => {
     getData();
   }, []);
-  const backgroundcolorMap: any = {
-    prioritize: "#ffddbe",
-    potential: "#e9cece",
-    mails: "#4094F7",
-    call: "#22C55E",
-    target: "#9897FF",
+  const colorMap: { [key: string]: string } = {
+    "High-Potential Leads": "rgb(14 110 49)", // Light Green
+    "Potential Lead": "rgb(147 96 11)", // Yellow
+    "Suspect Lead": "rgb(201 28 28)", // Red
+    "mail-lead": "#007BFF", // Purple
+    "call-lead": "#3B82F6", // Blue
+    "sms-lead": "#6f42c1", // Orange
   };
-  const colorMap: any = {
-    prioritize: "#FF7C08",
-    potential: "#EF4444",
-    mails: "#4094F7",
-    call: "#22C55E",
-    target: "#9897FF",
+  
+  // Background color mapping (you can adjust these colors as needed)
+  const backgroundcolorMap: { [key: string]: string } = {
+"High-Potential Leads": "rgb(207 231 211)", // Green
+    "Potential Lead": "rgb(239 233 201)", // Light Yellow
+    "Suspect Lead": "rgb(235 222 222)", // Light Red
+    "mail-lead": "rgb(201 214 227)", // Light Purple
+    "call-lead": "#BFDBFE", // Light Blue
+    "sms-lead": "#e1dde9", // Light Orange
   };
   // ffddbe
   const data2 = [
-    { label: "All leads ", count: fetchData?.data?.totalLeads, color: "blue" },
+    { label: "All leads ", count: fetchData?.data?.totalLeads, color: "black" },
     {
       label: "High-Potential Leads",
       count: fetchData?.data?.priorityLeads,
-      color: "orange",
+      color: "rgb(14 110 49)",
       
     },
     {
       label: "Potential leads",
       count: fetchData?.data?.potentialLeads,
-      color: "green",
+      color: "rgb(147 96 11)",
     },
     {
       label: "Suspect Leads",
       count: fetchData?.data?.nonPotentialLeads,
-      color: "red",
+      color: "rgb(201 28 28)",
     },
-    { label: "All mails", count:fetchData?.data?.mailLeads||"0", color: "blue" },
-    { label: "Call leads", count: fetchData?.data?.calledLeads||"0", color: "green",Link:`/admin/pearls?filter=call_lead` },
-    { label: "Sms leads", count: fetchData?.data?.smsLeads||"0", color: "green",Link:`/admin/pearls?filter=call_lead` },
+    { label: "All mails", count:fetchData?.data?.mailLeads||"0", color: "#007BFF" },
+    { label: "Call leads", count: fetchData?.data?.calledLeads||"0", color: "#3B82F6",Link:`/admin/pearls?filter=call_lead` },
+    { label: "Sms leads", count: fetchData?.data?.smsLeads||"0", color: "#6f42c1",Link:`/admin/pearls?filter=call_lead` },
   ];
   return (
     <Layout style={{ minHeight: "100vh" }}>
@@ -298,6 +302,7 @@ const Pearl_diver_leads = ({ data, fetchData,fetchData1 }: any) => {
               <Card
                 bordered={false}
                 style={{ textAlign: "center", minWidth: "100px" }}
+                className="pearl_card"
               >
                 <Statistic
                   title={
@@ -361,18 +366,19 @@ const Pearl_diver_leads = ({ data, fetchData,fetchData1 }: any) => {
                       // className={lead.status === "prioritize" ? 'blinking-card' : ''} // Adjust 'your-status' as needed
                       style={{ borderRadius: "10px" }}
                       actions={[
+                        <Tooltip title={lead.status==="High-Potential Leads"?"We are displaying leads based on the following criteria: personal count is 5, phone number is not null, address is not null, and income value is not 0 dollars":lead.status==="Potential Lead"?" We are displaying leads based on the following criteria: personal count is 1, phone number is not null, address is not null, and income value is not 0 dollars.":lead.status==="Suspect Lead"?"We are displaying leads based on the following criteria: personal count is 0, address is null, and income value is 0 dollars.":""}>
                         <Button
                           style={{
-                            color: colorMap[lead.status] || "#000000",
-                            backgroundColor:
-                              backgroundcolorMap[lead.status] ||
-                              "rgb(187 181 181)",
+                            color: colorMap[lead.status] || "#000000", // Default text color if not found
+                            backgroundColor: backgroundcolorMap[lead.status] || "rgb(187, 181, 181)", // Default background color if not found
                           }}
                           key="action"
                           size="small"
                         >
-                          {capFirst(replaceUnderScore(lead.status))}
-                        </Button>,
+                          {((lead.status))}
+                        </Button>
+                        </Tooltip>
+                        ,
                       ]}
                     >
                       <Space direction="vertical" size="small">
@@ -389,7 +395,7 @@ const Pearl_diver_leads = ({ data, fetchData,fetchData1 }: any) => {
                         <Text>
                           {dayjs(lead?.created_at).format("DD-MM-YYYY")}
                         </Text>
-                        <Divider />
+                        <Divider className="pearl_card_divider" style={{margin:"0px"}}/>
                         <Text>
                           <PhoneOutlined />{" "}
                           {lead.phones

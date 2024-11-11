@@ -38,11 +38,11 @@ const AddCsvData = () => {
           dataIndex: "date",
           key: "date",
         },
-        {
-          title: "Action",
-          dataIndex: "action",
-          key: "action",
-        },
+        // {
+        //   title: "Action",
+        //   dataIndex: "action",
+        //   key: "action",
+        // },
       ];
       const dataSource = state?.data?.data.map((res: any, index: number) => {
         return {
@@ -179,7 +179,7 @@ const AddCsvData = () => {
                   className="tableBox"
                   dataSource={dataSource}
                   columns={columns}
-                //   pagination={{
+                  pagination={false}
                 //     position: ["bottomCenter"],
                 //   }}
                 />
