@@ -12,6 +12,7 @@ import {
   Popconfirm,
   Row,
   Select,
+  Space,
   Table,
   Tooltip,
   Typography,
@@ -33,17 +34,27 @@ import { toast } from "react-toastify";
 import dayjs from "dayjs";
 import axios from "axios";
 import { parseCookies } from "nookies";
+import { useRouter, useSearchParams } from "next/navigation";
+import validation from "@/utils/validation";
 const { Option } = Select;
-const Fields = () => {
-    const cookies = parseCookies();
-const userId = cookies.user_uuid;
-    const [form] = Form.useForm();
+const Fields = ({searchData}:any) => {
+  console.log(searchData,"searchData");
+  
+  const router =useRouter()
+  
+  const cookies = parseCookies();
+  const userId = cookies.user_uuid;
+  const [form] = Form.useForm();
   const [state, setState] = useState<any>();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  // const searchParams = useSearchParams();
+  
+  // Get the 'type' query parameter (or null if not found)
+  // const type: any = searchParams.get("type");
+  // const type:any = "rwey"
+  // console.log(type, "type");
   const getData = async () => {
-    const res = await axios.get(
-      `https://srv626615.hstgr.cloud/field-list`
-    );
+    const res = await axios.get(`https://srv626615.hstgr.cloud/field-list`);
     console.log(res?.data, "check");
     setState(res?.data);
   };
@@ -58,11 +69,11 @@ const userId = cookies.user_uuid;
       dataIndex: "name",
       key: "name",
     },
-    {
-      title: "Fields Type",
-      dataIndex: "type",
-      key: "type",
-    },
+    // {
+    //   title: "Fields Type",
+    //   dataIndex: "type",
+    //   key: "type",
+    // },
     {
       title: "Date",
       dataIndex: "date",
@@ -76,71 +87,75 @@ const userId = cookies.user_uuid;
   ];
   const [loading, setLoading] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
-  const [selectType,setSelectType] =useState<any>(null)
-  const handleEdit = async (id:any) => {
-    console.log(id,"idididid");
-    setSelectType("edit")
+  const [selectType, setSelectType] = useState<any>(null);
+  const handleEdit = async (id: any) => {
+    console.log(id, "idididid");
+    setSelectType("edit");
     setLoading(true);
     setSelectedId(id);
     setIsModalOpen(true);
-    
+
     try {
-      const response = await axios.get(`https://srv626615.hstgr.cloud/field-detail?filed_id=${id}`);
-      console.log(response.data.data,"response");
-      
+      const response = await axios.get(
+        `https://srv626615.hstgr.cloud/field-detail?filed_id=${id}`
+      );
+      console.log(response.data.data, "response");
+
       const { filed_name, filed_type } = response.data.data;
-      
+
       form.setFieldsValue({
         filed_name: response?.data?.data?.filed_name,
         filed_type: response?.data?.data?.filed_type,
       });
-      getData()
+      getData();
     } catch (error) {
       console.error("Error fetching details:", error);
     } finally {
       setLoading(false);
     }
   };
-  const archive=async(id:any)=>{
+  const archive = async (id: any) => {
     try {
-        let item={
-            filed_id:id
-        }
-        const res= await api.Fields.delete(item)
-        
-        getData()
-        toast.success(res?.message)
-    } catch (error) {
-        
-    }
-  }
+      let item = {
+        filed_id: id,
+      };
+      const res = await api.Fields.delete(item);
 
-  const dataSource = state?.data.map((res: any, index: number) => {
+      getData();
+      toast.success(res?.message);
+    } catch (error) {}
+  };
+  const filterData = state?.data?.filter((res: any) => res?.field_for === (validation.toLowCase(searchData)));
+
+console.log(filterData, "filterData");
+  const dataSource = filterData?.map((res: any, index: number) => {
     return {
       key: index + 1,
       name: res?.filed_name,
       date: dayjs(res?.created_at).format("DD-MM-YYYY"),
       product: "10 Downing Street",
       description: "qwertyuiopqwertyui",
-      type:res?.filed_type,
+      //   type:res?.filed_type,
       action: (
         <ul className="m-0 list-unstyled d-flex gap-2">
           <li>
             {/* <Link href={`/admin/meetings/${res?.id}/edit`}> */}
-              <Button
-                type="text"
-                className="px-0 border-0 bg-transparent shadow-none"
-                onClick={() => handleEdit(res?._id)}
-              >
-                <i className="fa-solid fa-pen-to-square"></i>
-              </Button>
+            <Button
+              type="text"
+              className="px-0 border-0 bg-transparent shadow-none"
+              onClick={() => handleEdit(res?._id)}
+            >
+              <i className="fa-solid fa-pen-to-square"></i>
+            </Button>
             {/* </Link> */}
           </li>
           <li>
             <Popconfirm
               title="Delete"
               description="Are you sure you want to delete ?"
-              onConfirm={(event: any) => { archive(res?._id) }}
+              onConfirm={(event: any) => {
+                archive(res?._id);
+              }}
               // okButtonProps={{ loading: deleteLoading == res._id, danger: true }}
             >
               <Button type="text" danger htmlType="button" className="px-0">
@@ -154,10 +169,10 @@ const userId = cookies.user_uuid;
   });
   const [file, setFile] = useState<any>(null);
   const showModal = () => {
-    setSelectType("add")
+    setSelectType("add");
     setIsModalOpen(true);
   };
-console.log(selectType,"tytytyt");
+  console.log(selectType, "tytytyt");
 
   const handleCancel = () => {
     setIsModalOpen(false);
@@ -172,35 +187,56 @@ console.log(selectType,"tytytyt");
     getData();
   }, []);
 
-  const submit = async (values:any) => {
-   console.log(values,"ytytyytyt");
-   let items={
-    user_uuid:userId,
-    field_name:values.filed_name,
-    field_type:values.filed_type,
-   }
+  const submit = async (values: any) => {
+    console.log(values, "ytytyytyt");
+    let items = {
+      user_uuid: userId,
+      field_name: values.filed_name,
+      field_type: values.filed_type,
+      field_for:searchData === "Gift" 
+      ? "gift" 
+      : searchData === "Welcome"
+        ? "welcome"
+        : searchData === "Offer"
+          ? "offer"
+          : searchData === "Proposal"
+            ? "proposal"
+            : "xyz"
+    };
     try {
-     const res= await api.Fields.add(items)
-     toast.success(res?.message)
-     getData()
-     setIsModalOpen(false);
+      const res = await api.Fields.add(items);
+      toast.success(res?.message);
+      getData();
+      setIsModalOpen(false);
     } catch (error) {}
   };
-  const editFields=async(values:any)=>{
-    let items={
-        filed_id:selectedId,
-        filed_name:values.filed_name,
-        filed_type:values.filed_type,
-       }
-        try {
-         const res= await api.Fields.edit(items)
-         toast.success(res?.message)
-         getData()
-         setIsModalOpen(false);
-        } catch (error) {}
-        
-    }
-  
+  const editFields = async (values: any) => {
+    let items = {
+      filed_id: selectedId,
+      filed_name: values.filed_name,
+      filed_type: values.filed_type,
+      field_for:searchData === "Gift" 
+      ? "gift" 
+      : searchData === "Welcome"
+        ? "welcome"
+        : searchData === "Offer"
+          ? "offer"
+          : searchData === "Proposal"
+            ? "proposal"
+            : "xyz"
+    };
+    try {
+      const res = await api.Fields.edit(items);
+      toast.success(res?.message);
+      getData();
+      setIsModalOpen(false);
+    } catch (error) {}
+  };
+  const handleChange1 = (value: string) => {
+    // Update the URL with the selected value
+    router.push(`/admin/fields?type=${value}`);
+  };
+
   return (
     <Fragment>
       <section>
@@ -216,11 +252,27 @@ console.log(selectType,"tytytyt");
               {/* title  */}
               <div className="d-flex flex-column flex-md-row justify-content-between align-items-center gap-3">
                 <Typography.Title level={3} className="m-0 fw-bold">
-                  Fields List
+                  {searchData} Fields List
                 </Typography.Title>
 
                 <div className="d-flex gap-2">
                   {/* <Upload className='tooltip-img' showUploadList={false} accept='.csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel'> */}
+                  <Space>
+            <Select
+              defaultValue="Welcome"
+              style={{ width: 150 }}
+              onChange={handleChange1}
+            >
+              <Option value="Welcome">Welcome</Option>
+              <Option value="Offer">Offer</Option>
+              <Option value="Proposal">Proposal</Option>
+              <Option value="Gift">Gifts</Option>
+            </Select> 
+            {/* <Select defaultValue="Select" style={{ width: 120 }}>
+              <Option value="date">Date</Option>
+              <Option value="name">Name</Option>
+            </Select> */}
+          </Space>
                   <Button
                     type="primary"
                     htmlType="button"
@@ -270,49 +322,73 @@ console.log(selectType,"tytytyt");
               </div>
             </Card>
             <Modal
-      className="text-item-center"
-      title={selectType === 'edit' ? "Edit Fields" : "Add Fields"}
-      open={isModalOpen}
-      onCancel={handleCancel}
-      footer={[
-        <Button key="back" onClick={handleCancel} style={{ backgroundColor: 'red', color: 'white' }}>
-          Cancel
-        </Button>,
-        <Button key="submit" form="myForm" type="primary" htmlType="submit" style={{ marginLeft: '5px' }}>
-          Submit
-        </Button>
-      ]}
-    >
-      <Form form={form} id="myForm" layout="vertical" onFinish={selectType === 'edit' ? editFields:submit}>
-        <Form.Item
-          name="filed_name"
-          label="Field Name"
-          rules={[{ required: true, message: 'Please input the field name!' }]}
-        >
-          <Input />
-        </Form.Item>
-        <Form.Item
-          name="filed_type"
-          label="Field Type"
-          rules={[{ required: true, message: 'Please select a field type!' }]}
-        >
-          <Select placeholder="Select an option" style={{ width: '100%' }}>
-            <Option value="text">Text</Option>
-            <Option value="textarea">Textarea</Option>
-            <Option value="number">Number</Option>
-            {/* <Option value="radio">Radio</Option> */}
-            {/* <Option value="dropDown">DropDown</Option> */}
-            {/* <Option value="checkbox">Checkbox</Option> */}
-            <Option value="image">Image</Option>
-          </Select>
-        </Form.Item>
-      </Form>
-    </Modal>
+              className="text-item-center"
+              title={selectType === "edit" ? "Edit Fields" : "Add Fields"}
+              open={isModalOpen}
+              onCancel={handleCancel}
+              footer={[
+                <Button
+                  key="back"
+                  onClick={handleCancel}
+                  style={{ backgroundColor: "red", color: "white" }}
+                >
+                  Cancel
+                </Button>,
+                <Button
+                  key="submit"
+                  form="myForm"
+                  type="primary"
+                  htmlType="submit"
+                  style={{ marginLeft: "5px" }}
+                >
+                  Submit
+                </Button>,
+              ]}
+            >
+              <Form
+                form={form}
+                id="myForm"
+                layout="vertical"
+                onFinish={selectType === "edit" ? editFields : submit}
+              >
+                <Form.Item
+                  name="filed_name"
+                  label="Field Name"
+                  rules={[
+                    { required: true, message: "Please input the field name!" },
+                  ]}
+                >
+                  <Input />
+                </Form.Item>
+                <Form.Item
+                  name="filed_type"
+                  label="Field Type"
+                  rules={[
+                    { required: true, message: "Please select a field type!" },
+                  ]}
+                >
+                  <Select
+                    placeholder="Select an option"
+                    style={{ width: "100%" }}
+                  >
+                    <Option value="text">Text</Option>
+                    <Option value="textarea">Textarea</Option>
+                    <Option value="number">Number</Option>
+                    {/* <Option value="radio">Radio</Option> */}
+                    {/* <Option value="dropDown">DropDown</Option> */}
+                    {/* <Option value="checkbox">Checkbox</Option> */}
+                    <Option value="image">Image</Option>
+                  </Select>
+                </Form.Item>
+               
+              </Form>
+            </Modal>
           </Col>
         </Row>
       </section>
     </Fragment>
   );
 };
+
 
 export default Fields;

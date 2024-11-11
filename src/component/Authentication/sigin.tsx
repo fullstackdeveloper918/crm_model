@@ -90,7 +90,7 @@ const router= useRouter()
           alt="logo"
           style={{ width: '50px' }}
         /> */}
-        <h2 style={{ marginTop: '10px', fontWeight: 'bold' }}>ClarityUI</h2>
+        <h2 style={{ marginTop: '10px', fontWeight: 'bold' }}>CRM Model</h2>
       </div>
 
       {/* Form Section */}

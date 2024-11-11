@@ -19,6 +19,7 @@ import {
 } from "@ant-design/icons";
 import type { NextPage } from "next";
 import Search from "antd/es/input/Search";
+import Recent_card from "@/component/common/Recent_card";
 
 const columns = [
   {
@@ -195,14 +196,8 @@ const page = () => {
         </Card>
       </Col>
       <Col span={8} className="mt-5">
-        <Card title="Recent leads" extra={<a href="#">See all recent leads</a>}>
-          <List
-            itemLayout="horizontal"
-            dataSource={recentLeads}
-            renderItem={renderLeadItem}
-          />
-        </Card>
-        <Card
+       <Recent_card/>
+        {/* <Card
           title="Call leads"
           extra={<a href="#">See all call leads</a>}
           style={{ marginTop: 16 }}
@@ -223,7 +218,7 @@ const page = () => {
             dataSource={callLeads}
             renderItem={renderLeadItem}
           />
-        </Card>
+        </Card> */}
         {/* Similarly for Mail leads */}
       </Col>
     </Row>

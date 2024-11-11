@@ -76,6 +76,8 @@ const MetaLeads={
 const PearlLeads={
   changeStatus: (info: any) =>
     requests.post('update-called-status', info),
+  user_activity:() =>requests.get(`user-activity-list`)
+
 }
 const Fields={
   add: (info: any) =>
@@ -88,6 +90,7 @@ const Fields={
 const Leads={
   listing:()=>requests.get(`leads-api`),
   sent_purposal:(info: any)=> requests.post('send-email', info),
+  sent_messange:(info: any)=> requests.post('send-sms', info),
 }
 const dashboard={
   upcoming: () =>

@@ -129,10 +129,10 @@ const leads = [
   // Add more leads
 ];
 
-const Pearl_diver_leads = ({ data, fetchData }: any) => {
+const Pearl_diver_leads = ({ data, fetchData,fetchData1 }: any) => {
   const [activeKey, setActiveKey] = useState("all");
   const [clickedTabs, setClickedTabs] = useState<any>({});
-  console.log(fetchData, "fetchData");
+  console.log(fetchData1, "fetchData1");
   const router = useRouter();
   const handleChange1 = (value: string) => {
     // Update the URL with the selected value
@@ -270,7 +270,7 @@ const Pearl_diver_leads = ({ data, fetchData }: any) => {
   const data2 = [
     { label: "All leads ", count: fetchData?.data?.totalLeads, color: "blue" },
     {
-      label: "Priorities leads",
+      label: "High-Potential Leads",
       count: fetchData?.data?.priorityLeads,
       color: "orange",
       
@@ -281,12 +281,13 @@ const Pearl_diver_leads = ({ data, fetchData }: any) => {
       color: "green",
     },
     {
-      label: "Non Potential leads",
+      label: "Suspect Leads",
       count: fetchData?.data?.nonPotentialLeads,
       color: "red",
     },
-    { label: "All mails", count: "0", color: "blue" },
-    { label: "Call leads", count: "0", color: "green",Link:`/admin/pearls?filter=call_lead` },
+    { label: "All mails", count:fetchData?.data?.mailLeads||"0", color: "blue" },
+    { label: "Call leads", count: fetchData?.data?.calledLeads||"0", color: "green",Link:`/admin/pearls?filter=call_lead` },
+    { label: "Sms leads", count: fetchData?.data?.smsLeads||"0", color: "green",Link:`/admin/pearls?filter=call_lead` },
   ];
   return (
     <Layout style={{ minHeight: "100vh" }}>
@@ -333,11 +334,12 @@ const Pearl_diver_leads = ({ data, fetchData }: any) => {
               onChange={handleChange1}
             >
               <Option value="all">All Leads</Option>
-              <Option value="priority">Priority Leads</Option>
+              <Option value="priority">High-Potential Leads</Option>
               <Option value="potential">Potential Leads</Option>
-              <Option value="non_potential">Non-Potential Leads</Option>
+              <Option value="non_potential">Suspect Leads</Option>
               <Option value="call_lead">Call Leads</Option>
               <Option value="mail">Email Leads</Option>
+              <Option value="sms">Sms Leads</Option>
               {/* <Option value="mail">Mail Leads</Option>
               <Option value="call">Call Leads</Option> */}
             </Select> 
@@ -411,7 +413,7 @@ const Pearl_diver_leads = ({ data, fetchData }: any) => {
           </Col>
 
           <Col xs={24} md={6}>
-            <Recent_card data={data} />
+            <Recent_card />
             {/* <Card title="Call Leads" style={{ marginBottom: '20px' }}>
                 <Space direction="vertical">
                 

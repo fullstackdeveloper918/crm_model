@@ -10,10 +10,11 @@ import {
 } from "@ant-design/icons";
 import dayjs from "dayjs";
 import Link from "next/link";
-import validation from "@/utils/validation";
+import validation, { capFirst, replaceUnderScore } from "@/utils/validation";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import api from "@/utils/api";
+import { toast, ToastContainer } from "react-toastify";
 const { Content, Sider } = Layout;
 const { Text, Title } = Typography;
 const leadsData = {
@@ -63,7 +64,7 @@ const leadsData = {
 const LeadsUserDeatils = ({ data }: any, { data1 }: any) => {
   const [loading, setLoading] = useState(false);
   console.log(data1, "rrerer");
-  console.log(data, "datadatadata");
+  // console.log(data2, "datadatadata");
 
   const phoneValue = data?.getByOne[0]?.phone || "[]"; // Default to empty array if phone is undefined
   let phoneNumber = "N/A"; // Default to "N/A"
@@ -128,29 +129,49 @@ const LeadsUserDeatils = ({ data }: any, { data1 }: any) => {
       };
     });
 
+  const ChangeState = async (statusType: number) => {
+    console.log(statusType, "jlsdjf");
 
-    const ChangeState=async(statusType: number)=>{
-      console.log(statusType,"jlsdjf");
-      
-      try {
-        setLoading(false)
-        let items={
-          pearl_id:data?.getByOne[0]?.pearl_id,
-          status:statusType
-        } as any
-        const res= await api.PearlLeads.changeStatus(items)
-        if(statusType==2){
-          router.push(
-            `/admin/purposal/sent_purposal?pearls_lead_id=${data?.getByOne[0]?.pearl_id}`
-          );
-        }
-      } catch (error) {
-        setLoading(false)
+    try {
+      setLoading(false);
+      let items = {
+        pearl_id: data?.getByOne[0]?.pearl_id,
+        user_uuid:data?.getByOne[0]?.user_uuid,
+        status: statusType,
+      } as any;
+      const res = await api.PearlLeads.changeStatus(items);
+      toast.success(res?.data)
+      if (statusType == 2) {
+        router.push(
+          `/admin/purposal/sent_purposal?pearls_lead_id=${data?.getByOne[0]?.pearl_id}&user_uuid=${data?.getByOne[0]?.user_uuid}`
+        );
       }
+    } catch (error) {
+      setLoading(false);
     }
+  };
+const [recentActivity,RecentActivity]= useState<any>([])
+  const getActivity = async () => {
+    // let item = {
+    //   user_uuid: data?.getByOne[0]?.user_uuid,
+    // };
+    const newStr = data?.getByOne[0]?.user_uuid.replace(/user_uuid: '.*?',/, '');
+    try {
+      const res = await axios.get(`https://srv626615.hstgr.cloud/user-activity-list?user_uuid=${newStr}`);
+      console.log(res, "activity");
+      RecentActivity(res?.data)
+    } catch (error) {}
+   
+  };
+  useEffect(() => {
+    getActivity();
+  }, []);
+  console.log(recentActivity,"recentActivity");
+  
   return (
     <Layout style={{ minHeight: "100vh", padding: "24px" }}>
       {/* Left Main Content */}
+      <ToastContainer/>
       <Content style={{ paddingRight: "24px" }}>
         {/* <Card
         title={
@@ -311,31 +332,14 @@ const LeadsUserDeatils = ({ data }: any, { data1 }: any) => {
         }}
       >
         {/* Recent Leads */}
-        <Card title="Recent Leads" style={{ marginBottom: "24px" }}>
-          <List
-            dataSource={dataSource}
-            renderItem={(item: any) => (
-              <List.Item>
-                <List.Item.Meta
-                  avatar={
-                    <Avatar
-                      src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTEg09MmHvC-78aaRxyd52HabsZqI1-u8R6-w&s"
-                      alt="User Avatar"
-                      style={{
-                        cursor: "pointer",
-                        height: "40px",
-                        width: "40px",
-                      }}
-                    />
-                  }
-                  title={<Text>{item.name}</Text>}
-                  description={`${item.email} `}
-                  // description={`${item.email} - ${item.location}`}
-                />
-                <Text>{item.amount}</Text>
-              </List.Item>
-            )}
-          />
+        <Card title="Recent Activities" style={{ marginBottom: "24px" }}>
+          <div style={{ flex: 1, textAlign: "start" }}>
+            <Title level={4} >
+              {recentActivity?.data?.length > 0 ?<>
+              {replaceUnderScore(capFirst(recentActivity?.data[0]?.action_for ))|| "N/A"} ({dayjs(recentActivity?.data[0]?.updatedAt).format('YYYY-MM-DD HH:mm')})
+              </>:"No data activities"}
+            </Title>
+          </div>
         </Card>
 
         {/* Call Leads Card */}

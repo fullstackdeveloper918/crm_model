@@ -17,7 +17,8 @@ const currentFilter=searchParams?.filter
     potential: "1",
     priority: "2",
     call_lead:"3",
-    mail:"4"
+    mail:"4",
+    sms:"5"
     // call: "4" // Assuming 'call' is the last option
   };
   const sendStatus = statusMap[currentFilter] || "0"; 
@@ -38,10 +39,17 @@ const currentFilter=searchParams?.filter
   };
   const fetchData= await fetchFromServer(apiUrl)
   console.log(fetchData,"yyuyyu");
+  const apiUrl1: any = {
+    url: `https://srv626615.hstgr.cloud/recent-leads`,
+    method: "GET",
+    // body: { key: 'value' }
+  };
+  const fetchData1= await fetchFromServer(apiUrl1)
+  console.log(fetchData1,"fetchData1");
   
   return (
    <>
-   <Pearl_diver_leads data={data} fetchData={fetchData}/>
+   <Pearl_diver_leads data={data} fetchData={fetchData} fetchData1={fetchData1}/>
    </>
   )
 }

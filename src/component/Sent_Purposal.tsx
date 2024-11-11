@@ -35,6 +35,11 @@ import validation, { capFirst, replaceUnderScore } from "@/utils/validation";
 import EmailEditor from "./EmailEditor";
 import EmailPreview from "./EmailPreview";
 import Link from "next/link";
+import "react-quill/dist/quill.snow.css";
+import dynamic from "next/dynamic";
+import { toast, ToastContainer } from "react-toastify";
+import Recent_card from "./common/Recent_card";
+const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 const { TextArea } = Input;
 const { Title, Text } = Typography;
 const { Header, Content } = Layout;
@@ -51,19 +56,37 @@ const tabs = [
 ];
 const Sent_Purposal = ({ data1 }: any) => {
   console.log(data1, "data1");
+  const [editorValue, setEditorValue] = useState<string>("");
+
+  // Handle change in editor
+  useEffect(() => {
+    const savedEditorValue = localStorage.getItem('editor_value');
+    if (savedEditorValue) {
+      setEditorValue(savedEditorValue);
+    }
+  }, []);
+
+  // Update the editor value in state and localStorage
+  const handleEditorChange = (values: string) => {
+    console.log(values,"jjkjkjk");
+    
+    setEditorValue(values);
+    // Save the editor value to localStorage
+    localStorage.setItem('editor_value', values);
+  };
 
   const searchParams = useSearchParams();
   const [hiddenFields, setHiddenFields] = useState<any>({});
   const handleDeleteField = (fieldName: string) => {
-    setHiddenFields((prevState:any) => ({
+    setHiddenFields((prevState: any) => ({
       ...prevState,
-      [fieldName]: true,  // Mark this field as hidden
+      [fieldName]: true, // Mark this field as hidden
     }));
   };
   // Get the pearls_lead_id from the URL query string
   const pearlsLeadId = searchParams.get("pearls_lead_id");
   const userId = searchParams.get("user_id");
-  const field_for:any=searchParams.get("field_for");
+  const field_for: any = searchParams.get("field_for");
 
   // Log the pearlsLeadId to the console
   console.log(pearlsLeadId, "searchParam");
@@ -153,6 +176,8 @@ const Sent_Purposal = ({ data1 }: any) => {
       reader.readAsDataURL(imageFile);
     }
   };
+  const [activeKey, setActiveKey] = useState<any>("email");
+
   const onFinish = async (values: any) => {
     console.log("Form submitted with values:", file, values);
     const formData: any = new FormData();
@@ -164,11 +189,12 @@ const Sent_Purposal = ({ data1 }: any) => {
     formData.append("pearl_id", pearlsLeadId);
     formData.append("subject", values?.subject);
     formData.append("productName", values?.productName);
+    formData.append("email_content", values?.email_content);
 
     let otherFieldsObject: any = {};
 
     for (const key in values) {
-      if (key !== "subject" && key !== "productName" && key !== "file") {
+      if (key !== "subject" && key !== "productName" && key !== "file"&& key !== "email_content") {
         otherFieldsObject[key] = values[key];
       }
     }
@@ -178,16 +204,28 @@ const Sent_Purposal = ({ data1 }: any) => {
     for (const [key, value] of formData.entries()) {
       console.log(`${key}:`, typeof value);
     }
-
+let items={
+  user_uuid:userId,
+  pearl_id:pearlsLeadId,
+  sender_number:`+91${values?.sender_number}`,
+  sender_body:values?.sender_body
+}
     try {
-      const res = await api.Leads.sent_purposal(formData);
-      console.log("Response:", res);
+      if(activeKey==="email"){
+     
+        const res = await api.Leads.sent_purposal(formData);
+        toast.success("Email send successfully")
+        console.log("Response:", res);
+      }else{
+        const res = await api.Leads.sent_messange(items);
+        toast.success(res?.message)
+        console.log(res,"gfhfh");
+      }
     } catch (error) {
       console.log("Error:", error);
     }
   };
 
-  const [activeKey, setActiveKey] = useState<any>("");
   const handleChange = (key: any) => {
     setActiveKey(key);
     console.log("Selected tab:", key);
@@ -258,19 +296,24 @@ const Sent_Purposal = ({ data1 }: any) => {
   };
   const entriesArray = Object.entries(formValues);
   console.log(entriesArray, "formValues");
-  const filterData = data1?.data?.filter((res: any) => res?.field_for === (validation.toLowCase(field_for)));
+  const filterData = data1?.data?.filter(
+    (res: any) => res?.field_for === validation.toLowCase(field_for)
+  );
   const handleSelectChange = (value: string) => {
     // Get current query parameters from the URL
     const currentParams = new URLSearchParams(window.location.search);
-    
+
     // Set the new query parameter `field_for`
-    currentParams.set('field_for', value);
+    currentParams.set("field_for", value);
 
     // Update the URL with the new query string
     router.push(`?${currentParams.toString()}`);
   };
+  console.log(activeKey,"activeKey");
+  
   return (
     <div style={{ padding: "20px" }}>
+      <ToastContainer/>
       <Row gutter={16}>
         <Col span={16}>
           <Link href={`/admin/pearls/${pearlsLeadId}`}>
@@ -303,30 +346,34 @@ const Sent_Purposal = ({ data1 }: any) => {
             style={{ width: 800, margin: "auto", marginTop: "20px" }}
           >
             <Form layout="vertical" onFinish={onFinish}>
+              {activeKey !=="sms"?
               <>
-              <Form.Item
-                  name="field_for"
-                  label="Field Type"
+                <Form.Item label="Content" 
+                name={"email_content"}
                   rules={[
-                    { required: true, message: "Please select a field Template!" },
-                  ]}
-                >
-                  <Select
-                    placeholder="Select an option"
-                    style={{ width: "100%" }}
-                    defaultValue={"welcome"}
-                    onChange={handleSelectChange}
-                  >
-                    <Option value="welcome">Welcome</Option>
-                    <Option value="offer">Offer</Option>
-                    <Option value="proposal">Proposal</Option>
-                    <Option value="gift">Gift</Option>
-                    {/* <Option value="number">Proposal</Option> */}
-                    {/* <Option value="radio">Radio</Option> */}
-                    {/* <Option value="dropDown">DropDown</Option> */}
-                    {/* <Option value="checkbox">Checkbox</Option> */}
-                    <Option value="image">Image</Option>
-                  </Select>
+                    {
+                      required: true,
+                      message: `Please fill Content!`,
+                    },
+                  ]}>
+                  {/* React Quill Editor */}
+                  <ReactQuill
+                    value={editorValue}
+                    onChange={handleEditorChange}
+                    modules={{
+                      toolbar: [
+                        [{ header: "1" }, { header: "2" }, { font: [] }],
+                        [{ list: "ordered" }, { list: "bullet" }],
+                        ["bold", "italic", "underline"],
+                        ["link"],
+                        [{ align: [] }],
+                        ["image"],
+                        ["clean"],
+                      ],
+                    
+                    }}
+                    placeholder="Start typing here..."
+                  /> 
                 </Form.Item>
                 <Form.Item
                   // key={index}
@@ -405,10 +452,15 @@ const Sent_Purposal = ({ data1 }: any) => {
                   </li>
                 </ul> */}
                 {filterData?.map((item: any, index: any) => {
-                   if (hiddenFields[item.filed_name]) return null;
-                   const validationRules = hiddenFields[item.filed_name]
-                   ? []  // No validation if the field is hidden
-                   : [{ required: true, message: `Please fill ${item.filed_name}!` }];
+                  if (hiddenFields[item.filed_name]) return null;
+                  const validationRules = hiddenFields[item.filed_name]
+                    ? [] // No validation if the field is hidden
+                    : [
+                        {
+                          required: true,
+                          message: `Please fill ${item.filed_name}!`,
+                        },
+                      ];
                   switch (item.filed_type) {
                     case "textarea":
                       return (
@@ -435,7 +487,9 @@ const Sent_Purposal = ({ data1 }: any) => {
                               <Popconfirm
                                 title="Delete"
                                 description="Are you sure you want to delete ?"
-                                onConfirm={() => handleDeleteField(item.filed_name)} 
+                                onConfirm={() =>
+                                  handleDeleteField(item.filed_name)
+                                }
                                 // okButtonProps={{ loading: deleteLoading == res._id, danger: true }}
                               >
                                 <Button
@@ -477,7 +531,9 @@ const Sent_Purposal = ({ data1 }: any) => {
                               <Popconfirm
                                 title="Delete"
                                 description="Are you sure you want to delete ?"
-                                onConfirm={() => handleDeleteField(item.filed_name)} 
+                                onConfirm={() =>
+                                  handleDeleteField(item.filed_name)
+                                }
                                 // okButtonProps={{ loading: deleteLoading == res._id, danger: true }}
                               >
                                 <Button
@@ -519,14 +575,15 @@ const Sent_Purposal = ({ data1 }: any) => {
                                 title="Delete"
                                 description="Are you sure you want to delete ?"
                                 // onConfirm={(event: any) => { archive(res?._id) }}
-                                onConfirm={() => handleDeleteField(item.filed_name)} 
+                                onConfirm={() =>
+                                  handleDeleteField(item.filed_name)
+                                }
                               >
                                 <Button
                                   type="text"
                                   danger
                                   htmlType="button"
                                   className="px-0"
-                                  
                                 >
                                   <i className="fa-solid fa-trash-can"></i>
                                 </Button>
@@ -652,7 +709,9 @@ const Sent_Purposal = ({ data1 }: any) => {
                               <Popconfirm
                                 title="Delete"
                                 description="Are you sure you want to delete ?"
-                                onConfirm={() => handleDeleteField(item.filed_name)} 
+                                onConfirm={() =>
+                                  handleDeleteField(item.filed_name)
+                                }
                                 // okButtonProps={{ loading: deleteLoading == res._id, danger: true }}
                               >
                                 <Button
@@ -698,13 +757,67 @@ const Sent_Purposal = ({ data1 }: any) => {
                   </Button>
                 </Form.Item>
               </>
+              :
+              <>
+               <Form.Item
+                  // key={index}
+                  
+                  name={"sender_number"}
+                  label={"Number"}
+                  rules={[
+                    {
+                      required: true,
+                      message: `Please fill Number!`,
+                    },
+                  ]}
+                >
+                  <Input
+                   type="number"
+                    placeholder={`Enter text number`}
+                    value={formValues["number"]} // Bind the value to state
+                    onChange={(e) =>
+                      handleFieldChange("number", e.target.value)
+                    } // Update value on change
+                  />
+                </Form.Item>
+                <Form.Item
+                  // key={index}
+                  name={"sender_body"}
+                  label={"Message"}
+                  rules={[
+                    {
+                      required: true,
+                      message: `Please fill Message!`,
+                    },
+                  ]}
+                >
+                  <TextArea
+                    placeholder={`Enter text message`}
+                    value={formValues["message"]} // Bind the value to state
+                    onChange={(e) =>
+                      handleFieldChange("message", e.target.value)
+                    } // Update value on change
+                  />
+                </Form.Item>
+                <Form.Item style={{ margin: "auto" }}>
+                  <Button type="primary" htmlType="submit">
+                    Send
+                  </Button>
+                </Form.Item>
+              </>
+              }
             </Form>
           </Card>
         </Col>
 
-        <Col span={8}>
+        <Col span={8} style={{ marginBottom: "16px" }}>
           {/* Sidebar for Leads */}
-          <Card title="Recent Leads" style={{ marginBottom: "16px" }}>
+          <div  style={{ marginTop: "180px" }}>
+
+          <Recent_card/>
+          </div>
+
+          {/* <Card title="Recent Leads" style={{ marginBottom: "16px" }}>
             <List
               itemLayout="horizontal"
               dataSource={recentLeads}
@@ -720,9 +833,9 @@ const Sent_Purposal = ({ data1 }: any) => {
               )}
             />
             <Button type="link">See All Recent Leads</Button>
-          </Card>
+          </Card> */}
 
-          <Card title="Call Leads" style={{ marginBottom: "16px" }}>
+          {/* <Card title="Call Leads" style={{ marginBottom: "16px" }}>
             <List
               itemLayout="horizontal"
               dataSource={callLeads}
@@ -756,7 +869,7 @@ const Sent_Purposal = ({ data1 }: any) => {
               )}
             />
             <Button type="link">See All Mail Leads</Button>
-          </Card>
+          </Card> */}
         </Col>
       </Row>
       <Modal
@@ -814,16 +927,29 @@ const Sent_Purposal = ({ data1 }: any) => {
                           level={1}
                           style={{ color: "#153643", fontSize: "24px" }}
                         >
-                          {capFirst(replaceUnderScore(res[1]?res[0]:" "))}
+                          {capFirst(replaceUnderScore(res[1] ? res[0] : " "))}
                         </Title>
                         <Text style={{ fontSize: "16px" }}>
                           {res[0] == "Attachment" ? (
                             formValues.Attachment &&
                             formValues.Attachment[0] ? (
                               renderImage(formValues.Attachment[0]) // Render the image using base64
-                            ) : (
+                            )
+                             : (
                               <p>No attachment found</p>
                             )
+                          ) : (
+                            res[1]
+                          )}
+                        </Text>
+                        <Text style={{ fontSize: '16px' }}>
+                          {res[0] === 'Message' ? (
+                            <div
+                              style={{ fontSize: '16px', lineHeight: '24px' }}
+                              dangerouslySetInnerHTML={{
+                                __html: editorValue || '<p>No message content found.</p>',
+                              }}
+                            />
                           ) : (
                             res[1]
                           )}

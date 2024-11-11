@@ -21,6 +21,18 @@ const page = async({params}:any) => {
 
   const data1 = await fetchFromServer(api1);
   console.log(data1,"qwerty");
+
+  const newStr = data?.getByOne[0]?.user_uuid.replace(/user_uuid: '.*?',/, '');
+
+  const api2: any = {
+    url: `https://srv626615.hstgr.cloud/user-activity-list?user_uuid=${newStr}`,
+    method: "GET",
+    // body: { key: 'value' }
+  };
+
+  const data2 = await fetchFromServer(api2);
+  console.log(data2,"1234567");
+  // data?.getByOne[0]?.user_uuid
   return (
    <div className="">
     <LeadsUserDeatils data={data} data1={data1}/>
