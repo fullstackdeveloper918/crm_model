@@ -112,7 +112,7 @@ const MetaList = ({data}:any) => {
             {/* title  */}
             <div className="d-flex flex-column flex-md-row justify-content-between align-items-center gap-3">
               <Typography.Title level={3} className="m-0 fw-bold">
-                Lead List
+                Meta Lead List
               </Typography.Title>
 
               <div className="d-flex gap-2">
