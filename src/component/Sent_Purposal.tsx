@@ -942,7 +942,7 @@ let items={
                             res[1]
                           )}
                         </Text>
-                        <Text style={{ fontSize: '16px' }}>
+                        {/* <Text style={{ fontSize: '16px' }}>
                           {res[0] === 'Message' ? (
                             <div
                               style={{ fontSize: '16px', lineHeight: '24px' }}
@@ -953,7 +953,7 @@ let items={
                           ) : (
                             res[1]
                           )}
-                        </Text>
+                        </Text> */}
                         <br />
                         {/* <Text style={{ fontSize: '16px', lineHeight: '24px' }}>
                 <a href="http://www.example.com" style={{ color: '#ee4c50', textDecoration: 'underline' }}>
