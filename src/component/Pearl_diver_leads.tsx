@@ -15,8 +15,15 @@ import {
   Tabs,
   Tooltip,
   Statistic,
+  Dropdown,
+  Menu,
 } from "antd";
-import { MailOutlined, PhoneOutlined, UserOutlined } from "@ant-design/icons";
+import {
+  EllipsisOutlined,
+  MailOutlined,
+  PhoneOutlined,
+  UserOutlined,
+} from "@ant-design/icons";
 import Link from "next/link";
 import api from "@/utils/api";
 import dayjs from "dayjs";
@@ -129,7 +136,7 @@ const leads = [
   // Add more leads
 ];
 
-const Pearl_diver_leads = ({ data, fetchData,fetchData1 }: any) => {
+const Pearl_diver_leads = ({ data, fetchData, fetchData1 }: any) => {
   const [activeKey, setActiveKey] = useState("all");
   const [clickedTabs, setClickedTabs] = useState<any>({});
   console.log(data, "data");
@@ -260,10 +267,10 @@ const Pearl_diver_leads = ({ data, fetchData,fetchData1 }: any) => {
     "call-lead": "#3B82F6", // Blue
     "sms-lead": "#6f42c1", // Orange
   };
-  
+
   // Background color mapping (you can adjust these colors as needed)
   const backgroundcolorMap: { [key: string]: string } = {
-"High-Potential Leads": "rgb(207 231 211)", // Green
+    "High-Potential Leads": "rgb(207 231 211)", // Green
     "Potential Lead": "rgb(239 233 201)", // Light Yellow
     "Suspect Lead": "rgb(235 222 222)", // Light Red
     "mail-lead": "rgb(201 214 227)", // Light Purple
@@ -277,7 +284,6 @@ const Pearl_diver_leads = ({ data, fetchData,fetchData1 }: any) => {
       label: "High-Potential Leads",
       count: fetchData?.data?.priorityLeads,
       color: "rgb(14 110 49)",
-      
     },
     {
       label: "Potential leads",
@@ -289,10 +295,31 @@ const Pearl_diver_leads = ({ data, fetchData,fetchData1 }: any) => {
       count: fetchData?.data?.nonPotentialLeads,
       color: "rgb(201 28 28)",
     },
-    { label: "All mails", count:fetchData?.data?.mailLeads||"0", color: "#007BFF" },
-    { label: "Call leads", count: fetchData?.data?.calledLeads||"0", color: "#3B82F6",Link:`/admin/pearls?filter=call_lead` },
-    { label: "Sms leads", count: fetchData?.data?.smsLeads||"0", color: "#6f42c1",Link:`/admin/pearls?filter=call_lead` },
+    {
+      label: "All mails",
+      count: fetchData?.data?.mailLeads || "0",
+      color: "#007BFF",
+    },
+    {
+      label: "Call leads",
+      count: fetchData?.data?.calledLeads || "0",
+      color: "#3B82F6",
+      Link: `/admin/pearls?filter=call_lead`,
+    },
+    {
+      label: "Sms leads",
+      count: fetchData?.data?.smsLeads || "0",
+      color: "#6f42c1",
+      Link: `/admin/pearls?filter=call_lead`,
+    },
   ];
+  const menu = (
+    <Menu>
+      <Menu.Item key="0"><MailOutlined /> Email</Menu.Item>
+      <Menu.Item key="1"><PhoneOutlined /> Call</Menu.Item>
+      <Menu.Item key="2"><MailOutlined /> Sms</Menu.Item>
+    </Menu>
+  );
   return (
     <Layout style={{ minHeight: "100vh" }}>
       <Content style={{ padding: "20px" }}>
@@ -347,7 +374,7 @@ const Pearl_diver_leads = ({ data, fetchData,fetchData1 }: any) => {
               <Option value="sms">Sms Leads</Option>
               {/* <Option value="mail">Mail Leads</Option>
               <Option value="call">Call Leads</Option> */}
-            </Select> 
+            </Select>
             {/* <Select defaultValue="Select" style={{ width: 120 }}>
               <Option value="date">Date</Option>
               <Option value="name">Name</Option>
@@ -361,52 +388,78 @@ const Pearl_diver_leads = ({ data, fetchData,fetchData1 }: any) => {
               {data?.data?.map((lead: any, index: number) => (
                 <Col xs={24} sm={12} md={8} lg={6} key={index}>
                   <Link href={`/admin/pearls/${lead?.pearl_id}`}>
-                    <Card
-                      hoverable
-                      // className={lead.status === "prioritize" ? 'blinking-card' : ''} // Adjust 'your-status' as needed
-                      style={{ borderRadius: "10px" }}
-                      actions={[
-                        <Tooltip title={lead.status==="High-Potential Leads"?"We are displaying leads based on the following criteria: personal count is 5, phone number is not null, address is not null, and income value is not 0 dollars":lead.status==="Potential Lead"?" We are displaying leads based on the following criteria: personal count is 1, phone number is not null, address is not null, and income value is not 0 dollars.":lead.status==="Suspect Lead"?"We are displaying leads based on the following criteria: personal count is 0, address is null, and income value is 0 dollars.":""}>
+                  <Card
+                    hoverable
+                    // className={lead.status === "prioritize" ? 'blinking-card' : ''} // Adjust 'your-status' as needed
+                    style={{ borderRadius: "10px" }}
+                    actions={[
+                      <Tooltip
+                        title={
+                          lead.status === "High-Potential Leads"
+                            ? "We are displaying leads based on the following criteria: personal count is 5, phone number is not null, address is not null, and income value is not 0 dollars"
+                            : lead.status === "Potential Lead"
+                            ? " We are displaying leads based on the following criteria: personal count is 1, phone number is not null, address is not null, and income value is not 0 dollars."
+                            : lead.status === "Suspect Lead"
+                            ? "We are displaying leads based on the following criteria: personal count is 0, address is null, and income value is 0 dollars."
+                            : ""
+                        }
+                      >
                         <Button
                           style={{
                             color: colorMap[lead.status] || "#000000", // Default text color if not found
-                            backgroundColor: backgroundcolorMap[lead.status] || "rgb(187, 181, 181)", // Default background color if not found
+                            backgroundColor:
+                              backgroundcolorMap[lead.status] ||
+                              "rgb(187, 181, 181)", // Default background color if not found
                           }}
                           key="action"
                           size="small"
                         >
-                          {((lead.status))}
+                          {lead.status}
                         </Button>
-                        </Tooltip>
-                        ,
-                      ]}
-                    >
-                      <Space direction="vertical" size="small">
-                        <Title level={5}>
+                      </Tooltip>,
+                    ]}
+                  >
+                    <Space direction="vertical" size="small">
+                      <div
+                        style={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                          alignItems: "center",
+                        }}
+                      >
+                        <Title level={5} style={{ margin: 0 }}>
                           <Avatar
                             size={34}
                             icon={<UserOutlined />}
                             src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTEg09MmHvC-78aaRxyd52HabsZqI1-u8R6-w&s"
                           />
                           {lead?.firstName
-                            ? `${lead?.firstName} ${lead?.lastName}`
-                            : "N/A"}
+                            ? ` ${lead.firstName} ${lead.lastName}`
+                            : " N/A"}
                         </Title>
-                        <Text>
-                          {dayjs(lead?.created_at).format("DD-MM-YYYY")}
-                        </Text>
-                        <Divider className="pearl_card_divider" style={{margin:"0px"}}/>
-                        <Text>
-                          <PhoneOutlined />{" "}
-                          {lead.phones
-                            .map((res: any, index: number) => res.number)
-                            .join(", ") || "N/A"}
-                        </Text>
-                        <Text>
-                          <MailOutlined /> {lead.email}
-                        </Text>
-                      </Space>
-                    </Card>
+                        {/* More Button with Dropdown */}
+                        {/* <Dropdown overlay={menu} className="gap-2" trigger={["click"]}>
+                          <Button type="text" icon={<EllipsisOutlined />} />
+                        </Dropdown> */}
+                      </div>
+                      <Text>
+                        {dayjs(lead?.created_at).format("DD-MM-YYYY")}
+                      </Text>
+                      <Divider
+                        className="pearl_card_divider"
+                        style={{ margin: "0px" }}
+                      />
+                      <Text>
+                        <PhoneOutlined />{" "}
+                        {lead.phones
+                          .map((res: any, index: number) => res.number)
+                          .join(", ") || "N/A"}
+                      </Text>
+                      <Text>
+                        <MailOutlined /> {lead.email}
+                      </Text>
+                    </Space>
+                  </Card>
                   </Link>
                 </Col>
               ))}

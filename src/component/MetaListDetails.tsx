@@ -91,7 +91,9 @@ getData()
       // ) || "N/A", // Fallback if addresses is undefined
     };
   });
-  
+  const back=()=>{
+    router.back()
+      }
   return (
     <Layout style={{ minHeight: "100vh", padding: "24px" }}>
     {/* Left Main Content */}
@@ -141,6 +143,9 @@ getData()
       >
         <div style={{ marginBottom: "1rem" }}>
           {/* Breadcrumbs (commented out) */}
+          <Button onClick={back}>
+              Back
+            </Button>
         </div>
         {/* Title */}
         <div
@@ -152,6 +157,7 @@ getData()
           }}
         >
           <div style={{ flex: 1, textAlign: "start" }}>
+           
             <Typography.Title level={3} style={{ fontWeight: "bold" }}>
               {data?.data[0]?.full_name || "N/A"}{" "}
               {/* {data?.getByOne[0]?.lastName || " "} */}

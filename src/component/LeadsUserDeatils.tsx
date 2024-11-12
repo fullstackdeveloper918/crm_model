@@ -1,12 +1,16 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Card, Avatar, Typography, Button, List, Layout, Tooltip } from "antd";
+import { Card, Avatar, Typography, Button, List, Layout, Tooltip, Steps } from "antd";
 import {
   DownloadOutlined,
+  FacebookFilled,
+  FacebookOutlined,
   MailOutlined,
+  MessageOutlined,
   MoreOutlined,
   PhoneOutlined,
   ShareAltOutlined,
+  WhatsAppOutlined,
 } from "@ant-design/icons";
 import dayjs from "dayjs";
 import Link from "next/link";
@@ -61,6 +65,7 @@ const leadsData = {
     },
   ],
 };
+const { Step } = Steps;
 const LeadsUserDeatils = ({ data }: any, { data1 }: any) => {
   const [loading, setLoading] = useState(false);
   console.log(data1, "rrerer");
@@ -136,11 +141,11 @@ const LeadsUserDeatils = ({ data }: any, { data1 }: any) => {
       setLoading(false);
       let items = {
         pearl_id: data?.getByOne[0]?.pearl_id,
-        user_uuid:data?.getByOne[0]?.user_uuid,
+        user_uuid: data?.getByOne[0]?.user_uuid,
         status: statusType,
       } as any;
       const res = await api.PearlLeads.changeStatus(items);
-      toast.success(res?.data)
+      toast.success(res?.data);
       if (statusType == 2) {
         router.push(
           `/admin/purposal/sent_purposal?pearls_lead_id=${data?.getByOne[0]?.pearl_id}&user_uuid=${data?.getByOne[0]?.user_uuid}`
@@ -150,65 +155,81 @@ const LeadsUserDeatils = ({ data }: any, { data1 }: any) => {
       setLoading(false);
     }
   };
-const [recentActivity,RecentActivity]= useState<any>([])
+  const [recentActivity, RecentActivity] = useState<any>([]);
   const getActivity = async () => {
     // let item = {
     //   user_uuid: data?.getByOne[0]?.user_uuid,
     // };
-    const newStr = data?.getByOne[0]?.user_uuid.replace(/user_uuid: '.*?',/, '');
+    const newStr = data?.getByOne[0]?.user_uuid.replace(
+      /user_uuid: '.*?',/,
+      ""
+    );
     try {
-      const res = await axios.get(`https://srv626615.hstgr.cloud/user-activity-list?user_uuid=${newStr}`);
+      const res = await axios.get(
+        `https://srv626615.hstgr.cloud/user-activity-list?user_uuid=${newStr}`
+      );
       console.log(res, "activity");
-      RecentActivity(res?.data)
+      RecentActivity(res?.data);
     } catch (error) {}
-   
   };
   useEffect(() => {
     getActivity();
   }, []);
-  console.log(recentActivity,"recentActivity");
-  
+  console.log(recentActivity, "recentActivity");
+  const array = ["email", "phone", "sms", "whatsapp", "facebook"];
+  const getStepData = (step:any) => {
+    switch (step) {
+      case "email":
+        return {
+          title: "Email",
+          description: "Send an email to the recipient.",
+          icon: <MailOutlined />
+        };
+      case "phone":
+        return {
+          title: "Phone",
+          description: "Make a phone call to the recipient.",
+          icon: <PhoneOutlined />
+        };
+      case "sms":
+        return {
+          title: "SMS",
+          description: "Send an SMS message.",
+          icon: <MessageOutlined />
+        };
+      case "whatsapp":
+        return {
+          title: "WhatsApp",
+          description: "Send a WhatsApp message.",
+          icon: <WhatsAppOutlined />
+        };
+      case "facebook":
+        return {
+          title: "Facebook",
+          description: "Send a message on Facebook.",
+          icon: <FacebookFilled />
+        };
+      default:
+        return {};
+    }
+  };
+
+  const back=()=>{
+router.back()
+  }
   return (
     <Layout style={{ minHeight: "100vh", padding: "24px" }}>
       {/* Left Main Content */}
-      <ToastContainer/>
-      <Content style={{ paddingRight: "24px" }}>
-        {/* <Card
-        title={
-          <div style={{ display: 'flex', alignItems: 'center' }}>
-             <Avatar
-            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTEg09MmHvC-78aaRxyd52HabsZqI1-u8R6-w&s"
-            alt="User Avatar"
-            style={{ cursor: 'pointer', height:"40px", width:"40px" }}
-          />
-            <div style={{ marginLeft: '12px', marginTop:"10px" }}>
-              <Title level={5}>{data?.getByOne[0]?.firstName||"N/A"} {data?.getByOne[0]?.lastName||" "}</Title>
-              <Text>{dayjs(data?.getByOne[0]?.created_at).format("DD-MM-YYYY")||"N/A"}</Text>
-            </div>
-          </div>
-        }
-        extra={<Button ><MoreOutlined /></Button>}
+      <ToastContainer />
+      <Content
+        style={{
+          display: "flex",
+          justifyContent: "space-between", // Space out the cards horizontally
+          // alignItems: "center",            // Center them vertically
+          paddingRight: "24px",
+        }}
       >
-        <Text>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc vulputate libero et velit interdum, ac aliquet odio mattis.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc vulputate libero et velit interdum, ac aliquet odio mattis.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc vulputate libero et velit interdum, ac aliquet odio mattis.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc vulputate libero et velit interdum, ac aliquet odio mattis.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc vulputate libero et velit interdum, ac aliquet odio mattis.
-        </Text>
-        <div style={{ marginTop: '12px', display: 'flex', gap: '24px' }}>
-          <div>
-            <MailOutlined /> {data?.getByOne[0]?.email||"N/A"}
-          </div>
-          <div>
-            <PhoneOutlined />{"+12697605426"}
-          </div>
-        </div>
-        <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '16px' }}>
-            <Link href={`/admin/purposal/sent_purposal?pearls_lead_id=${data?.getByOne[0]?.pearl_id}`}>
-          <Button type="primary">
-            Send Proposal
-          </Button>
-            </Link>
-        </div>
-      </Card> */}
-        <Card
+         <Card
           style={{
             maxWidth: "600px",
             margin: "auto",
@@ -218,6 +239,7 @@ const [recentActivity,RecentActivity]= useState<any>([])
         >
           <div style={{ marginBottom: "1rem" }}>
             {/* Breadcrumbs (commented out) */}
+            <Button onClick={back}>Back</Button>
           </div>
           {/* Title */}
           <div
@@ -334,10 +356,21 @@ const [recentActivity,RecentActivity]= useState<any>([])
         {/* Recent Leads */}
         <Card title="Recent Activities" style={{ marginBottom: "24px" }}>
           <div style={{ flex: 1, textAlign: "start" }}>
-            <Title level={4} >
-              {recentActivity?.data?.length > 0 ?<>
-              {replaceUnderScore(capFirst(recentActivity?.data[0]?.action_for ))|| "N/A"} ({dayjs(recentActivity?.data[0]?.updatedAt).format('YYYY-MM-DD HH:mm')})
-              </>:"No data activities"}
+            <Title level={4}>
+              {recentActivity?.data?.length > 0 ? (
+                <>
+                  {replaceUnderScore(
+                    capFirst(recentActivity?.data[0]?.action_for)
+                  ) || "N/A"}{" "}
+                  (
+                  {dayjs(recentActivity?.data[0]?.updatedAt).format(
+                    "YYYY-MM-DD HH:mm"
+                  )}
+                  )
+                </>
+              ) : (
+                "No data activities"
+              )}
             </Title>
           </div>
         </Card>

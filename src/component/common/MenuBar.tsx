@@ -118,19 +118,38 @@ const MenuBar = ({ collapsed, setCollapsed }: any) => {
     }
   };
 
-const[active,setActive]=useState<any>(null)
+  const [active, setActive] = useState<any>(null);
+  useEffect(() => {
+    const checkPathname = () => {
+      const pathname = window.location.pathname;
+      const parts: string[] = pathname.split("/").filter(Boolean);
 
-useEffect(() => {
-  const checkPathname = () => {
-    const pathname = window.location.pathname;
-    const parts: string[] = pathname.split("/").filter(Boolean)
-    const checkPath=parts.pop()
-    setActive(checkPath); 
-    localStorage.setItem("Pathname", pathname);
-  };
-  const intervalId = setInterval(checkPathname, 1000);
-  return () => clearInterval(intervalId);
-}, []);
+      // Define the list of keywords you're looking for
+      const keywords = ["metalist", "pearls", "purposal", "fields", "csvlist"];
+
+      // Check if any part of the path matches one of the keywords
+      const checkPath = parts.some(part => keywords.includes(part.toLowerCase()));
+
+      if (checkPath) {
+        // If any of the keywords match, find the matched keyword and set it to active
+        const matchedKeyword = keywords.find(keyword => parts.some(part => part.toLowerCase() === keyword.toLowerCase()));
+        setActive(matchedKeyword || null);
+      } else {
+        setActive(null);
+      }
+
+      // Save the pathname in localStorage
+      localStorage.setItem("Pathname", pathname);
+    };
+
+    // Run every second to check for path changes
+    const intervalId = setInterval(checkPathname, 1000);
+
+    // Clean up the interval when the component unmounts
+    return () => clearInterval(intervalId);
+  }, []);
+console.log(active,"active");
+
 // let pathname=localStorage.getItem("Pathname")
 
 // const paths = ['dashboard', 'Members', 'Products', 'Care Team', 'Questions', "setting", 'Content Page', 'More', 'contact-us', 'DB Backup', 'contact-us', 'notification']
@@ -208,13 +227,13 @@ const handleLinkClick = () => {
         "sub1",
         <UsergroupAddOutlined style={iconSize} />,
         [
-          getItem(
-            <Link href="#" className="text-decoration-none"  onClick={handleLinkClick}>
-              Meta Leads
-            </Link>,
-            "meta_leads",
-            <OrderedListOutlined style={iconSize} />
-          ),
+          // getItem(
+          //   <Link href="#" className="text-decoration-none"  onClick={handleLinkClick}>
+          //     Meta Leads
+          //   </Link>,
+          //   "meta_leads",
+          //   <OrderedListOutlined style={iconSize} />
+          // ),
           getItem(
             <Link
               href="/admin/csvlist"
@@ -230,7 +249,7 @@ const handleLinkClick = () => {
               href="/admin/metalist"
               className="text-decoration-none"
             >
-            All Meta Data
+           Meta Leads
             </Link>,
             "metalist",
             <TeamOutlined  style={iconSize} />
@@ -565,7 +584,7 @@ const handleLinkClick = () => {
   return (
     <div className="menu-wrapper position-relative">
       <div className="logo justify-content-center">
-        <Link href="/dashboard">
+        <Link href="/admin/dashboard">
           <img src={`https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTEg09MmHvC-78aaRxyd52HabsZqI1-u8R6-w&s`} alt="logo" style={{height:"70px", paddingLeft:"82px"}} className="img-fluid justify-content-center item-center text-center" />
         </Link>
         <div className="position-absolute end-0 hans" style={{ top: "-10px" }}>
