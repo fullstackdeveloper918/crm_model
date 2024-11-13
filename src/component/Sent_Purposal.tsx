@@ -87,7 +87,7 @@ const Sent_Purposal = ({ data1 }: any) => {
   const pearlsLeadId = searchParams.get("pearls_lead_id");
   const userId = searchParams.get("user_id");
   const field_for: any = searchParams.get("field_for");
-
+  const field_Type: any = searchParams.get("fieldType");
   // Log the pearlsLeadId to the console
   console.log(pearlsLeadId, "searchParam");
   console.log(userId, "userId");
@@ -176,7 +176,7 @@ const Sent_Purposal = ({ data1 }: any) => {
       reader.readAsDataURL(imageFile);
     }
   };
-  const [activeKey, setActiveKey] = useState<any>("email");
+  const [activeKey, setActiveKey] = useState<any>(field_Type);
 
   const onFinish = async (values: any) => {
     console.log("Form submitted with values:", file, values);
@@ -340,7 +340,7 @@ const Sent_Purposal = ({ data1 }: any) => {
           </Link>
           <h2>Send </h2>
           <Tabs
-            defaultActiveKey="all"
+            defaultActiveKey={field_Type}
             items={tabs}
             onChange={handleChange}
             style={{
@@ -350,7 +350,7 @@ const Sent_Purposal = ({ data1 }: any) => {
             }}
           />
           <Card
-            title={`${capFirst(activeKey || "Email")} Form`}
+            title={`${capFirst(activeKey || field_Type)} Form`}
             extra={
               <Button type="primary" onClick={showModal}>
                 Preview
