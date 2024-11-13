@@ -49,7 +49,7 @@ const currentFilter=searchParams?.filter
   
   return (
    <>
-   <Pearl_diver_leads data={data} fetchData={fetchData} fetchData1={fetchData1}/>
+   <Pearl_diver_leads data={data} fetchData={fetchData} fetchData1={fetchData1} sendStatus={currentFilter}/>
    </>
   )
 }

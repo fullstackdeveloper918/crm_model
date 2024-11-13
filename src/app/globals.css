@@ -48,7 +48,7 @@ body {
     background-color: white;
   }
   50% {
-    background-color: red;
+    background-color: rgb(209, 135, 135);
   }
   100% {
     background-color: white;
@@ -133,4 +133,49 @@ body {
   clear: both;
   width: 100%;
   min-width: 100%;
+}
+/* Ensure the Select component has the correct text and background color */
+.custom-select {
+  color: #000000; /* Default text color */
+  background-color: rgb(187, 181, 181); /* Default background color */
+}
+
+/* When status is High-Potential Leads */
+.custom-select.priority {
+  color: rgb(14, 110, 49); /* Light Green */
+  background-color: rgb(207, 231, 211); /* Light Green background */
+}
+
+/* When status is Potential Leads */
+.custom-select.potential {
+  color: rgb(147, 96, 11); /* Yellow */
+  background-color: rgb(239, 233, 201); /* Light Yellow background */
+}
+
+/* When status is Suspect Leads */
+.custom-select.non_potential {
+  color: rgb(201, 28, 28); /* Red */
+  background-color: rgb(235, 222, 222); /* Light Red background */
+}
+
+/* Other status colors */
+.custom-select.call_lead {
+  color: #3B82F6; /* Blue */
+  background-color: #BFDBFE; /* Light Blue background */
+}
+
+.custom-select.mail {
+  color: #007BFF; /* Purple */
+  background-color: rgb(201, 214, 227); /* Light Purple background */
+}
+
+.custom-select.sms {
+  color: #6f42c1; /* Orange */
+  background-color: #e1dde9; /* Light Orange background */
+}
+
+/* Optional: Style options to reflect their color */
+.custom-select .ant-select-item-option {
+  color: inherit; /* Inherit color from parent */
+  background-color: inherit; /* Inherit background color from parent */
 }

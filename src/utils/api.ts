@@ -33,8 +33,12 @@ const tokenPlugin = (req: any) => {
 }
 
 const requests = {
-  del: (url: string) =>
-    superagent.del(`${API_ROOT}${url}`).use(tokenPlugin).then(responseBody),
+  del: (url: string, body: any) =>
+    superagent
+      .del(`${API_ROOT}${url}`)
+      .use(tokenPlugin)
+      .send(body) // Send the body as part of the request
+      .then(responseBody),
   get: (url: string) =>
     superagent.get(`${API_ROOT}${url}`).use(tokenPlugin).then(responseBody),
   put: (url: string, body: any) =>
@@ -76,7 +80,9 @@ const MetaLeads={
 const PearlLeads={
   changeStatus: (info: any) =>
     requests.post('update-called-status', info),
-  user_activity:() =>requests.get(`user-activity-list`)
+  user_activity:() =>requests.get(`user-activity-list`),
+  delete: (info: any) =>
+    requests.del('delete-lead', info),
 
 }
 const Fields={
@@ -85,7 +91,7 @@ const Fields={
   edit: (info: any) =>
     requests.post('field-update', info),
   delete: (info: any) =>
-    requests.post('delete-field', info),
+    requests.del('delete-field', info),
 }
 const Leads={
   listing:()=>requests.get(`leads-api`),
@@ -172,8 +178,8 @@ const User = {
     requests.patch(`user/block/${id}`, info),
   deactivate: (info: any) =>
     requests.post(`activte-deactivate-archive`, info),
-  delete: (id: string) =>
-    requests.del(`user/delete/${id}`),
+  // delete: (id: string) =>
+  //   requests.del(`user/delete/${id}`),
   import: (file: any) =>
     requests.file(`user`, 'file', file),
   create: (info: any) =>
@@ -249,8 +255,8 @@ const Faq = {
     requests.get(`faqs/${id}`),
   edit: (_id: string, info: any) =>
     requests.patch(`faqs/${_id}`, info),
-  delete: (_id: string) =>
-    requests.del(`faqs/${_id}`),
+  // delete: (_id: string) =>
+  //   requests.del(`faqs/${_id}`),
 };
 
 const Graph = {
@@ -268,8 +274,8 @@ const Genre = {
     requests.get(`genre/${id}`),
   edit: (_id: string, info: any) =>
     requests.patch(`genre/${_id}`, info),
-  delete: (_id: string) =>
-    requests.del(`genre/${_id}`),
+  // delete: (_id: string) =>
+  //   requests.del(`genre/${_id}`),
 }
 
 const Homepage = {
@@ -279,8 +285,8 @@ const Homepage = {
     requests.get(`admin/homepage/${id}`),
   listing: (q: string) =>
     requests.get(`admin/homepage?${q}`),
-  delete: (_id: string) =>
-    requests.del(`admin/homepage/${_id}`),
+  // delete: (_id: string) =>
+  //   requests.del(`admin/homepage/${_id}`),
   edit: (_id: string, info: any) =>
     requests.put(`admin/homepage/${_id}`, info),
 };
@@ -316,8 +322,8 @@ const Products = {
     requests.get(`user/product?language=ENGLISH`),
   getById: (id: string) =>
     requests.get(`admin/product/${id}`),
-  delete: (_id: string) =>
-    requests.del(`admin/product/${_id}`),
+  // delete: (_id: string) =>
+  //   requests.del(`admin/product/${_id}`),
   import: (file: any) =>
     requests.file(`admin/product/import`, 'file', file),
   visibility: (_id: string) =>
@@ -338,8 +344,8 @@ const Staff = {
     requests.get(`staff${q ? `?${q}` : ""}`),
   edit: (_id: string, info: any) =>
     requests.patch(`staff/${_id}`, info),
-  delete: (id: string) =>
-    requests.del(`staff/${id}`),
+  // delete: (id: string) =>
+  //   requests.del(`staff/${id}`),
   block_delete: (id: string, info: any) =>
     requests.put(`staff/block/${id}`, info),
   getById: (id: string) =>

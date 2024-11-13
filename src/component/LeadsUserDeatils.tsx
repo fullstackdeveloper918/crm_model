@@ -87,12 +87,29 @@ const LeadsUserDeatils = ({ data }: any, { data1 }: any) => {
   }
   console.log(phoneValue, "phoneValue");
   const addressesString = data?.getByOne[0]?.addresses;
-  const addressesArray = JSON.parse(addressesString);
+  let addressesArray = [];
+
+  if (addressesString && addressesString !== "undefined") {
+    try {
+      addressesArray = JSON.parse(addressesString);
+    } catch (error) {
+      console.error("Error parsing addresses:", error);
+    }
+  }
 
   console.log(addressesArray, "sdfsdf");
 
   const phone = data?.getByOne[0]?.phones;
-  const phoneArray = JSON.parse(phone);
+  // const phoneArray = JSON.parse(phone);
+  let phoneArray = [];
+
+if (phone && phone !== "undefined") {
+  try {
+    phoneArray = JSON.parse(phone);
+  } catch (error) {
+    console.error("Error parsing phones:", error);
+  }
+}
   console.log(phoneArray, "rerer");
 
   const router = useRouter();
