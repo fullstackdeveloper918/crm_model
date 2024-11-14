@@ -117,7 +117,7 @@ if (phone && phone !== "undefined") {
     try {
       setLoading(true);
       router.push(
-        `/admin/purposal/sent_purposal?pearls_lead_id=${data?.getByOne[0]?.pearl_id}&user_id=${data?.getByOne[0]?.user_uuid}&field_for=welcome`
+        `/admin/purposal/sent_purposal?pearls_lead_id=${data?.getByOne[0]?.pearl_id}&user_id=${data?.getByOne[0]?.user_uuid}&field_for=welcome&fieldType=email`
       );
     } catch (error) {
       setLoading(false);
@@ -248,7 +248,8 @@ router.back()
       >
          <Card
           style={{
-            maxWidth: "600px",
+            // maxWidth: "600px",
+            width:"600px",
             margin: "auto",
             display: "flex",
             flexDirection: "column",

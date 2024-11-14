@@ -44,6 +44,25 @@ const { TextArea } = Input;
 const { Title, Text } = Typography;
 const { Header, Content } = Layout;
 const { Option } = Select;
+import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
+
+const formItemLayout = {
+  labelCol: {
+    xs: { span: 24 },
+    sm: { span: 4 },
+  },
+  wrapperCol: {
+    xs: { span: 24 },
+    sm: { span: 20 },
+  },
+};
+
+const formItemLayoutWithOutLabel = {
+  wrapperCol: {
+    xs: { span: 24, offset: 0 },
+    sm: { span: 20, offset: 4 },
+  },
+};
 const tabs = [
   {
     key: "email",
@@ -87,6 +106,7 @@ const Sent_Purposal = ({ data1 }: any) => {
   const pearlsLeadId = searchParams.get("pearls_lead_id");
   const userId = searchParams.get("user_id");
   const field_for: any = searchParams.get("field_for");
+  const field_Type: any = searchParams.get("fieldType");
 
   // Log the pearlsLeadId to the console
   console.log(pearlsLeadId, "searchParam");
@@ -176,7 +196,7 @@ const Sent_Purposal = ({ data1 }: any) => {
       reader.readAsDataURL(imageFile);
     }
   };
-  const [activeKey, setActiveKey] = useState<any>("email");
+  const [activeKey, setActiveKey] = useState<any>(field_Type);
 
   const onFinish = async (values: any) => {
     console.log("Form submitted with values:", file, values);
@@ -189,6 +209,7 @@ const Sent_Purposal = ({ data1 }: any) => {
     formData.append("pearl_id", pearlsLeadId);
     formData.append("subject", values?.subject);
     formData.append("productName", values?.productName);
+    formData.append("otherFields", values?.names);
     formData.append("email_content", values?.email_content);
 
     let otherFieldsObject: any = {};
@@ -215,6 +236,8 @@ const Sent_Purposal = ({ data1 }: any) => {
       sender_number: `+91${values?.sender_number}`,
       sender_body: values?.sender_body,
     };
+    // return;
+
     try {
       if (activeKey === "email") {
         const res = await api.Leads.sent_purposal(formData);
@@ -226,7 +249,7 @@ const Sent_Purposal = ({ data1 }: any) => {
         console.log(res, "gfhfh");
       }
 
-      router.replace(`/admin/pearls?filter=all`);
+      // router.replace(`/admin/pearls?filter=all`);
     } catch (error) {
       console.log("Error:", error);
     }
@@ -253,10 +276,10 @@ const Sent_Purposal = ({ data1 }: any) => {
     (item: any) => item.type === "text" && item.name === targetName
   ).length;
   console.log(textCount, "textCount");
-  const handleFinish = (values: any) => {
-    onFinish(values); // pass values to onFinish
-    // showModal(values);
-  };
+  // const handleFinish = (values: any) => {
+  //   onFinish(values); // pass values to onFinish
+  //   // showModal(values);
+  // };
   const fileValidator = (_: any, value: any) => {
     if (!value || value.file.length === 0) {
       return Promise.reject(new Error("Please upload a file"));
@@ -299,20 +322,22 @@ const Sent_Purposal = ({ data1 }: any) => {
   };
   const handleClearLocalStorage = () => {
     localStorage.removeItem("formValues");
-    router.back()
+    router.back();
   };
   const entriesArray = Object.entries(formValues);
   console.log(entriesArray, "formValues");
   const filterData = data1?.data?.filter(
     (res: any) => res?.field_for === validation.toLowCase(field_for)
   );
-  console.log(filterData,"filterData");
+  console.log(filterData, "filterData");
   if (filterData) {
-    localStorage.setItem('filteredData', JSON.stringify(filterData));
+    localStorage.setItem("filteredData", JSON.stringify(filterData));
   }
-  const savedFilterData = JSON.parse(localStorage.getItem('filteredData') || '[]');
-  console.log(savedFilterData,"savedFilterData");
-  
+  const savedFilterData = JSON.parse(
+    localStorage.getItem("filteredData") || "[]"
+  );
+  console.log(savedFilterData, "savedFilterData");
+
   const handleSelectChange = (value: string) => {
     // Get current query parameters from the URL
     const currentParams = new URLSearchParams(window.location.search);
@@ -330,18 +355,18 @@ const Sent_Purposal = ({ data1 }: any) => {
       <ToastContainer />
       <Row gutter={16}>
         <Col span={16}>
-          <Link href={`/admin/pearls/${pearlsLeadId}`}>
-            <Button
-              icon={<LeftOutlined />}
-              type="link"
-              onClick={handleClearLocalStorage}
-            >
-              Back
-            </Button>
-          </Link>
+          {/* <Link href={`/admin/pearls/${pearlsLeadId}`}> */}
+          <Button
+            icon={<LeftOutlined />}
+            type="link"
+            onClick={handleClearLocalStorage}
+          >
+            Back
+          </Button>
+          {/* </Link> */}
           <h2>Send </h2>
           <Tabs
-            defaultActiveKey="all"
+            defaultActiveKey={field_Type}
             items={tabs}
             onChange={handleChange}
             style={{
@@ -351,17 +376,65 @@ const Sent_Purposal = ({ data1 }: any) => {
             }}
           />
           <Card
-            title={`${capFirst(activeKey || "Email")} Form`}
+            title={`${capFirst(activeKey || field_Type)} Form`}
             extra={
-              <Button type="primary" onClick={showModal}>
-                Preview
-              </Button>
+              <>
+                <Button type="primary" onClick={showModal}>
+                  Preview
+                </Button>
+                {/* <Button type="primary">Add Field</Button> */}
+              </>
             }
             style={{ width: 800, margin: "auto", marginTop: "20px" }}
           >
             <Form layout="vertical" onFinish={onFinish}>
               {activeKey !== "sms" ? (
                 <>
+                  <div
+                    className="d-flex justify-content-between"
+                    style={{ width: "100%" }}
+                  >
+                    <Form.Item
+                      // key={index}
+                      name={"subject"}
+                      label={"Subject"}
+                      rules={[
+                        {
+                          required: true,
+                          message: `Please fill Subject!`,
+                        },
+                      ]}
+                    >
+                      <Input
+                        placeholder={`Enter text subject`}
+                        value={formValues["subject"]} // Bind the value to state
+                        onChange={(e) =>
+                          handleFieldChange("subject", e.target.value)
+                        } // Update value on change
+                        style={{ width: "360px" }}
+                      />
+                    </Form.Item>
+                    <Form.Item
+                      // key={index}
+                      name={"productName"}
+                      label={"Product Name"}
+                      rules={[
+                        {
+                          required: true,
+                          message: `Please fill Product Name!`,
+                        },
+                      ]}
+                    >
+                      <Input
+                        placeholder={`Enter text product name`}
+                        value={formValues["productName"]} // Bind the value to state
+                        onChange={(e) =>
+                          handleFieldChange("productName", e.target.value)
+                        } // Update value on change
+                        style={{ width: "360px" }}
+                      />
+                    </Form.Item>
+                  </div>
                   <Form.Item
                     label="Content"
                     name={"email_content"}
@@ -388,31 +461,13 @@ const Sent_Purposal = ({ data1 }: any) => {
                         ],
                       }}
                       style={{
-                        height: "90px", // This corresponds to approximately 5 lines, adjust as needed
-                        overflow: "auto", // Allows scrolling if content exceeds the height
+                        height: "110px", // This corresponds to approximately 5 lines, adjust as needed
+                        // overflow: "auto", // Allows scrolling if content exceeds the height
                         fontSize: "14px", // Adjust font size if needed
-                        // lineHeight: "1.5", // Adjust line height if needed
+                        lineHeight: "1.5", // Adjust line height if needed
+                        marginBottom: "40px",
                       }}
-                      placeholder="Start typing here..."
-                    />
-                  </Form.Item>
-                  <Form.Item
-                    // key={index}
-                    name={"subject"}
-                    label={"Subject"}
-                    rules={[
-                      {
-                        required: true,
-                        message: `Please fill Subject!`,
-                      },
-                    ]}
-                  >
-                    <Input
-                      placeholder={`Enter text subject`}
-                      value={formValues["subject"]} // Bind the value to state
-                      onChange={(e) =>
-                        handleFieldChange("subject", e.target.value)
-                      } // Update value on change
+                      placeholder="Start content here..."
                     />
                   </Form.Item>
                   {/* <ul className="m-0 list-unstyled d-flex gap-2">
@@ -434,25 +489,7 @@ const Sent_Purposal = ({ data1 }: any) => {
                     </Popconfirm>
                   </li>
                 </ul> */}
-                  <Form.Item
-                    // key={index}
-                    name={"productName"}
-                    label={"Product Name"}
-                    rules={[
-                      {
-                        required: true,
-                        message: `Please fill Product Name!`,
-                      },
-                    ]}
-                  >
-                    <Input
-                      placeholder={`Enter text product name`}
-                      value={formValues["productName"]} // Bind the value to state
-                      onChange={(e) =>
-                        handleFieldChange("productName", e.target.value)
-                      } // Update value on change
-                    />
-                  </Form.Item>
+
                   {/* <ul className="m-0 list-unstyled d-flex gap-2">
                   <li>
                     <Popconfirm
@@ -472,6 +509,7 @@ const Sent_Purposal = ({ data1 }: any) => {
                     </Popconfirm>
                   </li>
                 </ul> */}
+                  {/* <div className="mt-5"> */}
                   {filterData?.map((item: any, index: any) => {
                     if (hiddenFields[item.filed_name]) return null;
                     const validationRules = hiddenFields[item.filed_name]
@@ -756,6 +794,7 @@ const Sent_Purposal = ({ data1 }: any) => {
                     }
                   })}
 
+                  {/* </div> */}
                   {Array.from({ length: textCount }).map((_, i) => (
                     <Form.Item
                       key={`dynamic-text-${i}`}
@@ -777,7 +816,72 @@ const Sent_Purposal = ({ data1 }: any) => {
                       />
                     </Form.Item>
                   ))}
+                  <Form.List
+                    name="names"
+                    rules={[
+                      {
+                        validator: async (_, names) => {
+                          if (!names || names.length < 1) {
+                            return Promise.reject(
+                              new Error("At least 1 field")
+                            );
+                          }
+                        },
+                      },
+                    ]}
+                  >
+                    {(fields, { add, remove }, { errors }) => (
+                      <>
+                        {fields.map((field, index) => (
+                          <Form.Item
+                            {...(index === 0
+                              ? formItemLayout
+                              : formItemLayoutWithOutLabel)}
+                            label={index === 0 ? "Fields" : ""}
+                            required={false}
+                            key={field.key}
+                          >
+                            <Form.Item
+                              {...field}
+                              validateTrigger={["onChange", "onBlur"]}
+                              rules={[
+                                {
+                                  required: true,
+                                  whitespace: true,
+                                  message:
+                                    "Please input field's name or delete this field.",
+                                },
+                              ]}
+                              noStyle
+                            >
+                              <Input
+                                placeholder="field name"
+                                style={{ width: "60%" }}
+                              />
+                            </Form.Item>
+                            {fields.length > 1 ? (
+                              <MinusCircleOutlined
+                                className="dynamic-delete-button"
+                                onClick={() => remove(field.name)}
+                              />
+                            ) : null}
+                          </Form.Item>
+                        ))}
+                        <Form.Item>
+                          <Button
+                            type="dashed"
+                            onClick={() => add()}
+                            style={{ width: "60%" }}
+                            icon={<PlusOutlined />}
+                          >
+                            Add field
+                          </Button>
 
+                          <Form.ErrorList errors={errors} />
+                        </Form.Item>
+                      </>
+                    )}
+                  </Form.List>
                   <Form.Item style={{ margin: "auto" }}>
                     <Button type="primary" htmlType="submit">
                       Send

@@ -237,11 +237,11 @@ const MainLayout = ({ children }: any) => {
               style={{ display: "flex", alignItems: "center", gap: "16px" }}
             >
               {/* Mail Icon */}
-              <Button
-                type="text"
-                shape="circle"
-                icon={<MailOutlined style={{ fontSize: "18px" }} />}
-              />
+                {/* <Button
+                  type="text"
+                  shape="circle"
+                  icon={<MailOutlined style={{ fontSize: "18px" }} />}
+                /> */}
 
               {/* Notification Icon */}
               <Link href={`/admin/notifications`}>

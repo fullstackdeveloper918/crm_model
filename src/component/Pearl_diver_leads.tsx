@@ -19,6 +19,7 @@ import {
   Menu,
   Popconfirm,
   Modal,
+  Input,
 } from "antd";
 import {
   CalendarOutlined,
@@ -46,8 +47,9 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Pagination from "./common/Pagination";
 import Recent_card from "./common/Recent_card";
 import { toast, ToastContainer } from "react-toastify";
+// import Search from "antd/es/transfer/search";
 // import { Tabs } from 'antd';
-
+const { Search } = Input;
 const { TabPane } = Tabs;
 // import remUndrscore from "../utils/validation/replaceUnderScore"
 const { Content, Sider } = Layout;
@@ -154,9 +156,12 @@ const leads = [
   // Add more leads
 ];
 
-const Pearl_diver_leads = ({ data, fetchData, sendStatus }: any) => {
+const Pearl_diver_leads = ({ data, fetchData,onArchive , sendStatus,currentSearch }: any) => {
   console.log(data, "data");
-
+  const [filter,setFilter]=useState<any>(sendStatus)
+  const [searchTerm, setSearchTerm] = useState<any>(currentSearch);
+  console.log(searchTerm,"searchTerm");
+  
   const [activeKey, setActiveKey] = useState("all");
   const [loadingEmail, setLoadingEmail] = useState<boolean[]>(
     new Array(leads.length).fill(false)
@@ -171,6 +176,18 @@ const Pearl_diver_leads = ({ data, fetchData, sendStatus }: any) => {
     // Update the URL with the selected value
     router.push(`/admin/pearls?filter=${value}`);
   };
+
+  const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = event.target.value;
+    setSearchTerm(value);
+    // router.push(`/admin/pearls?search=${value}&filter=${filter}`);
+    if (value?.trim()) {
+      router.push(`/admin/pearls?search=${value}&filter=${filter}`);
+    } else {
+      // If the search input is empty, just update the filter (and keep it in the same tab, if any)
+      router.push(`/admin/pearls?filter=${filter}`);
+    }
+};
   const handleTabChange = (key: string) => {
     // Define a mapping from tab keys to filter values for the URL
     const filterMap: { [key: string]: string } = {
@@ -185,11 +202,17 @@ const Pearl_diver_leads = ({ data, fetchData, sendStatus }: any) => {
 
     // Get the filter value based on the selected tab key
     const filterValue = filterMap[key];
-
-    // Update the URL with the selected tab's filter value
-    if (filterValue) {
+    setFilter(filterValue)
+    if (searchTerm?.trim()) {
+      router.push(`/admin/pearls?search=${searchTerm}&filter=${filterValue}`);
+    } else {
+      // If there is no search term, update the URL only with the selected filter
       router.push(`/admin/pearls?filter=${filterValue}`);
     }
+    // Update the URL with the selected tab's filter value
+    // if (filterValue) {
+    //   router.push(`/admin/pearls?filter=${filterValue}&search=${searchTerm}`);
+    // }
   };
   const handleChange = (key: any) => {
     setActiveKey(key);
@@ -388,9 +411,10 @@ const Pearl_diver_leads = ({ data, fetchData, sendStatus }: any) => {
       console.log(item, "item");
 
       const res = await api.PearlLeads.delete(item);
-      data(sendStatus); 
+      // data(); 
       console.log(res, "ioioio");
       toast.success(res?.message);
+      // window.location.reload();
     } catch (error) {}
   };
 
@@ -485,11 +509,11 @@ const Pearl_diver_leads = ({ data, fetchData, sendStatus }: any) => {
   const renderLeadStatusDescription = (status: string) => {
     switch (status) {
       case "High-Potential Leads":
-        return "We are displaying leads based on the following criteria: personal count is 5, phone number is not null, address is not null, and income value is not 0 dollars.";
+        return "We are displaying leads based on the following criteria: the number of clicks is 5 or more, a phone number is provided, an address is on file, and the income is greater than 0 dollars.This targets highly engaged leads with complete contact information and reported income";
       case "Potential Lead":
-        return "We are displaying leads based on the following criteria: personal count is 1, phone number is not null, address is not null, and income value is not 0 dollars.";
+        return "We are displaying leads based on the following criteria: the number of clicks is at least 1, a phone number is provided, an address is on file, and the income is greater than 0 dollars.This ensures we're showing leads with some level of engagement, contact information, and reported income.";
       case "Suspect Lead":
-        return "We are displaying leads based on the following criteria: personal count is 0, address is null, and income value is 0 dollars.";
+        return "We are displaying leads based on the following criteria: the number of clicks is 0, there is no address provided, and the income is 0 dollars.This makes it clear that we're filtering leads with zero clicks, no address on file, and no reported income";
       default:
         return "";
     }
@@ -498,7 +522,7 @@ const Pearl_diver_leads = ({ data, fetchData, sendStatus }: any) => {
     <Layout style={{ minHeight: "100vh" }}>
       <ToastContainer />
       <Content style={{ padding: "20px" }}>
-        <Row gutter={[16, 16]} justify="start">
+        {/* <Row gutter={[16, 16]} justify="start">
           {data2.map((item: any, index: number) => (
             <Col key={index}>
               <Card
@@ -521,7 +545,7 @@ const Pearl_diver_leads = ({ data, fetchData, sendStatus }: any) => {
               </Card>
             </Col>
           ))}
-        </Row>
+        </Row> */}
         {/* <Tabs
       defaultActiveKey="all"
       items={tabs}
@@ -534,7 +558,7 @@ const Pearl_diver_leads = ({ data, fetchData, sendStatus }: any) => {
           All Pearl Diver Leads
         </Title>
         <Row justify="space-between" style={{ marginBottom: "0px" }}>
-          <div style={{ padding: "20px" }}>
+          <div  style={{  padding: "20px" }}>
             {/* <h1>Account</h1> */}
             <Tabs
               defaultActiveKey={sendStatus}
@@ -618,6 +642,8 @@ const Pearl_diver_leads = ({ data, fetchData, sendStatus }: any) => {
                 {/* Content for Sms Leads */}
               </TabPane>
             </Tabs>
+            <Search size='large' className='' placeholder="Search by Name & Email" enterButton value={searchTerm}
+                                        onChange={handleSearch} />
             <Divider />
           </div>
 
@@ -636,7 +662,11 @@ const Pearl_diver_leads = ({ data, fetchData, sendStatus }: any) => {
               <Option value="sms">Sms Leads</Option>
             </Select>
           </Space> */}
+    
         </Row>
+        {/* <Row>
+       
+        </Row> */}
         <Row gutter={[16, 16]}>
           <Col xs={24} md={18}>
             <Row gutter={[16, 16]}>

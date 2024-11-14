@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import api from '@/utils/api';
 import { toast } from 'react-toastify';
 import { setCookie } from 'nookies';
+import LogoImage from "../../assests/images/OxygenLogo.jpg"
 const Sigin = () => {
   const setCookie = (name: string, value: string, days: number) => {
     const expires = new Date();
@@ -76,7 +77,7 @@ const router= useRouter()
     <div
       className="container mt-5"
       style={{
-        maxWidth: '400px',
+        maxWidth: '500px',
         padding: '40px',
         backgroundColor: '#fff',
         borderRadius: '12px',
@@ -84,13 +85,13 @@ const router= useRouter()
       }}
     >
       {/* Logo Section */}
-      <div className="logo text-center mb-4">
-        {/* <img
-          src="https://iconape.com/wp-content/png_logo_vector/crm-logo.png"
+      <div className="logo text-center mb-4" style={{paddingLeft:"89px"}}>
+        <img
+          src={LogoImage.src}
           alt="logo"
-          style={{ width: '50px' }}
-        /> */}
-        <h2 style={{ marginTop: '10px', fontWeight: 'bold' }}>CRM Model</h2>
+          style={{ width: '220px', justifyContent:"center",  }}
+        />
+        {/* <h2 style={{ marginTop: '10px', fontWeight: 'bold' }}>CRM Model</h2> */}
       </div>
 
       {/* Form Section */}
@@ -99,7 +100,7 @@ const router= useRouter()
         initialValues={{ remember: true }}
         onFinish={onFinish}
         layout="vertical"
-        style={{ marginTop: '20px' }}
+        // style={{ marginTop: '10px' }}
       >
         {/* Email Input */}
         <Form.Item

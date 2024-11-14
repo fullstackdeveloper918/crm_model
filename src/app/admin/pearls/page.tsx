@@ -10,7 +10,9 @@ const page = async({ searchParams }: { searchParams: any }) => {
   const currentPage = searchParams.page ? Number(searchParams.page) : 1; // Default to 1 if not found
   console.log(currentPage, "currentPage");
 const currentFilter=searchParams?.filter
+const currentSearch=searchParams?.search
   console.log(currentFilter,"currentFilter");
+  console.log(currentSearch,"currentSearch");
   const statusMap: { [key: string]: string } = {
     // all: "",
     non_potential: "0",
@@ -25,7 +27,9 @@ const currentFilter=searchParams?.filter
   console.log(sendStatus,"sendStatus");
   
   const api: any = {
-    url:currentFilter=="all"?`https://srv626615.hstgr.cloud/leads-api?page=${currentPage}`: `https://srv626615.hstgr.cloud/leads-api?page=${currentPage}&search=${sendStatus}`,
+    url:currentFilter === "all" 
+    ? `https://srv626615.hstgr.cloud/leads-api?page=${currentPage}${currentSearch ? `&search=${encodeURIComponent(currentSearch)}` : ''}`
+    : `https://srv626615.hstgr.cloud/leads-api?page=${currentPage}&pearl_status=${sendStatus}${currentSearch ? `&search=${encodeURIComponent(currentSearch)}` : ''}`,
     method: "GET",
     // body: { key: 'value' }
   };
@@ -49,7 +53,7 @@ const currentFilter=searchParams?.filter
   
   return (
    <>
-   <Pearl_diver_leads data={data} fetchData={fetchData} fetchData1={fetchData1} sendStatus={currentFilter}/>
+   <Pearl_diver_leads data={data} fetchData={fetchData} fetchData1={fetchData1} sendStatus={currentFilter} currentSearch={currentSearch}/>
    </>
   )
 }
