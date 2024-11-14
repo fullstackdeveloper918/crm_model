@@ -249,7 +249,7 @@ const Sent_Purposal = ({ data1 }: any) => {
         console.log(res, "gfhfh");
       }
 
-      // router.replace(`/admin/pearls?filter=all`);
+      router.replace(`/admin/pearls?filter=all`);
     } catch (error) {
       console.log("Error:", error);
     }
