@@ -11,7 +11,7 @@ const page = async({params}:any) => {
     method: "GET",
   };
 
-  const data = await fetchFromServer(api);
+  const data = await fetchFromServer(api,undefined);
   console.log(data,"qwqwqwqw");
   const api1: any = {
     url: `https://srv626615.hstgr.cloud/leads-api`,
@@ -19,7 +19,7 @@ const page = async({params}:any) => {
     // body: { key: 'value' }
   };
 
-  const data1 = await fetchFromServer(api1);
+  const data1 = await fetchFromServer(api1,undefined);
   console.log(data1,"qwerty");
 
   const newStr = data?.getByOne[0]?.user_uuid.replace(/user_uuid: '.*?',/, '');
@@ -30,7 +30,7 @@ const page = async({params}:any) => {
     // body: { key: 'value' }
   };
 
-  const data2 = await fetchFromServer(api2);
+  const data2 = await fetchFromServer(api2,undefined);
   console.log(data2,"1234567");
   // data?.getByOne[0]?.user_uuid
   return (

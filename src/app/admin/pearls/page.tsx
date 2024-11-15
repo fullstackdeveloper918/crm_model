@@ -34,21 +34,21 @@ const currentSearch=searchParams?.search
     // body: { key: 'value' }
   };
 
-  const data = await fetchFromServer(api);
+  const data = await fetchFromServer(api,undefined);
   console.log(data,"sdfasdffasd");
   const apiUrl: any = {
     url: `https://srv626615.hstgr.cloud/count-leads`,
     method: "GET",
     // body: { key: 'value' }
   };
-  const fetchData= await fetchFromServer(apiUrl)
+  const fetchData= await fetchFromServer(apiUrl,undefined)
   console.log(fetchData,"yyuyyu");
   const apiUrl1: any = {
     url: `https://srv626615.hstgr.cloud/recent-leads`,
     method: "GET",
     // body: { key: 'value' }
   };
-  const fetchData1= await fetchFromServer(apiUrl1)
+  const fetchData1= await fetchFromServer(apiUrl1,undefined)
   console.log(fetchData1,"fetchData1");
   
   return (

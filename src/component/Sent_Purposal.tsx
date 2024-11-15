@@ -19,6 +19,7 @@ import {
   Typography,
   Space,
   Popconfirm,
+  Tooltip,
 } from "antd";
 import {
   TwitterOutlined,
@@ -46,23 +47,24 @@ const { Header, Content } = Layout;
 const { Option } = Select;
 import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
 
-const formItemLayout = {
-  labelCol: {
-    xs: { span: 24 },
-    sm: { span: 4 },
-  },
-  wrapperCol: {
-    xs: { span: 24 },
-    sm: { span: 20 },
-  },
-};
+interface Contact {
+  id: number;
+  initials: string;
+  color: string;
+}
 
-const formItemLayoutWithOutLabel = {
-  wrapperCol: {
-    xs: { span: 24, offset: 0 },
-    sm: { span: 20, offset: 4 },
-  },
-};
+const contacts: Contact[] = [
+  { id: 1, initials: 'OS', color: '#a5d6a7' },
+  { id: 2, initials: 'CJ', color: '#80cbc4' },
+  { id: 3, initials: 'NT', color: '#f48fb1' },
+  { id: 4, initials: 'M', color: '#ce93d8' },
+  { id: 5, initials: 'DO', color: '#ffab91' },
+  { id: 6, initials: 'R', color: '#ffcc80' },
+  { id: 7, initials: 'VT', color: '#e6ee9c' },
+  { id: 8, initials: 'O', color: '#bcaaa4' },
+  { id: 9, initials: 'JS', color: '#ffccbc' },
+  { id: 10, initials: 'TA', color: '#b0bec5' },
+];
 const tabs = [
   {
     key: "email",
@@ -107,7 +109,16 @@ const Sent_Purposal = ({ data1 }: any) => {
   const userId = searchParams.get("user_id");
   const field_for: any = searchParams.get("field_for");
   const field_Type: any = searchParams.get("fieldType");
+  const emailMode: any = searchParams.get("email_mode");
+  const [formValues, setFormValues] = useState<any>({}); // Store form values
+  const [filterArrayId1, setFilterArrayId1] = useState<any>([]); // Store form values
+console.log(filterArrayId1,"filterArrayId");
+const filterpearl_ids = filterArrayId1.map((res: any) => res?.pearl_id);
 
+// Convert the array to a JSON string
+const pearlIdsAsString = JSON.stringify(filterpearl_ids);
+const filteruser_ids=filterArrayId1.map((res:any)=>res?.user_uuid)
+const user_idssAsString = JSON.stringify(filteruser_ids);
   // Log the pearlsLeadId to the console
   console.log(pearlsLeadId, "searchParam");
   console.log(userId, "userId");
@@ -129,50 +140,8 @@ const Sent_Purposal = ({ data1 }: any) => {
     setIsModalVisible(false);
   };
   const router = useRouter();
-  const recentLeads = [
-    {
-      name: "Jenny Wilson",
-      email: "j.wilson@example.com",
-      amount: "$11,234",
-      location: "Austin",
-    },
-    {
-      name: "Devon Lane",
-      email: "d.lane@example.com",
-      amount: "$11,159",
-      location: "New York",
-    },
-  ];
+ 
 
-  const callLeads = [
-    {
-      name: "Jane Cooper",
-      email: "j.cooper@example.com",
-      amount: "$10,483",
-      location: "Toledo",
-    },
-    {
-      name: "Dianne Russell",
-      email: "d.russell@example.com",
-      amount: "$9,084",
-      location: "Naperville",
-    },
-  ];
-
-  const mailLeads = [
-    {
-      name: "Jane Cooper",
-      email: "j.cooper@example.com",
-      amount: "$10,483",
-      location: "Toledo",
-    },
-    {
-      name: "Dianne Russell",
-      email: "d.russell@example.com",
-      amount: "$9,084",
-      location: "Naperville",
-    },
-  ];
   const [file, setFile] = useState<any>(null);
   // const handleFileChange = (info: any) => {
   //   setFile(info.file.originFileObj);
@@ -197,6 +166,7 @@ const Sent_Purposal = ({ data1 }: any) => {
     }
   };
   const [activeKey, setActiveKey] = useState<any>(field_Type);
+console.log(activeKey,"activeKey");
 
   const onFinish = async (values: any) => {
     console.log("Form submitted with values:", file, values);
@@ -205,8 +175,8 @@ const Sent_Purposal = ({ data1 }: any) => {
       formData.append("file", file);
     }
 
-    formData.append("user_uuid", userId);
-    formData.append("pearl_id", pearlsLeadId);
+    formData.append("user_uuid", emailMode?[user_idssAsString]:userId);
+    formData.append("pearl_id", emailMode?[pearlIdsAsString]:pearlsLeadId);
     formData.append("subject", values?.subject);
     formData.append("productName", values?.productName);
     formData.append("otherFields", values?.names);
@@ -239,15 +209,22 @@ const Sent_Purposal = ({ data1 }: any) => {
     // return;
 
     try {
-      if (activeKey === "email") {
-        const res = await api.Leads.sent_purposal(formData);
+      if(emailMode){
+        const res = await api.Leads.sent_email_queue(formData);
         toast.success("Email send successfully");
-        console.log("Response:", res);
-      } else {
-        const res = await api.Leads.sent_messange(items);
-        toast.success(res?.message);
-        console.log(res, "gfhfh");
-      }
+      }else{
+      
+            if (activeKey === "email") {
+              const res = await api.Leads.sent_purposal(formData);
+              toast.success("Email send successfully");
+              console.log("Response:", res);
+            } else {
+              const res = await api.Leads.sent_messange(items);
+              toast.success(res?.message);
+              console.log(res, "gfhfh");
+            }
+
+    }
 
       router.replace(`/admin/pearls?filter=all`);
     } catch (error) {
@@ -286,8 +263,7 @@ const Sent_Purposal = ({ data1 }: any) => {
     }
     return Promise.resolve();
   };
-  const [formValues, setFormValues] = useState<any>({}); // Store form values
-
+  
   // Load initial form data from localStorage when the component mounts
   useEffect(() => {
     const storedValues = localStorage.getItem("formValues");
@@ -295,9 +271,19 @@ const Sent_Purposal = ({ data1 }: any) => {
       setFormValues(JSON.parse(storedValues));
     }
   }, []);
+  useEffect(() => {
+    const arrayValues = localStorage.getItem("filterArrayId");
+    console.log(arrayValues,"arrayValues");
+    
+    if (arrayValues) {
+      setFilterArrayId1(JSON.parse(arrayValues));
+    }
+  }, []);
 
   // Function to handle form field changes and store in localStorage
   const handleFieldChange = (field: string, value: any) => {
+    console.log(value,"ooo");
+    
     const updatedValues = { ...formValues, [field]: value };
     setFormValues(updatedValues);
     localStorage.setItem("formValues", JSON.stringify(updatedValues)); // Save to localStorage
@@ -330,12 +316,15 @@ const Sent_Purposal = ({ data1 }: any) => {
     (res: any) => res?.field_for === validation.toLowCase(field_for)
   );
   console.log(filterData, "filterData");
-  if (filterData) {
+  if (typeof window !== 'undefined' && filterData) {
     localStorage.setItem("filteredData", JSON.stringify(filterData));
   }
-  const savedFilterData = JSON.parse(
-    localStorage.getItem("filteredData") || "[]"
-  );
+  let savedFilterData = [];
+
+  if (typeof window !== 'undefined') {
+    const storedData = localStorage.getItem("filteredData");
+    savedFilterData = storedData ? JSON.parse(storedData) : [];
+  }
   console.log(savedFilterData, "savedFilterData");
 
   const handleSelectChange = (value: string) => {
@@ -349,7 +338,36 @@ const Sent_Purposal = ({ data1 }: any) => {
     router.push(`?${currentParams.toString()}`);
   };
   console.log(activeKey, "activeKey");
+  const [fields, setFields] = useState<{ name: string }[]>([]); // To store the field names
 
+  // Load field names from localStorage on component mount
+  useEffect(() => {
+    const savedFields = localStorage.getItem('formFields');
+    if (savedFields) {
+      const parsedFields = JSON.parse(savedFields);
+      setFields(parsedFields.map((name: string) => ({ name }))); // Map to match the expected structure
+    }
+  }, []);
+
+  // Store field names in localStorage whenever fields change
+  const handleFieldChange1 = (index: number, value: string) => {
+    const newFields = [...fields];
+    newFields[index].name = value;
+    setFields(newFields);
+    localStorage.setItem('formFields', JSON.stringify(newFields.map(f => f.name))); // Store only field names
+  };
+
+  const handleAdd = () => {
+    const newFields = [...fields, { name: '' }];
+    setFields(newFields);
+    localStorage.setItem('formFields', JSON.stringify(newFields.map(f => f.name)));
+  };
+
+  const handleRemove = (index: number) => {
+    const newFields = fields.filter((_, i) => i !== index);
+    setFields(newFields);
+    localStorage.setItem('formFields', JSON.stringify(newFields.map(f => f.name)));
+  };
   return (
     <div style={{ padding: "20px" }}>
       <ToastContainer />
@@ -364,7 +382,8 @@ const Sent_Purposal = ({ data1 }: any) => {
             Back
           </Button>
           {/* </Link> */}
-          <h2>Send </h2>
+          <h2>Send {capFirst(activeKey || field_Type)} </h2>
+          {!emailMode?
           <Tabs
             defaultActiveKey={field_Type}
             items={tabs}
@@ -374,20 +393,46 @@ const Sent_Purposal = ({ data1 }: any) => {
               padding: "10px",
               borderRadius: "5px",
             }}
-          />
+          />:
+          <div className="" style={{marginTop:"67px", marginBottom:"10px", marginLeft:"128px"}}>
+
+            <h3 className="">Send to following leads</h3>
+          <div  style={{ display: 'flex', alignItems: 'center', gap: '8px',  }}>
+          {filterArrayId1.map((contact:any, index:number) => {
+        // Get the first two letters from the name
+        const initials = contact.name.slice(0, 2).toUpperCase(); // Get first two letters and convert to uppercase
+        // Use the index to match a color from the contacts array
+        const avatarColor = contacts[index % contacts.length].color; // Ensure the colors wrap around if the contacts array is smaller than filterArrayId1
+
+        return (
+          <Avatar key={contact.pearl_id} style={{ backgroundColor: avatarColor }}>
+            {initials}
+          </Avatar>
+        );
+      })}
+          {/* <Tooltip title="Show all leads"> */}
+            <span style={{ color: '#1890ff', cursor: 'pointer' }}>{filterArrayId1.length>8?` more leads...`:""}</span>
+          {/* </Tooltip> */}
+        </div>
+        </div>
+
+          }
           <Card
             title={`${capFirst(activeKey || field_Type)} Form`}
             extra={
               <>
+              {activeKey!=="sms"?
                 <Button type="primary" onClick={showModal}>
                   Preview
-                </Button>
+                </Button>:""}
                 {/* <Button type="primary">Add Field</Button> */}
               </>
             }
             style={{ width: 800, margin: "auto", marginTop: "20px" }}
           >
-            <Form layout="vertical" onFinish={onFinish}>
+            <Form layout="vertical" onFinish={onFinish}
+            
+            >
               {activeKey !== "sms" ? (
                 <>
                   <div
@@ -470,45 +515,7 @@ const Sent_Purposal = ({ data1 }: any) => {
                       placeholder="Start content here..."
                     />
                   </Form.Item>
-                  {/* <ul className="m-0 list-unstyled d-flex gap-2">
-                  <li>
-                    <Popconfirm
-                      title="Delete"
-                      description="Are you sure you want to delete ?"
-                      // onConfirm={(event: any) => { archive(res?._id) }}
-                      // okButtonProps={{ loading: deleteLoading == res._id, danger: true }}
-                    >
-                      <Button
-                        type="text"
-                        danger
-                        htmlType="button"
-                        className="px-0"
-                      >
-                        <i className="fa-solid fa-trash-can"></i>
-                      </Button>
-                    </Popconfirm>
-                  </li>
-                </ul> */}
-
-                  {/* <ul className="m-0 list-unstyled d-flex gap-2">
-                  <li>
-                    <Popconfirm
-                      title="Delete"
-                      description="Are you sure you want to delete ?"
-                      // onConfirm={(event: any) => { archive(res?._id) }}
-                      // okButtonProps={{ loading: deleteLoading == res._id, danger: true }}
-                    >
-                      <Button
-                        type="text"
-                        danger
-                        htmlType="button"
-                        className="px-0"
-                      >
-                        <i className="fa-solid fa-trash-can"></i>
-                      </Button>
-                    </Popconfirm>
-                  </li>
-                </ul> */}
+                 
                   {/* <div className="mt-5"> */}
                   {filterData?.map((item: any, index: any) => {
                     if (hiddenFields[item.filed_name]) return null;
@@ -816,6 +823,7 @@ const Sent_Purposal = ({ data1 }: any) => {
                       />
                     </Form.Item>
                   ))}
+                  {/* <div className=""> */}
                   <Form.List
                     name="names"
                     rules={[
@@ -834,10 +842,7 @@ const Sent_Purposal = ({ data1 }: any) => {
                       <>
                         {fields.map((field, index) => (
                           <Form.Item
-                            {...(index === 0
-                              ? formItemLayout
-                              : formItemLayoutWithOutLabel)}
-                            label={index === 0 ? "Fields" : ""}
+                            {...(index === 0 ? { label: "Fields" } : {})}
                             required={false}
                             key={field.key}
                           >
@@ -856,7 +861,10 @@ const Sent_Purposal = ({ data1 }: any) => {
                             >
                               <Input
                                 placeholder="field name"
-                                style={{ width: "60%" }}
+                                style={{ width: "100%" }}
+                                onChange={(e) =>
+                                  handleFieldChange("name", e.target.value)
+                                }
                               />
                             </Form.Item>
                             {fields.length > 1 ? (
@@ -867,6 +875,7 @@ const Sent_Purposal = ({ data1 }: any) => {
                             ) : null}
                           </Form.Item>
                         ))}
+
                         <Form.Item>
                           <Button
                             type="dashed"
@@ -876,12 +885,12 @@ const Sent_Purposal = ({ data1 }: any) => {
                           >
                             Add field
                           </Button>
-
                           <Form.ErrorList errors={errors} />
                         </Form.Item>
                       </>
                     )}
                   </Form.List>
+                  {/* </div> */}
                   <Form.Item style={{ margin: "auto" }}>
                     <Button type="primary" htmlType="submit">
                       Send

@@ -96,6 +96,7 @@ const Fields={
 const Leads={
   listing:()=>requests.get(`leads-api`),
   sent_purposal:(info: any)=> requests.post('send-email', info),
+  sent_email_queue:(info: any)=> requests.post('send-email-queue', info),
   sent_messange:(info: any)=> requests.post('send-sms', info),
 }
 const dashboard={

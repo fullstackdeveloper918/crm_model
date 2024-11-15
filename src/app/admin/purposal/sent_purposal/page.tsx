@@ -10,7 +10,7 @@ const page = async() => {
     // body: { key: 'value' }
   };
 
-  const data1 = await fetchFromServer(api1);
+  const data1 = await fetchFromServer(api1,undefined);
   console.log(data1,"imported-meta-list");
   return (
     <div>

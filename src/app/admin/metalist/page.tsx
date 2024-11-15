@@ -13,14 +13,14 @@ const page = async({ searchParams }: { searchParams: any }) => {
         // body: { key: 'value' }
       };
     
-      const data = await fetchFromServer(api);
+      const data = await fetchFromServer(api,undefined);
     const api1: any = {
         url: "https://srv626615.hstgr.cloud/field-list",
         method: "GET",
         // body: { key: 'value' }
       };
     
-      const data1 = await fetchFromServer(api);
+      const data1 = await fetchFromServer(api,undefined);
       console.log(data1,"imported-meta-list");
      
   return (

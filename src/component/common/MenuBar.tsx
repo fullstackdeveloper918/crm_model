@@ -125,7 +125,7 @@ const MenuBar = ({ collapsed, setCollapsed }: any) => {
       const parts: string[] = pathname.split("/").filter(Boolean);
 
       // Define the list of keywords you're looking for
-      const keywords = ["metalist", "pearls", "purposal", "fields", "csvlist"];
+      const keywords = ["metalist", "pearls", "purposal", "fields", "csvlist","template"];
 
       // Check if any part of the path matches one of the keywords
       const checkPath = parts.some(part => keywords.includes(part.toLowerCase()));
@@ -271,6 +271,17 @@ const handleLinkClick = () => {
     {
       key: henceofrthEnums.Roles.USERS,
       view: getItem(
+        <Link href="/admin/template?filter=all" className="text-decoration-none"  onClick={handleLinkClick}>
+          {/* {getUserdata?.is_admin == false ? "User" : "Archive Members"} */}
+         Send Emails
+        </Link>,
+        "template",
+        <UserOutlined style={iconSize} />
+      ),
+    },
+    {
+      key: henceofrthEnums.Roles.USERS,
+      view: getItem(
         <Link href="/admin/purposal" className="text-decoration-none"  onClick={handleLinkClick}>
           {/* {getUserdata?.is_admin == false ? "User" : "Archive Members"} */}
           Proposals
@@ -279,17 +290,7 @@ const handleLinkClick = () => {
         <UserOutlined style={iconSize} />
       ),
     },
-    {
-      key: henceofrthEnums.Roles.USERS,
-      view: getItem(
-        <Link href="/admin/template" className="text-decoration-none"  onClick={handleLinkClick}>
-          {/* {getUserdata?.is_admin == false ? "User" : "Archive Members"} */}
-          Email Template
-        </Link>,
-        "template",
-        <UserOutlined style={iconSize} />
-      ),
-    },
+   
     {
       key: henceofrthEnums.Roles.USERS,
       view: getItem(

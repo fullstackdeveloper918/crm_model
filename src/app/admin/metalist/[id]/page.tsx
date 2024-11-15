@@ -11,7 +11,7 @@ const page =async ({params}:any) => {
     // comment only
   };
 
-  const data = await fetchFromServer(api);
+  const data = await fetchFromServer(api,undefined);
   console.log(data,"qweedd");
   
   return (
