@@ -26,6 +26,8 @@ import {
   FacebookOutlined,
   InstagramOutlined,
   YoutubeOutlined,
+  UserOutlined,
+  AntDesignOutlined,
 } from "@ant-design/icons";
 import { UploadOutlined, LeftOutlined, InboxOutlined } from "@ant-design/icons";
 import React, { useEffect, useState } from "react";
@@ -54,16 +56,16 @@ interface Contact {
 }
 
 const contacts: Contact[] = [
-  { id: 1, initials: 'OS', color: '#a5d6a7' },
-  { id: 2, initials: 'CJ', color: '#80cbc4' },
-  { id: 3, initials: 'NT', color: '#f48fb1' },
-  { id: 4, initials: 'M', color: '#ce93d8' },
-  { id: 5, initials: 'DO', color: '#ffab91' },
-  { id: 6, initials: 'R', color: '#ffcc80' },
-  { id: 7, initials: 'VT', color: '#e6ee9c' },
-  { id: 8, initials: 'O', color: '#bcaaa4' },
-  { id: 9, initials: 'JS', color: '#ffccbc' },
-  { id: 10, initials: 'TA', color: '#b0bec5' },
+  { id: 1, initials: "OS", color: "#a5d6a7" },
+  { id: 2, initials: "CJ", color: "#80cbc4" },
+  { id: 3, initials: "NT", color: "#f48fb1" },
+  { id: 4, initials: "M", color: "#ce93d8" },
+  { id: 5, initials: "DO", color: "#ffab91" },
+  { id: 6, initials: "R", color: "#ffcc80" },
+  { id: 7, initials: "VT", color: "#e6ee9c" },
+  { id: 8, initials: "O", color: "#bcaaa4" },
+  { id: 9, initials: "JS", color: "#ffccbc" },
+  { id: 10, initials: "TA", color: "#b0bec5" },
 ];
 const tabs = [
   {
@@ -112,13 +114,16 @@ const Sent_Purposal = ({ data1 }: any) => {
   const emailMode: any = searchParams.get("email_mode");
   const [formValues, setFormValues] = useState<any>({}); // Store form values
   const [filterArrayId1, setFilterArrayId1] = useState<any>([]); // Store form values
-console.log(filterArrayId1,"filterArrayId");
-const filterpearl_ids = filterArrayId1.map((res: any) => res?.pearl_id);
+  console.log(filterArrayId1, "filterArrayId");
+  const filterpearl_ids = filterArrayId1.map((res: any) => res?.pearl_id);
 
-// Convert the array to a JSON string
-const pearlIdsAsString = JSON.stringify(filterpearl_ids);
-const filteruser_ids=filterArrayId1.map((res:any)=>res?.user_uuid)
-const user_idssAsString = JSON.stringify(filteruser_ids);
+  // Convert the array to a JSON string
+  const pearlIdsAsString = JSON.stringify(filterpearl_ids);
+  const filteruser_ids = filterArrayId1.map((res: any) => res?.user_uuid);
+  console.log(filteruser_ids,"filteruser_ids");
+  
+  const user_idssAsString = JSON.stringify(filteruser_ids);
+  console.log(user_idssAsString,"user_idssAsString");
   // Log the pearlsLeadId to the console
   console.log(pearlsLeadId, "searchParam");
   console.log(userId, "userId");
@@ -140,7 +145,6 @@ const user_idssAsString = JSON.stringify(filteruser_ids);
     setIsModalVisible(false);
   };
   const router = useRouter();
- 
 
   const [file, setFile] = useState<any>(null);
   // const handleFileChange = (info: any) => {
@@ -166,7 +170,7 @@ const user_idssAsString = JSON.stringify(filteruser_ids);
     }
   };
   const [activeKey, setActiveKey] = useState<any>(field_Type);
-console.log(activeKey,"activeKey");
+  console.log(activeKey, "activeKey");
 
   const onFinish = async (values: any) => {
     console.log("Form submitted with values:", file, values);
@@ -175,31 +179,38 @@ console.log(activeKey,"activeKey");
       formData.append("file", file);
     }
 
-    formData.append("user_uuid", emailMode?[user_idssAsString]:userId);
-    formData.append("pearl_id", emailMode?[pearlIdsAsString]:pearlsLeadId);
-    formData.append("subject", values?.subject);
-    formData.append("productName", values?.productName);
-    formData.append("otherFields", values?.names);
-    formData.append("email_content", values?.email_content);
+    formData.append("user_uuid", emailMode ? [user_idssAsString] : userId);
+    formData.append("pearl_id", emailMode ? [pearlIdsAsString] : pearlsLeadId);
+    formData.append("subject",JSON.stringify(values?.subject));
+    formData.append("productName", JSON.stringify(values?.productName));
+    formData.append("email_content", JSON.stringify(values?.email_content));
 
     let otherFieldsObject: any = {};
 
     for (const key in values) {
       if (
+        // key !== "subject" &&
+        // key !== "productName" &&
+        // key !== "file" &&
+        // key !== "email_content"
         key !== "subject" &&
         key !== "productName" &&
         key !== "file" &&
-        key !== "email_content"
+        key !== "email_content" &&
+        key !== "names"
       ) {
         otherFieldsObject[key] = values[key];
       }
     }
-    console.log(JSON.stringify(otherFieldsObject), "otherFieldsObject");
+    const mergedOtherFields = {
+      names: values?.names, // Add names as part of the object
+      ...otherFieldsObject, // Spread other fields into the object
+    };
+
+    console.log(JSON.stringify(mergedOtherFields), "otherFieldsObject");
     // Remove the trailing comma and close the curly brace
-    formData.append("otherFields", JSON.stringify(otherFieldsObject));
-    for (const [key, value] of formData.entries()) {
-      console.log(`${key}:`, typeof value);
-    }
+    formData.append("otherFields", JSON.stringify(mergedOtherFields));
+
     let items = {
       user_uuid: userId,
       pearl_id: pearlsLeadId,
@@ -209,24 +220,26 @@ console.log(activeKey,"activeKey");
     // return;
 
     try {
-      if(emailMode){
+      if (emailMode) {
+        console.log(formData, "formData");
+        for (const [key, value] of formData.entries()) {
+          console.log(`${key}:`, typeof value);
+        }
         const res = await api.Leads.sent_email_queue(formData);
         toast.success("Email send successfully");
-      }else{
-      
-            if (activeKey === "email") {
-              const res = await api.Leads.sent_purposal(formData);
-              toast.success("Email send successfully");
-              console.log("Response:", res);
-            } else {
-              const res = await api.Leads.sent_messange(items);
-              toast.success(res?.message);
-              console.log(res, "gfhfh");
-            }
+      } else {
+        if (activeKey === "email") {
+          const res = await api.Leads.sent_purposal(formData);
+          toast.success("Email send successfully");
+          console.log("Response:", res);
+        } else {
+          const res = await api.Leads.sent_messange(items);
+          toast.success(res?.message);
+          console.log(res, "gfhfh");
+        }
+      }
 
-    }
-
-      router.replace(`/admin/pearls?filter=all`);
+      // router.replace(`/admin/pearls?filter=all`);
     } catch (error) {
       console.log("Error:", error);
     }
@@ -263,7 +276,7 @@ console.log(activeKey,"activeKey");
     }
     return Promise.resolve();
   };
-  
+
   // Load initial form data from localStorage when the component mounts
   useEffect(() => {
     const storedValues = localStorage.getItem("formValues");
@@ -273,8 +286,8 @@ console.log(activeKey,"activeKey");
   }, []);
   useEffect(() => {
     const arrayValues = localStorage.getItem("filterArrayId");
-    console.log(arrayValues,"arrayValues");
-    
+    console.log(arrayValues, "arrayValues");
+
     if (arrayValues) {
       setFilterArrayId1(JSON.parse(arrayValues));
     }
@@ -282,8 +295,8 @@ console.log(activeKey,"activeKey");
 
   // Function to handle form field changes and store in localStorage
   const handleFieldChange = (field: string, value: any) => {
-    console.log(value,"ooo");
-    
+    console.log(value, "ooo");
+
     const updatedValues = { ...formValues, [field]: value };
     setFormValues(updatedValues);
     localStorage.setItem("formValues", JSON.stringify(updatedValues)); // Save to localStorage
@@ -316,12 +329,12 @@ console.log(activeKey,"activeKey");
     (res: any) => res?.field_for === validation.toLowCase(field_for)
   );
   console.log(filterData, "filterData");
-  if (typeof window !== 'undefined' && filterData) {
+  if (typeof window !== "undefined" && filterData) {
     localStorage.setItem("filteredData", JSON.stringify(filterData));
   }
   let savedFilterData = [];
 
-  if (typeof window !== 'undefined') {
+  if (typeof window !== "undefined") {
     const storedData = localStorage.getItem("filteredData");
     savedFilterData = storedData ? JSON.parse(storedData) : [];
   }
@@ -342,7 +355,7 @@ console.log(activeKey,"activeKey");
 
   // Load field names from localStorage on component mount
   useEffect(() => {
-    const savedFields = localStorage.getItem('formFields');
+    const savedFields = localStorage.getItem("formFields");
     if (savedFields) {
       const parsedFields = JSON.parse(savedFields);
       setFields(parsedFields.map((name: string) => ({ name }))); // Map to match the expected structure
@@ -354,19 +367,28 @@ console.log(activeKey,"activeKey");
     const newFields = [...fields];
     newFields[index].name = value;
     setFields(newFields);
-    localStorage.setItem('formFields', JSON.stringify(newFields.map(f => f.name))); // Store only field names
+    localStorage.setItem(
+      "formFields",
+      JSON.stringify(newFields.map((f) => f.name))
+    ); // Store only field names
   };
 
   const handleAdd = () => {
-    const newFields = [...fields, { name: '' }];
+    const newFields = [...fields, { name: "" }];
     setFields(newFields);
-    localStorage.setItem('formFields', JSON.stringify(newFields.map(f => f.name)));
+    localStorage.setItem(
+      "formFields",
+      JSON.stringify(newFields.map((f) => f.name))
+    );
   };
 
   const handleRemove = (index: number) => {
     const newFields = fields.filter((_, i) => i !== index);
     setFields(newFields);
-    localStorage.setItem('formFields', JSON.stringify(newFields.map(f => f.name)));
+    localStorage.setItem(
+      "formFields",
+      JSON.stringify(newFields.map((f) => f.name))
+    );
   };
   return (
     <div style={{ padding: "20px" }}>
@@ -383,56 +405,86 @@ console.log(activeKey,"activeKey");
           </Button>
           {/* </Link> */}
           <h2>Send {capFirst(activeKey || field_Type)} </h2>
-          {!emailMode?
-          <Tabs
-            defaultActiveKey={field_Type}
-            items={tabs}
-            onChange={handleChange}
-            style={{
-              backgroundColor: "#f5f5f5",
-              padding: "10px",
-              borderRadius: "5px",
-            }}
-          />:
-          <div className="" style={{marginTop:"67px", marginBottom:"10px", marginLeft:"128px"}}>
+          {!emailMode ? (
+            <Tabs
+              defaultActiveKey={field_Type}
+              items={tabs}
+              onChange={handleChange}
+              style={{
+                backgroundColor: "#f5f5f5",
+                padding: "10px",
+                borderRadius: "5px",
+              }}
+            />
+          ) : (
+            <div
+              className=""
+              style={{
+                marginTop: "67px",
+                marginBottom: "10px",
+                marginLeft: "128px",
+              }}
+            >
+              <h3 className="">Send to following leads</h3>
+              <div
+                style={{ display: "flex", alignItems: "center", gap: "8px" }}
+              >
+                <Avatar.Group
+                  size="large"
+                  max={{
+                    count: 10,
+                    style: {
+                      color: "#f56a00",
+                      backgroundColor: "#fde3cf",
+                      cursor: "pointer",
+                    },
+                    popover: { trigger: "click" },
+                  }}
+                >
+                  {filterArrayId1.map((contact: any, index: number) => {
+                    const initials = contact.name.slice(0, 2).toUpperCase();
+                    const avatarColor = contacts[index % contacts.length].color;
 
-            <h3 className="">Send to following leads</h3>
-          <div  style={{ display: 'flex', alignItems: 'center', gap: '8px',  }}>
-          {filterArrayId1.map((contact:any, index:number) => {
-        // Get the first two letters from the name
-        const initials = contact.name.slice(0, 2).toUpperCase(); // Get first two letters and convert to uppercase
-        // Use the index to match a color from the contacts array
-        const avatarColor = contacts[index % contacts.length].color; // Ensure the colors wrap around if the contacts array is smaller than filterArrayId1
+                    return (
+                      <>
+                        <Tooltip title={contact.name} placement="top">
+                          <Avatar
+                            key={contact.pearl_id}
+                            style={{ backgroundColor: avatarColor }}
+                          >
+                            {initials}
+                          </Avatar>
+                        </Tooltip>
+                      </>
+                    );
+                  })}
+                </Avatar.Group>
 
-        return (
-          <Avatar key={contact.pearl_id} style={{ backgroundColor: avatarColor }}>
-            {initials}
-          </Avatar>
-        );
-      })}
-          {/* <Tooltip title="Show all leads"> */}
-            <span style={{ color: '#1890ff', cursor: 'pointer' }}>{filterArrayId1.length>8?` more leads...`:""}</span>
-          {/* </Tooltip> */}
-        </div>
-        </div>
-
-          }
+                {/* <Tooltip title="Show all leads"> */}
+                {/* <span style={{ color: "#1890ff", cursor: "pointer" }}>
+                  {filterArrayId1.length > 8 ? ` more leads...` : ""}
+                </span> */}
+                {/* </Tooltip> */}
+              </div>
+            </div>
+          )}
           <Card
             title={`${capFirst(activeKey || field_Type)} Form`}
             extra={
               <>
-              {activeKey!=="sms"?
-                <Button type="primary" onClick={showModal}>
-                  Preview
-                </Button>:""}
+                {activeKey !== "sms" ? (
+                  <Button type="primary" onClick={showModal}>
+                    Preview
+                  </Button>
+                ) : (
+                  ""
+                )}
                 {/* <Button type="primary">Add Field</Button> */}
               </>
             }
             style={{ width: 800, margin: "auto", marginTop: "20px" }}
           >
-            <Form layout="vertical" onFinish={onFinish}
-            
-            >
+            <Form layout="vertical" onFinish={onFinish}>
               {activeKey !== "sms" ? (
                 <>
                   <div
@@ -515,7 +567,7 @@ console.log(activeKey,"activeKey");
                       placeholder="Start content here..."
                     />
                   </Form.Item>
-                 
+
                   {/* <div className="mt-5"> */}
                   {filterData?.map((item: any, index: any) => {
                     if (hiddenFields[item.filed_name]) return null;

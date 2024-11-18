@@ -746,7 +746,7 @@ const Pearl_diver_leads = ({ data, fetchData,onArchive , sendStatus,currentSearc
                         />
                       </Tooltip>
 
-                      <Tooltip title="Delete">
+                      {/* <Tooltip title="Delete">
                         <Popconfirm
                           title="Delete"
                           description="Are you sure you want to delete ?"
@@ -759,7 +759,7 @@ const Pearl_diver_leads = ({ data, fetchData,onArchive , sendStatus,currentSearc
                             icon={<DeleteOutlined style={{ color: "red" }} />}
                           />
                         </Popconfirm>
-                      </Tooltip>
+                      </Tooltip> */}
                       {/* <Tooltip title="Document">
           <Button icon={<FileOutlined />} />
         </Tooltip> */}
