@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import logo from "../../assests/images/image.png";
 import { Typography, type MenuProps } from "antd";
-import { CloseOutlined, TeamOutlined } from "@ant-design/icons";
+import { CloseOutlined, FileAddOutlined, FileExcelOutlined, MailOutlined, RiseOutlined, TeamOutlined } from "@ant-design/icons";
 import User from "../../assests/images/placeholder.png";
 import favicon from "../../assests/images/favicon.png";
 import {
@@ -225,7 +225,7 @@ const handleLinkClick = () => {
       view: getItem(
         "Meta Leads",
         "sub1",
-        <UsergroupAddOutlined style={iconSize} />,
+        <RiseOutlined style={iconSize} />,
         [
           // getItem(
           //   <Link href="#" className="text-decoration-none"  onClick={handleLinkClick}>
@@ -242,7 +242,7 @@ const handleLinkClick = () => {
             Meta Excel
             </Link>,
             "csvlist",
-            <TeamOutlined  style={iconSize} />
+            <FileExcelOutlined  style={iconSize} />
           ),     
           getItem(
             <Link
@@ -252,7 +252,7 @@ const handleLinkClick = () => {
            Meta Leads
             </Link>,
             "metalist",
-            <TeamOutlined  style={iconSize} />
+            <RiseOutlined  style={iconSize} />
           ),     
         ]
       ),
@@ -265,7 +265,7 @@ const handleLinkClick = () => {
           Pearl diver leads
         </Link>,
         "pearls",
-        <UserOutlined style={iconSize} />
+        <RiseOutlined style={iconSize} />
       ),
     },
     {
@@ -276,7 +276,7 @@ const handleLinkClick = () => {
          Send Emails
         </Link>,
         "template",
-        <UserOutlined style={iconSize} />
+        <MailOutlined style={iconSize} />
       ),
     },
     {
@@ -299,7 +299,7 @@ const handleLinkClick = () => {
           Fields
         </Link>,
         "fields",
-        <UserOutlined style={iconSize} />
+        <FileAddOutlined  style={iconSize} />
       ),
     },
     // hasMeetingPermission && 
