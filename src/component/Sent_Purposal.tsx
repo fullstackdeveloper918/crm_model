@@ -48,7 +48,8 @@ const { Title, Text } = Typography;
 const { Header, Content } = Layout;
 const { Option } = Select;
 import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
-import AddFieldsModal from "./common/addFieldsModal";
+import AddFieldsModal from "../component/common/AddFieldsModal";
+// import AddFieldsModal from "./common/addFieldsModal";
 
 interface Contact {
   id: number;
