@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import logo from "../../assests/images/image.png";
 import { Typography, type MenuProps } from "antd";
-import { CloseOutlined, FileAddOutlined, FileExcelOutlined, MailOutlined, RiseOutlined, TeamOutlined } from "@ant-design/icons";
+import { CloseOutlined, FileAddOutlined, FileExcelOutlined, MailOutlined, RiseOutlined, StockOutlined, TeamOutlined } from "@ant-design/icons";
 import User from "../../assests/images/placeholder.png";
 import favicon from "../../assests/images/favicon.png";
 import {
@@ -225,7 +225,7 @@ const handleLinkClick = () => {
       view: getItem(
         "Meta Leads",
         "sub1",
-        <RiseOutlined style={iconSize} />,
+        <StockOutlined style={iconSize} />,
         [
           // getItem(
           //   <Link href="#" className="text-decoration-none"  onClick={handleLinkClick}>

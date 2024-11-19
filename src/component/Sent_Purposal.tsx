@@ -48,6 +48,7 @@ const { Title, Text } = Typography;
 const { Header, Content } = Layout;
 const { Option } = Select;
 import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
+import AddFieldsModal from "./common/addFieldsModal";
 
 interface Contact {
   id: number;
@@ -100,10 +101,17 @@ const Sent_Purposal = ({ data1 }: any) => {
 
   const searchParams = useSearchParams();
   const [hiddenFields, setHiddenFields] = useState<any>({});
+  const [hiddenFields1, setHiddenFields1] = useState<any>({});
   const handleDeleteField = (fieldName: string) => {
     setHiddenFields((prevState: any) => ({
       ...prevState,
       [fieldName]: true, // Mark this field as hidden
+    }));
+  };
+  const handleDeleteField1 = (field_name: string) => {
+    setHiddenFields1((prevState: any) => ({
+      ...prevState,
+      [field_name]: true, // Mark this field as hidden
     }));
   };
   // Get the pearls_lead_id from the URL query string
@@ -127,7 +135,8 @@ const Sent_Purposal = ({ data1 }: any) => {
   // Log the pearlsLeadId to the console
   console.log(pearlsLeadId, "searchParam");
   console.log(userId, "userId");
-
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [addFields, setAddFields] = useState<any>({});
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [state, setState] = useState<any>("");
   console.log(state, "state");
@@ -147,6 +156,9 @@ const Sent_Purposal = ({ data1 }: any) => {
   const router = useRouter();
 
   const [file, setFile] = useState<any>(null);
+  const [file1, setFile1] = useState<any>(null);
+  console.log(file1,"file1");
+  
   // const handleFileChange = (info: any) => {
   //   setFile(info.file.originFileObj);
   // };
@@ -162,6 +174,25 @@ const Sent_Purposal = ({ data1 }: any) => {
         // Update the form state with the base64 image
         setFormValues({
           ...formValues,
+          Attachment: [imageBase64], // Store as array
+        });
+      };
+
+      reader.readAsDataURL(imageFile);
+    }
+  };
+  const handleFileChange1 = (info: any) => {
+    setFile1(info.file.originFileObj);
+    if (info.fileList.length > 0) {
+      const imageFile = info.fileList[0].originFileObj;
+      const reader = new FileReader();
+
+      reader.onloadend = () => {
+        const imageBase64 = reader.result as string;
+
+        // Update the form state with the base64 image
+        setAddFields({
+          ...addFields,
           Attachment: [imageBase64], // Store as array
         });
       };
@@ -262,8 +293,12 @@ const Sent_Purposal = ({ data1 }: any) => {
   }, [data1]);
   console.log(filedTypes, "filedTypes");
   const targetName = "Document";
+  const targetName1 = "Document";
   const textCount = data1?.data.filter(
     (item: any) => item.type === "text" && item.name === targetName
+  ).length;
+  const textCount1 = (Array.isArray(addFields) ? addFields : []).filter(
+    (item: any) => item.type === "text" && item.name === targetName1
   ).length;
   console.log(textCount, "textCount");
   // const handleFinish = (values: any) => {
@@ -301,6 +336,13 @@ const Sent_Purposal = ({ data1 }: any) => {
     setFormValues(updatedValues);
     localStorage.setItem("formValues", JSON.stringify(updatedValues)); // Save to localStorage
   };
+  const handleFieldChange2 = (field: string, value: any) => {
+    console.log(value, "aaa");
+
+    const updatedValues = { ...addFields, [field]: value };
+    setAddFields(updatedValues);
+    localStorage.setItem("extrafields", JSON.stringify(updatedValues)); // Save to localStorage
+  };
 
   // Function to handle image change and store the image (only one image)
   const handleImageChange = (file: any, fieldName: string) => {
@@ -328,7 +370,12 @@ const Sent_Purposal = ({ data1 }: any) => {
   const filterData = data1?.data?.filter(
     (res: any) => res?.field_for === validation.toLowCase(field_for)
   );
-  console.log(filterData, "filterData");
+  
+  const filterData1 = Array.isArray(addFields)
+  ? addFields.filter((res: any) => res?.field_name )
+  : [];
+  
+  console.log(filterData1, "filterData1");
   if (typeof window !== "undefined" && filterData) {
     localStorage.setItem("filteredData", JSON.stringify(filterData));
   }
@@ -363,7 +410,7 @@ const Sent_Purposal = ({ data1 }: any) => {
   }, []);
 
   // Store field names in localStorage whenever fields change
-  const handleFieldChange1 = (index: number, value: string) => {
+  const handleFieldChange1 = (index: number, value: any) => {
     const newFields = [...fields];
     newFields[index].name = value;
     setFields(newFields);
@@ -373,23 +420,48 @@ const Sent_Purposal = ({ data1 }: any) => {
     ); // Store only field names
   };
 
-  const handleAdd = () => {
-    const newFields = [...fields, { name: "" }];
-    setFields(newFields);
-    localStorage.setItem(
-      "formFields",
-      JSON.stringify(newFields.map((f) => f.name))
-    );
+console.log(addFields,"addFields");
+
+  const handleCancel1 = () => {
+    setIsModalOpen(false);
+    // Optionally reset form fields
   };
 
-  const handleRemove = (index: number) => {
-    const newFields = fields.filter((_, i) => i !== index);
-    setFields(newFields);
-    localStorage.setItem(
-      "formFields",
-      JSON.stringify(newFields.map((f) => f.name))
-    );
+  const showModal1 = () => {
+    setIsModalOpen(true);
   };
+const [state1,setState1]=useState<any>(false)
+console.log(state1,"state1");
+
+const submit = (values: any) => {
+  console.log("Form Submitted:", values);
+
+  setIsModalOpen(false);
+
+  try {
+    const fields = JSON.parse(localStorage.getItem("extrafields") || "[]");
+    fields.push(values);
+    localStorage.setItem("extrafields", JSON.stringify(fields));
+    setState1(true);
+
+    console.log("Field added:", values);
+  } catch (error) {
+    console.error("Error saving field data to localStorage:", error);
+  }
+};
+useEffect(() => {
+  const storedValues = localStorage.getItem("extrafields");
+  console.log(storedValues, "storedValues");
+
+  if (storedValues) {
+    setAddFields(JSON.parse(storedValues));
+  }
+}, [state1]);
+useEffect(() => {
+  if (state1) {
+    setState1(false); // Reset state1 after it's been processed
+  }
+}, [state1]);
   return (
     <div style={{ padding: "20px" }}>
       <ToastContainer />
@@ -852,6 +924,291 @@ const Sent_Purposal = ({ data1 }: any) => {
                         return null;
                     }
                   })}
+                  {filterData1?.map((item: any, index: any) => {
+                    console.log(item,"popopopo");
+                    
+                    if (hiddenFields1[item.field_name]) return null;
+                    const validationRules = hiddenFields1[item.field_name]
+                      ? [] // No validation if the field is hidden
+                      : [
+                          {
+                            required: true,
+                            message: `Please fill ${item.field_name}!`,
+                          },
+                        ];
+                    switch (item.field_type) {
+                      case "textarea":
+                        return (
+                          <>
+                            <Form.Item
+                              key={index}
+                              name={item.field_name}
+                              label={item.field_name}
+                              rules={validationRules}
+                            >
+                              <TextArea
+                                placeholder={`Enter text area ${index + 1}`}
+                                value={addFields[item.field_name]} // Bind the value to state
+                                onChange={(e) =>
+                                  handleFieldChange2(
+                                    item.field_name,
+                                    e.target.value
+                                  )
+                                } // Update value on change
+                              />
+                            </Form.Item>
+                            <ul className="m-0 list-unstyled d-flex gap-2">
+                              <li>
+                                <Popconfirm
+                                  title="Delete"
+                                  description="Are you sure you want to delete ?"
+                                  onConfirm={() =>
+                                    handleDeleteField1(item.field_name)
+                                  }
+                                  // okButtonProps={{ loading: deleteLoading == res._id, danger: true }}
+                                >
+                                  <Button
+                                    type="text"
+                                    danger
+                                    htmlType="button"
+                                    className="px-0"
+                                  >
+                                    <i className="fa-solid fa-trash-can"></i>
+                                  </Button>
+                                </Popconfirm>
+                              </li>
+                            </ul>
+                          </>
+                        );
+                      case "number":
+                        return (
+                          <>
+                            <Form.Item
+                              key={index}
+                              name={item.field_name}
+                              label={item.field_name}
+                              rules={validationRules}
+                            >
+                              <Input
+                                type="number"
+                                placeholder={`Enter number ${index + 1}`}
+                                value={addFields[item.field_name]} // Bind the value to state
+                                onChange={(e) =>
+                                  handleFieldChange2(
+                                    item.field_name,
+                                    e.target.value
+                                  )
+                                } // Update value on change
+                              />
+                            </Form.Item>
+                            <ul className="m-0 list-unstyled d-flex gap-2">
+                              <li>
+                                <Popconfirm
+                                  title="Delete"
+                                  description="Are you sure you want to delete ?"
+                                  onConfirm={() =>
+                                    handleDeleteField1(item.field_name)
+                                  }
+                                  // okButtonProps={{ loading: deleteLoading == res._id, danger: true }}
+                                >
+                                  <Button
+                                    type="text"
+                                    danger
+                                    htmlType="button"
+                                    className="px-0"
+                                  >
+                                    <i className="fa-solid fa-trash-can"></i>
+                                  </Button>
+                                </Popconfirm>
+                              </li>
+                            </ul>
+                          </>
+                        );
+                      case "text":
+                        return (
+                          <>
+                            <Form.Item
+                              key={index}
+                              name={item.field_name}
+                              label={item.field_name}
+                              rules={validationRules}
+                            >
+                              <Input
+                                placeholder={`Enter text ${index + 1}`}
+                                value={addFields[item.field_name]} // Bind the value to state
+                                onChange={(e) =>
+                                  handleFieldChange2(
+                                    item.field_name,
+                                    e.target.value
+                                  )
+                                } // Update value on change
+                              />
+                            </Form.Item>
+                            <ul className="m-0 list-unstyled d-flex gap-2">
+                              <li>
+                                <Popconfirm
+                                  title="Delete"
+                                  description="Are you sure you want to delete ?"
+                                  // onConfirm={(event: any) => { archive(res?._id) }}
+                                  onConfirm={() =>
+                                    handleDeleteField1(item.field_name)
+                                  }
+                                >
+                                  <Button
+                                    type="text"
+                                    danger
+                                    htmlType="button"
+                                    className="px-0"
+                                  >
+                                    <i className="fa-solid fa-trash-can"></i>
+                                  </Button>
+                                </Popconfirm>
+                              </li>
+                            </ul>
+                          </>
+                        );
+                      case "radio":
+                        return (
+                          <Form.Item
+                            key={index}
+                            name={item.field_name}
+                            label={item.field_name}
+                            rules={[
+                              {
+                                required: true,
+                                message: `Please fill ${item.field_name}!`,
+                              },
+                            ]}
+                          >
+                            <Radio.Group
+                              value={addFields[item.field_name]} // Bind the value to state
+                              onChange={(e) =>
+                                handleFieldChange2(
+                                  item.field_name,
+                                  e.target.value
+                                )
+                              } // Update value on change
+                            >
+                              <Radio value="option1">Option 1</Radio>
+                              <Radio value="option2">Option 2</Radio>
+                            </Radio.Group>
+                          </Form.Item>
+                        );
+                      case "dropDown":
+                        return (
+                          <Form.Item
+                            key={index}
+                            name={item.field_name}
+                            label={item.field_name}
+                            rules={[
+                              {
+                                required: true,
+                                message: `Please fill ${item.field_name}!`,
+                              },
+                            ]}
+                          >
+                            <Select
+                              placeholder={`Select an option ${index + 1}`}
+                              value={addFields[item.field_name]} // Bind the value to state
+                              onChange={(value) =>
+                                handleFieldChange2(item.field_name, value)
+                              } // Update value on change
+                            >
+                              <Select.Option value="option1">
+                                Option 1
+                              </Select.Option>
+                              <Select.Option value="option2">
+                                Option 2
+                              </Select.Option>
+                            </Select>
+                          </Form.Item>
+                        );
+                      case "checkbox":
+                        return (
+                          <Form.Item
+                            key={index}
+                            name={item.field_name}
+                            valuePropName="checked"
+                            label={item.field_name}
+                            rules={[
+                              {
+                                required: true,
+                                message: `Please fill ${item.field_name}!`,
+                              },
+                            ]}
+                          >
+                            <Checkbox
+                              checked={addFields[item.field_name]} // Bind the value to state
+                              onChange={(e:any) =>
+                                handleFieldChange2(
+                                  item.filed_name,
+                                  e.target.checked
+                                )
+                              } // Update value on change
+                            >
+                              Check this box
+                            </Checkbox>
+                          </Form.Item>
+                        );
+                      case "image":
+                        return (
+                          <>
+                            <Form.Item
+                              key={index}
+                              label={item.field_name}
+                              rules={[{ validator: fileValidator }]} // Custom validator function
+                            >
+                              <Dragger
+                                // multiple={false} // Only allow one image
+                                onChange={handleFileChange1}
+                                // maxCount={1} // Limit to 1 image upload
+                              >
+                                <p className="ant-upload-drag-icon">
+                                  <InboxOutlined />
+                                </p>
+                                <p className="ant-upload-text">
+                                  Click or drag file to this area to upload
+                                </p>
+                              </Dragger>
+                              {/* Display the uploaded image */}
+                              {/* {formValues[item.filed_name] &&
+                          formValues[item.filed_name][0] && (
+                            <div style={{ marginTop: "10px" }}>
+                              <img
+                                src={formValues[item.filed_name][0]} // Display the first image in the array
+                                alt="Uploaded"
+                                width={100}
+                              />
+                            </div>
+                          )} */}
+                            </Form.Item>
+                            <ul className="m-0 list-unstyled d-flex gap-2">
+                              <li>
+                                <Popconfirm
+                                  title="Delete"
+                                  description="Are you sure you want to delete ?"
+                                  onConfirm={() =>
+                                    handleDeleteField1(item.field_name)
+                                  }
+                                  // okButtonProps={{ loading: deleteLoading == res._id, danger: true }}
+                                >
+                                  <Button
+                                    type="text"
+                                    danger
+                                    htmlType="button"
+                                    className="px-0"
+                                  >
+                                    <i className="fa-solid fa-trash-can"></i>
+                                  </Button>
+                                </Popconfirm>
+                              </li>
+                            </ul>
+                          </>
+                        );
+                      default:
+                        return null;
+                    }
+                  })}
 
                   {/* </div> */}
                   {Array.from({ length: textCount }).map((_, i) => (
@@ -875,8 +1232,29 @@ const Sent_Purposal = ({ data1 }: any) => {
                       />
                     </Form.Item>
                   ))}
+                  {Array.from({ length: textCount1 }).map((_, index) => (
+                    <Form.Item
+                      key={`dynamic-text1-${index}`}
+                      name={`dynamicText1-${index}`}
+                      label={`Text Input for ${targetName1}`}
+                      rules={[
+                        {
+                          required: true,
+                          message: `Please fill ${targetName1}!`,
+                        },
+                      ]}
+                    >
+                      <Input
+                        placeholder={`Enter text for ${targetName1}`}
+                        value={addFields[`dynamicText1-${index}`]} // Bind the value to state
+                        onChange={(e:any) =>
+                          handleFieldChange2(`dynamicText1-${index}`, e.target.value)
+                        } // Update value on change
+                      />
+                    </Form.Item>
+                  ))}
                   {/* <div className=""> */}
-                  <Form.List
+                  {/* <Form.List
                     name="names"
                     rules={[
                       {
@@ -941,7 +1319,11 @@ const Sent_Purposal = ({ data1 }: any) => {
                         </Form.Item>
                       </>
                     )}
-                  </Form.List>
+                  </Form.List> */}
+                  <div className="mt-5 mb-5">
+                  {/* <AddFieldsModal /> */}
+                  <AddFieldsModal submit={submit} showModal1={showModal1} handleCancel1={handleCancel1} isModalOpen={isModalOpen}/>
+                  </div>
                   {/* </div> */}
                   <Form.Item style={{ margin: "auto" }}>
                     <Button type="primary" htmlType="submit">
