@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { ImportOutlined } from "@ant-design/icons";
 const { Option } = Select;
 
-const AddFieldsModal = ({isModalOpen,submit,showModal1,handleCancel1}:any) => {
+const AddFieldsModal = ({form,isModalOpen,submit,showModal1,handleCancel1}:any) => {
 //   const [isModalOpen, setIsModalOpen] = useState(false);
 
 //   const handleCancel = () => {
@@ -80,6 +80,7 @@ const AddFieldsModal = ({isModalOpen,submit,showModal1,handleCancel1}:any) => {
         <Form
           id="myForm"
           layout="vertical"
+          form={form}
           onFinish={submit} // This will call submit when the form is submitted
         >
           <Form.Item

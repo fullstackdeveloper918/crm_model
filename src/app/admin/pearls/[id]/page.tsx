@@ -31,11 +31,11 @@ const page = async({params}:any) => {
   };
 
   const data2 = await fetchFromServer(api2,undefined);
-  console.log(data2,"1234567");
+  console.log(data2,"activitiest");
   // data?.getByOne[0]?.user_uuid
   return (
    <div className="">
-    <LeadsUserDeatils data={data} data1={data1}/>
+    <LeadsUserDeatils data={data} data1={data1} activity={data2}/>
    </div>
   )
 }

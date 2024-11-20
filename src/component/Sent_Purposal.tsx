@@ -80,6 +80,7 @@ const tabs = [
   },
 ];
 const Sent_Purposal = ({ data1 }: any) => {
+  const [form] = Form.useForm();
   console.log(data1, "data1");
   const [editorValue, setEditorValue] = useState<string>("");
 
@@ -102,7 +103,7 @@ const Sent_Purposal = ({ data1 }: any) => {
 
   const searchParams = useSearchParams();
   const [hiddenFields, setHiddenFields] = useState<any>({});
-  const [hiddenFields1, setHiddenFields1] = useState<any>({});
+  const [ hiddenFields1, setHiddenFields1] = useState<any>({});
   const handleDeleteField = (fieldName: string) => {
     setHiddenFields((prevState: any) => ({
       ...prevState,
@@ -141,6 +142,7 @@ const Sent_Purposal = ({ data1 }: any) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [state, setState] = useState<any>("");
   console.log(state, "state");
+  const [storeState,setStoreState] =useState<any>([])
 
   const showModal = (values: any) => {
     // setState(values)
@@ -238,10 +240,13 @@ const Sent_Purposal = ({ data1 }: any) => {
       names: values?.names, // Add names as part of the object
       ...otherFieldsObject, // Spread other fields into the object
     };
-
-    console.log(JSON.stringify(mergedOtherFields), "otherFieldsObject");
+    const finalMergedObject = {
+      ...mergedOtherFields, // Add existing merged fields
+      ...storeState, // Add storeState values to the object
+    };
+    console.log(JSON.stringify(finalMergedObject), "otherFieldsObject");
     // Remove the trailing comma and close the curly brace
-    formData.append("otherFields", JSON.stringify(mergedOtherFields));
+    formData.append("otherFields", JSON.stringify(finalMergedObject));
 
     let items = {
       user_uuid: userId,
@@ -270,8 +275,12 @@ const Sent_Purposal = ({ data1 }: any) => {
           console.log(res, "gfhfh");
         }
       }
-
-      // router.replace(`/admin/pearls?filter=all`);
+      localStorage.removeItem("extrafields");
+      if(!emailMode){
+        router.replace(`/admin/pearls?filter=all`);
+      }else{
+        router.replace(`/admin/template?filter=all`);
+      }
     } catch (error) {
       console.log("Error:", error);
     }
@@ -295,14 +304,19 @@ const Sent_Purposal = ({ data1 }: any) => {
   console.log(filedTypes, "filedTypes");
   const targetName = "Document";
   const targetName1 = "Document";
+  console.log(targetName1,"targetName1");
+  
   const textCount = data1?.data.filter(
     (item: any) => item.type === "text" && item.name === targetName
   ).length;
-  const textCount1 = (Array.isArray(addFields) ? addFields : []).filter(
-    (item: any) => item.type === "text" && item.name === targetName1
-  ).length;
-  console.log(textCount, "textCount");
-  // const handleFinish = (values: any) => {
+  // const textCount1 = (Array.isArray(addFields) ? addFields : []).filter(
+  //   (item: any) =>item.type === "text" && item.name === targetName1
+  // ).length;
+  const textCount1 = Object.keys(addFields).filter(
+    (key) => key.startsWith("dynamicText1-") && addFields[key]?.type === "text"
+).length;
+  console.log(textCount1, "textCount1");
+  // const handleFinish = (values: any) => { 
   //   onFinish(values); // pass values to onFinish
   //   // showModal(values);
   // };
@@ -337,14 +351,29 @@ const Sent_Purposal = ({ data1 }: any) => {
     setFormValues(updatedValues);
     localStorage.setItem("formValues", JSON.stringify(updatedValues)); // Save to localStorage
   };
+  // const handleFieldChange2 = (field: string, value: any) => {
+  //   console.log(value, "aaa");
+
+  //   const updatedValues = { ...addFields, [field]: value };
+  //   setAddFields(updatedValues);
+  //   localStorage.setItem("extrafields", JSON.stringify(updatedValues)); // Save to localStorage
+  // };
+  console.log(storeState,"storeState");
+  
   const handleFieldChange2 = (field: string, value: any) => {
     console.log(value, "aaa");
+    console.log(field, "qwwqw");
+    // const updatedValues = {  [field]: value };
+    // console.log(updatedValues,"updatedValues");
+    const updatedValues = { ...storeState, [field]: value };
 
-    const updatedValues = { ...addFields, [field]: value };
-    setAddFields(updatedValues);
-    localStorage.setItem("extrafields", JSON.stringify(updatedValues)); // Save to localStorage
+    console.log(updatedValues, "Updated storeState");
+
+    // Update the state with the new object
+    setStoreState(updatedValues);
   };
-
+  // setAddFields(updatedValues);
+  // localStorage.setItem("extrafields", JSON.stringify(updatedValues)); 
   // Function to handle image change and store the image (only one image)
   const handleImageChange = (file: any, fieldName: string) => {
     const reader = new FileReader();
@@ -444,7 +473,7 @@ const submit = (values: any) => {
     fields.push(values);
     localStorage.setItem("extrafields", JSON.stringify(fields));
     setState1(true);
-
+    form.resetFields();
     console.log("Field added:", values);
   } catch (error) {
     console.error("Error saving field data to localStorage:", error);
@@ -1235,8 +1264,8 @@ useEffect(() => {
                   ))}
                   {Array.from({ length: textCount1 }).map((_, index) => (
                     <Form.Item
-                      key={`dynamic-text1-${index}`}
-                      name={`dynamicText1-${index}`}
+                      key={`dynamic-text1`}
+                      name={`dynamicText1`}
                       label={`Text Input for ${targetName1}`}
                       rules={[
                         {
@@ -1247,13 +1276,13 @@ useEffect(() => {
                     >
                       <Input
                         placeholder={`Enter text for ${targetName1}`}
-                        value={addFields[`dynamicText1-${index}`]} // Bind the value to state
+                        value={addFields[`dynamicText1-`]} // Bind the value to state
                         onChange={(e:any) =>
-                          handleFieldChange2(`dynamicText1-${index}`, e.target.value)
+                          handleFieldChange2(`dynamicText1-`, e.target.value)
                         } // Update value on change
                       />
                     </Form.Item>
-                  ))}
+                   ))}
                   {/* <div className=""> */}
                   {/* <Form.List
                     name="names"
@@ -1323,7 +1352,7 @@ useEffect(() => {
                   </Form.List> */}
                   <div className="mt-5 mb-5">
                   {/* <AddFieldsModal /> */}
-                  <AddFieldsModal submit={submit} showModal1={showModal1} handleCancel1={handleCancel1} isModalOpen={isModalOpen}/>
+                  <AddFieldsModal    form={form} submit={submit} showModal1={showModal1} handleCancel1={handleCancel1} isModalOpen={isModalOpen}/>
                   </div>
                   {/* </div> */}
                   <Form.Item style={{ margin: "auto" }}>

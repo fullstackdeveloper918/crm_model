@@ -67,10 +67,51 @@ const leadsData = {
   ],
 };
 const { Step } = Steps;
-const LeadsUserDeatils = ({ data }: any, { data1 }: any) => {
+const LeadsUserDeatils = ({ data,activitiest }: any, { data1 }: any) => {
   const [loading, setLoading] = useState(false);
-  console.log(data1, "rrerer");
+  console.log(activitiest, "activitiest");
   // console.log(data2, "datadatadata");
+  // data
+  console.log(Array.isArray(data),"sadasdasddfg");
+  const [recentActivity, RecentActivity] = useState<any>([]);
+  
+  const dataSource2 = Array.isArray(recentActivity?.data)
+  ? recentActivity?.data.map((res: any, index: number) => {
+    const actionForText = res?.action_for === "MADE_PHONE_CALL" ? "Phone call" : res?.action_for==="SENT_EMAIL"?"Sent Email": res?.action_for==="SENT_SMS"?"Sent Sms":"";
+      return {
+        key: index + 1,
+        name:actionForText,
+        date: dayjs(res?.created_at).format("DD-MM-YYYY"),
+        product: "10 Downing Street",
+        description: "qwertyuiopqwertyui",
+        action: (
+          <ul className="m-0 list-unstyled d-flex gap-2">
+            <li>
+              <Button
+                type="text"
+                className="px-0 border-0 bg-transparent shadow-none"
+              >
+                <i className="fa-solid fa-pen-to-square"></i>
+              </Button>
+            </li>
+            <li>
+              <Popconfirm
+                title="Delete"
+                description="Are you sure you want to delete ?"
+                onConfirm={(event: any) => {
+                  // archive(res?._id);
+                }}
+              >
+                <Button type="text" danger htmlType="button" className="px-0">
+                  <i className="fa-solid fa-trash-can"></i>
+                </Button>
+              </Popconfirm>
+            </li>
+          </ul>
+        ),
+      };
+    })
+  : [];
   const dataSource1 = [
     {
       
@@ -109,16 +150,15 @@ const LeadsUserDeatils = ({ data }: any, { data1 }: any) => {
     //   key: 'address',
     // },
   ];
-  const phoneValue = data?.getByOne[0]?.phone || "[]"; // Default to empty array if phone is undefined
+  const phoneValue = data?.getByOne[0]?.phone || "[]"; 
   let phoneNumber = "N/A"; // Default to "N/A"
 
   try {
     // Parse the phone value
     const parsedValue = JSON.parse(phoneValue);
 
-    // Check if parsedValue is an array and has at least one element
     if (Array.isArray(parsedValue) && parsedValue.length > 0) {
-      phoneNumber = parsedValue[0]?.number || "N/A"; // Fallback to "N/A" if number is undefined
+      phoneNumber = parsedValue[0]?.number || "N/A"; 
     }
   } catch (error) {
     console.error("Failed to parse phone value:", error);
@@ -210,7 +250,8 @@ if (phone && phone !== "undefined") {
       setLoading(false);
     }
   };
-  const [recentActivity, RecentActivity] = useState<any>([]);
+  console.log(recentActivity,"recentActivity");
+  
   const getActivity = async () => {
     // let item = {
     //   user_uuid: data?.getByOne[0]?.user_uuid,
@@ -231,47 +272,6 @@ if (phone && phone !== "undefined") {
     getActivity();
   }, []);
   console.log(recentActivity, "recentActivity");
-  const array = ["email", "phone", "sms", "whatsapp", "facebook"];
-  const getStepData = (step:any) => {
-    switch (step) {
-      case "email":
-        return {
-          title: "Email",
-          description: "Send an email to the recipient.",
-          icon: <MailOutlined />
-        };
-      case "phone":
-        return {
-          title: "Phone",
-          description: "Make a phone call to the recipient.",
-          icon: <PhoneOutlined />
-        };
-      case "sms":
-        return {
-          title: "SMS",
-          description: "Send an SMS message.",
-          icon: <MessageOutlined />
-        };
-      case "whatsapp":
-        return {
-          title: "WhatsApp",
-          description: "Send a WhatsApp message.",
-          icon: <WhatsAppOutlined />
-        };
-      case "facebook":
-        return {
-          title: "Facebook",
-          description: "Send a message on Facebook.",
-          icon: <FacebookFilled />
-        };
-      default:
-        return {};
-    }
-  };
-
-  const back=()=>{
-router.back()
-  }
   const archive = async () => {
     try {
       let item = {
@@ -662,7 +662,7 @@ router.back()
           </List.Item>
         )}
       /> */}
-      <Table dataSource={dataSource1} columns={columns1} pagination={false} />
+      <Table dataSource={dataSource2} columns={columns1} pagination={false} />
     </Card>
 
     {/* Notes Section */}
