@@ -7,8 +7,13 @@ import Link from 'next/link';
 
 const page = async({ searchParams }: { searchParams: any }) => {
   const currentPage = searchParams.page ? Number(searchParams.page) : 1; 
+  const currentSearch=searchParams?.search
+  console.log(currentSearch,"currentSearch");
+  
+  const currentFilter=searchParams?.filter
     const api: any = {
-        url: `https://srv626615.hstgr.cloud/imported-meta-list?page=${currentPage}`,
+        url: `https://srv626615.hstgr.cloud/meta-list?page=${currentPage}${currentSearch ? `&search=${encodeURIComponent(currentSearch)}` : ''}`,
+        // url: `https://srv626615.hstgr.cloud/imported-meta-list?page=${currentPage}`,
         method: "GET",
         // body: { key: 'value' }
       };
@@ -21,12 +26,12 @@ const page = async({ searchParams }: { searchParams: any }) => {
       };
     
       const data1 = await fetchFromServer(api,undefined);
-      console.log(data1,"imported-meta-list");
+      console.log(data,"imported-meta-list");
      
   return (
     // imported-meta-list
     <div>
-      <MetaList data={data}/>
+      <MetaList data={data} sendStatus={currentFilter}  currentSearch={currentSearch}/>
       {/* <Fragment>
     <section>
       <Row gutter={[20, 20]}>
