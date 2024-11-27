@@ -156,12 +156,18 @@ const leads = [
   // Add more leads
 ];
 
-const Pearl_diver_leads = ({ data, fetchData,onArchive , sendStatus,currentSearch }: any) => {
+const Pearl_diver_leads = ({
+  data,
+  fetchData,
+  onArchive,
+  sendStatus,
+  currentSearch,
+}: any) => {
   console.log(data, "data");
-  const [filter,setFilter]=useState<any>(sendStatus)
+  const [filter, setFilter] = useState<any>(sendStatus);
   const [searchTerm, setSearchTerm] = useState<any>(currentSearch);
-  console.log(searchTerm,"searchTerm");
-  
+  console.log(searchTerm, "searchTerm");
+
   const [activeKey, setActiveKey] = useState("all");
   const [loadingEmail, setLoadingEmail] = useState<boolean[]>(
     new Array(leads.length).fill(false)
@@ -187,7 +193,7 @@ const Pearl_diver_leads = ({ data, fetchData,onArchive , sendStatus,currentSearc
       // If the search input is empty, just update the filter (and keep it in the same tab, if any)
       router.push(`/admin/pearls?filter=${filter}`);
     }
-};
+  };
   const handleTabChange = (key: string) => {
     // Define a mapping from tab keys to filter values for the URL
     const filterMap: { [key: string]: string } = {
@@ -202,7 +208,7 @@ const Pearl_diver_leads = ({ data, fetchData,onArchive , sendStatus,currentSearc
 
     // Get the filter value based on the selected tab key
     const filterValue = filterMap[key];
-    setFilter(filterValue)
+    setFilter(filterValue);
     if (searchTerm?.trim()) {
       router.push(`/admin/pearls?search=${searchTerm}&filter=${filterValue}`);
     } else {
@@ -400,8 +406,8 @@ const Pearl_diver_leads = ({ data, fetchData,onArchive , sendStatus,currentSearc
       </Menu.Item>
     </Menu>
   );
-  console.log(fetchData,"mmbm");
-  
+  console.log(fetchData, "mmbm");
+
   const archive = async (id: any) => {
     console.log(id, "popop");
     try {
@@ -411,7 +417,7 @@ const Pearl_diver_leads = ({ data, fetchData,onArchive , sendStatus,currentSearc
       console.log(item, "item");
 
       const res = await api.PearlLeads.delete(item);
-      // data(); 
+      // data();
       console.log(res, "ioioio");
       toast.success(res?.message);
       // window.location.reload();
@@ -558,7 +564,7 @@ const Pearl_diver_leads = ({ data, fetchData,onArchive , sendStatus,currentSearc
           All Pearl Diver Leads
         </Title>
         <Row justify="space-between" style={{ marginBottom: "0px" }}>
-          <div  style={{  padding: "20px" }}>
+          <div style={{ padding: "20px" }}>
             {/* <h1>Account</h1> */}
             <Tabs
               defaultActiveKey={sendStatus}
@@ -642,8 +648,14 @@ const Pearl_diver_leads = ({ data, fetchData,onArchive , sendStatus,currentSearc
                 {/* Content for Sms Leads */}
               </TabPane>
             </Tabs>
-            <Search size='large' className='' placeholder="Search by Name & Email" enterButton value={searchTerm}
-                                        onChange={handleSearch} />
+            <Search
+              size="large"
+              className=""
+              placeholder="Search by Name & Email"
+              enterButton
+              value={searchTerm}
+              onChange={handleSearch}
+            />
             <Divider />
           </div>
 
@@ -662,7 +674,6 @@ const Pearl_diver_leads = ({ data, fetchData,onArchive , sendStatus,currentSearc
               <Option value="sms">Sms Leads</Option>
             </Select>
           </Space> */}
-    
         </Row>
         {/* <Row>
        

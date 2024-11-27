@@ -1,8 +1,8 @@
 
 "use client"
 import React, { useEffect, useState } from 'react';
-import { Card, Avatar, Typography, Button, List, Layout, Tooltip } from 'antd';
-import { MailOutlined, MoreOutlined, PhoneOutlined } from '@ant-design/icons';
+import { Card, Avatar, Typography, Button, List, Layout, Tooltip, Popconfirm, Row, Col, Space, Divider, Table } from 'antd';
+import { DeleteOutlined, MailOutlined, MessageOutlined, MoreOutlined, PhoneOutlined } from '@ant-design/icons';
 import dayjs from "dayjs"
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -10,25 +10,84 @@ import axios from 'axios';
 import { replaceUnderScore } from '@/utils/validation';
 const { Content, Sider } = Layout;
 const { Text, Title } = Typography;
-const leadsData = {
-    recentLeads: [
-      { name: 'Jenny Wilson', email: 'w.lawson@example.com', amount: '$11,234', location: 'Austin' },
-      { name: 'Devon Lane', email: 'dat.roberts@example.com', amount: '$11,159', location: 'New York' },
-    ],
-    callLeads: [
-      { name: 'Jane Cooper', email: 'jgraham@example.com', amount: '$10,483', location: 'Toledo' },
-      { name: 'Dianne Russell', email: 'curtis.d@example.com', amount: '$9,084', location: 'Naperville' },
-    ],
-    mailLeads: [
-      { name: 'Jane Cooper', email: 'jgraham@example.com', amount: '$10,483', location: 'Toledo' },
-      { name: 'Dianne Russell', email: 'curtis.d@example.com', amount: '$9,084', location: 'Naperville' },
-    ]
-  };
-const MetaListDetails = ({data}:any) => {
+// const leadsData = {
+//     recentLeads: [
+//       { name: 'Jenny Wilson', email: 'w.lawson@example.com', amount: '$11,234', location: 'Austin' },
+//       { name: 'Devon Lane', email: 'dat.roberts@example.com', amount: '$11,159', location: 'New York' },
+//     ],
+//     callLeads: [
+//       { name: 'Jane Cooper', email: 'jgraham@example.com', amount: '$10,483', location: 'Toledo' },
+//       { name: 'Dianne Russell', email: 'curtis.d@example.com', amount: '$9,084', location: 'Naperville' },
+//     ],
+//     mailLeads: [
+//       { name: 'Jane Cooper', email: 'jgraham@example.com', amount: '$10,483', location: 'Toledo' },
+//       { name: 'Dianne Russell', email: 'curtis.d@example.com', amount: '$9,084', location: 'Naperville' },
+//     ]
+//   };
+const MetaListDetails = ({data,activity}:any) => {
   const [loading,setLoading]=useState(false)
   // console.log(data1, "rrerer");
-  console.log(data,"datadatadata");
-  
+  // console.log(data,"datadatadata");
+  console.log(activity,"datadatadata");
+  const dataSource2 = Array.isArray(activity?.data)
+  ? activity?.data.map((res: any, index: number) => {
+    const actionForText = res?.action_for === "MADE_PHONE_CALL" ? "Phone call" : res?.action_for==="SENT_EMAIL"?"Sent Email": res?.action_for==="SENT_SMS"?"Sent Sms":"";
+      return {
+        key: index + 1,
+        name:actionForText,
+        date: dayjs(res?.created_at).format("DD-MM-YYYY"),
+        product: "10 Downing Street",
+        description: "qwertyuiopqwertyui",
+        action: (
+          <ul className="m-0 list-unstyled d-flex gap-2">
+            <li>
+              <Button
+                type="text"
+                className="px-0 border-0 bg-transparent shadow-none"
+              >
+                <i className="fa-solid fa-pen-to-square"></i>
+              </Button>
+            </li>
+            <li>
+              <Popconfirm
+                title="Delete"
+                description="Are you sure you want to delete ?"
+                onConfirm={(event: any) => {
+                  // archive(res?._id);
+                }}
+              >
+                <Button type="text" danger htmlType="button" className="px-0">
+                  <i className="fa-solid fa-trash-can"></i>
+                </Button>
+              </Popconfirm>
+            </li>
+          </ul>
+        ),
+      };
+    })
+  : [];
+  const columns1 = [
+    {
+      title: 'Sr. No',
+      dataIndex: 'key',
+      key: 'key',
+    },
+    {
+      title: 'Name',
+      dataIndex: 'name',
+      key: 'name',
+    },
+    {
+      title: 'Date',
+      dataIndex: 'date',
+      key: 'date',
+    },
+    // {
+    //   title: 'Address',
+    //   dataIndex: 'address',
+    //   key: 'address',
+    // },
+  ];
   // const phoneValue = data?.getByOne[0]?.phone || "[]"; // Default to empty array if phone is undefined
   // let phoneNumber = "N/A"; // Default to "N/A"
 
@@ -95,268 +154,192 @@ getData()
     router.back()
       }
   return (
-    <Layout style={{ minHeight: "100vh", padding: "24px" }}>
-    {/* Left Main Content */}
-    <Content style={{ paddingRight: "24px" }}>
-      {/* <Card
-      title={
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-           <Avatar
-          src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTEg09MmHvC-78aaRxyd52HabsZqI1-u8R6-w&s"
-          alt="User Avatar"
-          style={{ cursor: 'pointer', height:"40px", width:"40px" }}
-        />
-          <div style={{ marginLeft: '12px', marginTop:"10px" }}>
-            <Title level={5}>{data?.getByOne[0]?.firstName||"N/A"} {data?.getByOne[0]?.lastName||" "}</Title>
-            <Text>{dayjs(data?.getByOne[0]?.created_at).format("DD-MM-YYYY")||"N/A"}</Text>
-          </div>
-        </div>
-      }
-      extra={<Button ><MoreOutlined /></Button>}
-    >
-      <Text>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc vulputate libero et velit interdum, ac aliquet odio mattis.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc vulputate libero et velit interdum, ac aliquet odio mattis.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc vulputate libero et velit interdum, ac aliquet odio mattis.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc vulputate libero et velit interdum, ac aliquet odio mattis.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc vulputate libero et velit interdum, ac aliquet odio mattis.
-      </Text>
-      <div style={{ marginTop: '12px', display: 'flex', gap: '24px' }}>
-        <div>
-          <MailOutlined /> {data?.getByOne[0]?.email||"N/A"}
-        </div>
-        <div>
-          <PhoneOutlined />{"+12697605426"}
-        </div>
-      </div>
-      <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '16px' }}>
-          <Link href={`/admin/purposal/sent_purposal?pearls_lead_id=${data?.getByOne[0]?.pearl_id}`}>
-        <Button type="primary">
-          Send Proposal
-        </Button>
-          </Link>
-      </div>
-    </Card> */}
-      <Card
-        style={{
-          maxWidth: "600px",
-          margin: "auto",
-          display: "flex",
-          flexDirection: "column",
-        }}
-      >
-        <div style={{ marginBottom: "1rem" }}>
-          {/* Breadcrumbs (commented out) */}
-          <Button onClick={back}>
-              Back
-            </Button>
-        </div>
-        {/* Title */}
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "start",
-            width: "100%",
-          }}
-        >
-          <div style={{ flex: 1, textAlign: "start" }}>
-           
-            <Typography.Title level={3} style={{ fontWeight: "bold" }}>
-              {data?.data[0]?.full_name || "N/A"}{" "}
-              {/* {data?.getByOne[0]?.lastName || " "} */}
+    <div style={{ padding: 24, maxWidth: 800, margin: '0 auto' }}>
+    {/* Header Section */}
+    <Card>
+    <div
+            style={{
+               display: "flex",
+               justifyContent: "space-between",
+               alignItems: "start",
+               width: "100%",
+             }}
+           >
+             <div style={{ flex: 1, textAlign: "start" }}>
+               <Typography.Title level={3} style={{ fontWeight: "bold" }}>
+                 {data?.data?.full_name || "N/A"} Details
+               </Typography.Title>
+             </div>
+            <div className="flex gap-3">
+            <Tooltip title="Call">
+                 <Button className="ViewMore" >
+                   <span style={{ fontSize: "20px" }}>
+                     <MessageOutlined  style={{ color: "blue" }}/>
+                   </span>
+                 </Button>
+             </Tooltip>
+               <Tooltip title="Send Mail">
+                 <Button className="ViewMore" loading={loading} onClick={send}>
+                   <span style={{ fontSize: "20px" }}>
+                     <MailOutlined style={{ color: "orange" }}/>
+                   </span>
+                 </Button>
+               </Tooltip>
+               <Tooltip title="Call">
+                 <Button className="ViewMore" 
+                //  onClick={() => ChangeState(3)}
+                 >
+                   <span style={{ fontSize: "20px" }}>
+                     <PhoneOutlined style={{ color: "green" }}/>
+                   </span>
+                 </Button>
+             </Tooltip>
+             <Tooltip title="Delete">
+                        <Popconfirm
+                          title="Delete"
+                          description="Are you sure you want to delete ?"
+                          // onConfirm={archive}
+                          // okButtonProps={{ loading: deleteLoading == res._id, danger: true }}
+                        >
+                         
+                          <Button className="ViewMore">
+                          <span style={{ fontSize: "20px" }}>
+                           <DeleteOutlined style={{ color: "red" }}/>
+                           </span>
+                            </Button>
+                        </Popconfirm>
+                      </Tooltip>
 
-              MetaList Details
-            </Typography.Title>
-          </div>
-          <div>
-            <Tooltip title="Send Mail">
-              <Button className="ViewMore" loading={loading} onClick={send}>
-                <span className="">{<MailOutlined />}</span>
-              </Button>
-            </Tooltip>
-            {/* <Tooltip title="Share Pdf link">
-    <Button className='ViewMore'><ShareAltOutlined /></Button>
-  </Tooltip> */}
-          </div>
-        </div>
+           </div>
+         </div>
+      <Row gutter={[16, 16]} align="middle" >
+        <Col>
+          <Avatar size={64}  style={{ backgroundColor: "#a5d6a7" }} >
+          {/* {data?.getByOne[0]?.firstName.slice(0, 2).toUpperCase()} */}
+          </Avatar>
+        </Col>
+        <Col flex="auto">
+          <Space direction="vertical" size={0}>
+            <Title level={4}>  {data?.data?.full_name||"N/A"}</Title>
+            <Text type="secondary"> {data?.data?.email||"N/A"}</Text>
+            <Text>
+              <PhoneOutlined style={{ marginRight: 4 }} />
+           {data?.data?.phone_number||"N/A"}
+            </Text>
+            {/* <Space>
+              <Text>Gender: {data?.getByOne[0]?.gender === "M" ? "Male" : "Female"}</Text>
+              <Divider type="vertical" />
+              <Text>Address:  {addressesArray?.map((res: any, index: any) => (
+                    <span className="" key={index}>
+                      {res?.city}, {res?.state}, {`(${res?.zip})`}
+                    </span>
+                   ))}</Text>
+              <Divider type="vertical" />
+              <Text>Income Range: {data?.getByOne[0]?.incomeRange || "N/A"}</Text>
+              <Divider type="vertical" />
+              <Text>Latest Activity Date:  {dayjs(data?.getByOne[0]?.latestActivityDate).format(
+                     "MM-DD-YYYY"
+                   ) || "N/A"}</Text>
+            </Space> */}
+          </Space>
+        </Col>
+        
+      </Row>
+      <Row gutter={[16, 16]}  style={{ marginTop:"10px", border: '1px solid #f0f0f0', borderRadius: 8, padding: 16 }}>
+      <Col span={6}>
+        <Space direction="vertical">
+          <Text type="secondary">Planing make purchase</Text>
+          <Text>{data?.data?.planing_make_purchase}</Text>
+        </Space>
+      </Col>
+      <Col span={6}>
+        <Space direction="vertical">
+          <Text type="secondary">Budget Range Purchase</Text>
+          <Text>
+          <Text>{data?.data?.budget_range_purchase}</Text>
+          </Text>
+        </Space>
+      </Col>
+      <Col span={6}>
+        <Space direction="vertical">
+          <Text type="secondary">Status</Text>
+          <Text>{data?.data?.meta_status || "N/A"}</Text>
+        </Space>
+      </Col>
+      <Col span={6}>
+        <Space direction="vertical">
+          <Text type="secondary">Latest Activity Date</Text>
+          <Text>
+            {/* {data?.getByOne[0]?.latestActivityDate
+              ? dayjs(data?.getByOne[0]?.latestActivityDate).format("MM-DD-YYYY")
+              : "N/A"} */}
+          </Text>
+        </Space>
+      </Col>
+    </Row>
 
-        {/* Car Listing */}
-        <div style={{ textAlign: "start", width: "100%" }}>
-          <Avatar
-            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTEg09MmHvC-78aaRxyd52HabsZqI1-u8R6-w&s"
-            alt="User Avatar"
-            style={{ cursor: "pointer", height: "80px", width: "80px" }}
-          />
-          <ul style={{ listStyleType: "none", margin: "1rem 0", padding: 0 }}>
-            <li style={{ marginBottom: "0.5rem" }}>
-              <Typography.Text>Name:</Typography.Text>
-              <Typography.Text
-                style={{ marginLeft: "0.5rem", textTransform: "capitalize" }}
-              >
-                {data?.data[0]?.full_name || "N/A"}{" "}
-              </Typography.Text>
-            </li>
-            {/* <li style={{ marginBottom: "0.5rem" }}>
-              <Typography.Text>Gender:</Typography.Text>
-              <Typography.Text
-                style={{ marginLeft: "0.5rem", textTransform: "capitalize" }}
-              >
-                Male
-              </Typography.Text>
-            </li> */}
-            <li style={{ marginBottom: "0.5rem" }}>
-              <Typography.Text>Email:</Typography.Text>
-              <Typography.Text style={{ marginLeft: "0.5rem" }}>
-                {data?.data[0]?.email || "N/A"}
-                {/* xyz@gmail.com */}
-              </Typography.Text>
-            </li>
-            <li style={{ marginBottom: "0.5rem" }}>
-              <Typography.Text>Phone no:</Typography.Text>
-              <Typography.Text style={{ marginLeft: "0.5rem" }}>
-                {/* {phoneArray?.map((res: any, index: number) => (
-                  <span className="" key={index}>
-                    {res?.number}
-                  </span>
-                ))} */}
-                {data?.data[0]?.phone_number||"N/A"}
-                {/* 7885895478 */}
-              </Typography.Text>
-            </li>
-            {/* <li style={{ marginBottom: "0.5rem" }}>
-              <Typography.Text>Address:</Typography.Text>
-              <Typography.Text style={{ marginLeft: "0.5rem" }}>
-                xyz colony
-              </Typography.Text>
-            </li> */}
-            <li style={{ marginBottom: "0.5rem" }}>
-              <Typography.Text>Requirements:</Typography.Text>
-              <Typography.Text style={{ marginLeft: "0.5rem" }}>
-              {replaceUnderScore(data?.data[0]?.constraints_or_requirements) || "N/A"}
-              {/* 05-11-2024 */}
-              </Typography.Text>
-            </li>
-            <li style={{ marginBottom: "0.5rem" }}>
-              <Typography.Text>Planing make Purchase:</Typography.Text>
-              <Typography.Text style={{ marginLeft: "0.5rem" }}>
-              {replaceUnderScore(data?.data[0]?.planing_make_purchase )|| "N/A"}
-              {/* 24000 */}
-              </Typography.Text>
-            </li>
-            <li style={{ marginBottom: "0.5rem" }}>
-              <Typography.Text>Budget Range Purchase:</Typography.Text>
-              <Typography.Text style={{ marginLeft: "0.5rem" }}>
-              {replaceUnderScore(data?.data[0]?.budget_range_purchase )|| "N/A"}
-              {/* 24000 */}
-              </Typography.Text>
-            </li>
-            <li style={{ marginBottom: "0.5rem" }}>
-              <Typography.Text>Interested in:</Typography.Text>
-              <Typography.Text style={{ marginLeft: "0.5rem" }}>
-              {replaceUnderScore(data?.data[0]?.hyperbaric_chamber_interested_in )|| "N/A"}
-              {/* 24000 */}
-              </Typography.Text>
-            </li>
-            <li style={{ marginBottom: "0.5rem" }}>
-              <Typography.Text>Use in:</Typography.Text>
-              <Typography.Text style={{ marginLeft: "0.5rem" }}>
-              {replaceUnderScore(data?.data[0]?.hyperbaric_chamber_use )|| "N/A"}
-              {/* 24000 */}
-              </Typography.Text>
-            </li>
-            <li style={{ marginBottom: "0.5rem" }}>
-              <Typography.Text>Note:</Typography.Text>
-              <Typography.Text style={{ marginLeft: "0.5rem" }}>
-              {replaceUnderScore(data?.data[0]?.notes )|| "N/A"}
-              {/* 24000 */}
-              </Typography.Text>
-            </li>
-          </ul>
-        </div>
-      </Card>
-    </Content>
+      <Divider />
+      {/* <Row>
+        <Space>
+          <Button type="default"><MessageOutlined/>SMS</Button>
+          <Button type="default"><MailOutlined/>Email</Button>
+          <Button type="primary"><PhoneOutlined/>Phone</Button>
+          <Button>Open Deals</Button>
+          <Button type="default">Closed</Button>
+        </Space>
+      </Row> */}
+    </Card>
 
-    {/* Right Sidebar */}
-    <Sider
-      width={400}
-      style={{
-        background: "#fff",
-        paddingRight: "24px",
-        paddingLeft: "24px",
-      }}
-    >
-      {/* Recent Leads */}
-      <Card title="Recent Leads" style={{ marginBottom: "24px" }}>
-        <List
-          dataSource={dataSource}
-          renderItem={(item:any) => (
-            <List.Item>
-              <List.Item.Meta
-                avatar={
-                  <Avatar
-                    src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTEg09MmHvC-78aaRxyd52HabsZqI1-u8R6-w&s"
-                    alt="User Avatar"
-                    style={{
-                      cursor: "pointer",
-                      height: "40px",
-                      width: "40px",
-                    }}
-                  />
-                }
-                title={<Text>{item.name}</Text>}
-                description={`${item.email} `}
-                // description={`${item.email} - ${item.location}`}
-              />
-              <Text>{item.amount}</Text>
-            </List.Item>
-          )}
-        />
-      </Card>
-
-      {/* Call Leads Card */}
-      {/* <Card title="Call Leads (Monthly)" style={{ marginBottom: '24px' }}>
-      <List
-        dataSource={leadsData.callLeads}
+    {/* Upcoming Activity */}
+    <Card title="Latest Activity" style={{ marginTop: 24 }}>
+      {/* <List
+        itemLayout="vertical"
+        dataSource={[
+          {
+            title: 'Prepare quote for Jerome Bell',
+            description:
+              'She’s interested in our new product line and wants our very best price. Please include a detailed breakdown of costs.',
+            priority: 'High',
+            assignedTo: 'Esther Howard',
+          },
+        ]}
         renderItem={(item) => (
           <List.Item>
             <List.Item.Meta
-              avatar={
-                <Avatar
-                  src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTEg09MmHvC-78aaRxyd52HabsZqI1-u8R6-w&s"
-                  alt="User Avatar"
-                  style={{ cursor: 'pointer', height: "40px", width: "40px" }}
-                />
-              }
-              title={<Text>{item.name}</Text>}
-              description={item.email}
+              title={<Text>{item.title}</Text>}
+              description={<Text type="secondary">{item.description}</Text>}
             />
-            <Text>{item.amount}</Text>
+            <Space direction="vertical">
+              <Badge color="red" text={`Priority: ${item.priority}`} />
+              <Text>Assigned to: {item.assignedTo}</Text>
+            </Space>
           </List.Item>
         )}
-      />
-    </Card> */}
+      /> */}
+      {activity?.data.length?
+      <Table dataSource={dataSource2} columns={columns1} pagination={false} />
+      :"No Activities Found"}
+    </Card>
 
-      {/* Mail Leads Card */}
-      {/* <Card title="Mail Leads (Monthly)">
-      <List
-        dataSource={leadsData.mailLeads}
-        renderItem={(item) => (
+    {/* Notes Section */}
+    <Card title="Notes" style={{ marginTop: 24 }}>
+    {data?.data?.notes}
+      {/* <List
+        dataSource={[
+          { content: 'She’s interested in our new product line.', date: 'Today, 10:00 AM' },
+          { content: 'Follow up on detailed breakdown of costs.', date: 'Today, 10:00 AM' },
+        ]}
+        renderItem={(note) => (
           <List.Item>
-            <List.Item.Meta
-              avatar={
-                <Avatar
-                  src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTEg09MmHvC-78aaRxyd52HabsZqI1-u8R6-w&s"
-                  alt="User Avatar"
-                  style={{ cursor: 'pointer', height: "40px", width: "40px" }}
-                />
-              }
-              title={<Text>{item.name}</Text>}
-              description={item.email}
-            />
-            <Text>{item.amount}</Text>
+            <Text>{note.content}</Text>
+            <Text type="secondary" style={{ marginLeft: 16 }}>
+              {note.date}
+            </Text>
           </List.Item>
         )}
-      />
-    </Card> */}
-    </Sider>
-  </Layout>
+      /> */}
+    </Card>
+  </div>
   )
 }
 
