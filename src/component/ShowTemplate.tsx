@@ -36,13 +36,13 @@ const templates = [
 const hoverStyle: CSSProperties = {
   opacity: 0.7,
 };
-const ShowTemplate = () => {
+const ShowTemplate = ({searchQuery}:any) => {
 
 
     const router= useRouter()
-    const searchParams = useSearchParams();
+    // const searchParams = useSearchParams();
 
-    const emailType: any = searchParams.get("email_type");
+    const emailType: any = searchQuery
     console.log(emailType,"emailType");
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [imageUrl, setImageUrl] = useState('');

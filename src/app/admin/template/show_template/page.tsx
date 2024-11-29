@@ -1,9 +1,11 @@
 import ShowTemplate from "@/component/ShowTemplate";
 import React from "react";
 
-const page = () => {
+const page = ({searchParams}:any) => {
+  console.log(searchParams.email_type,"searchParams");
+  
   return (
-  <ShowTemplate/>
+  <ShowTemplate searchQuery={searchParams.email_type}/>
   );
 };
 export default page;
