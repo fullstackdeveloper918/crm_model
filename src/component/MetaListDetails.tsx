@@ -8,6 +8,8 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
 import { replaceUnderScore } from '@/utils/validation';
+import api from '@/utils/api';
+import { toast, ToastContainer } from 'react-toastify';
 const { Content, Sider } = Layout;
 const { Text, Title } = Typography;
 // const leadsData = {
@@ -26,9 +28,10 @@ const { Text, Title } = Typography;
 //   };
 const MetaListDetails = ({data,activity}:any) => {
   const [loading,setLoading]=useState(false)
+  const [loading2,setLoading2]=useState(false)
   // console.log(data1, "rrerer");
-  // console.log(data,"datadatadata");
-  console.log(activity,"datadatadata");
+  console.log(data,"datadatadata");
+  // console.log(activity,"datadatadata");
   const dataSource2 = Array.isArray(activity?.data)
   ? activity?.data.map((res: any, index: number) => {
     const actionForText = res?.action_for === "MADE_PHONE_CALL" ? "Phone call" : res?.action_for==="SENT_EMAIL"?"Sent Email": res?.action_for==="SENT_SMS"?"Sent Sms":"";
@@ -113,14 +116,27 @@ const MetaListDetails = ({data,activity}:any) => {
   // console.log(phoneArray, "rerer");
 
   const router = useRouter();
-  const send = () => {
+  const send = (type: any) => {
+    console.log(type,"uiouiouio");
+    
   try {
-    setLoading(true)
-    router.push(
-      `/admin/purposal/sent_purposal?meta_lead_id=${data?.data[0]?.user_uuid}`
-    );
+    if(type==="sms"){
+      setLoading(true)
+      router.push(
+        `/admin/purposal/sent_purposal?meta_lead_id=${data?.data?.user_uuid}&field_for=welcome&fieldType=sms&email_type=meta`
+      );
+      // admin/purposal/sent_purposal?user_id=f3ce7edd-203f-4f5b-9167-f34fb2fc68a2&field_for=welcome&fieldType=sms&email_type=meta
+    }else{
+      setLoading2(true)
+      router.push(
+        `/admin/purposal/sent_purposal?meta_lead_id=${data?.data?.user_uuid}&field_for=welcome&fieldType=email&email_type=meta`
+        // `/admin/purposal/sent_purposal?meta_lead_id=${data?.data?.user_uuid}`
+        // `/admin/purposal/sent_purposal?pearls_lead_id=${data?.getByOne[0]?.pearl_id}&user_id=${data?.getByOne[0]?.user_uuid}&field_for=welcome&fieldType=email`
+      );
+    }
   } catch (error) {
     setLoading(false)
+    setLoading2(false)
   }
   };
 const [state,setState]= useState<any>([])
@@ -153,7 +169,48 @@ getData()
   const back=()=>{
     router.back()
       }
+
+      const archive = async () => {
+        try {
+          let item = {
+            user_uuid: data?.getByOne[0]?.user_uuid,
+          };
+          console.log(item, "item");
+    
+          const res = await api.PearlLeads.delete(item);
+          // data(); 
+          console.log(res, "ioioio");
+          toast.success(res?.message);
+          router.back()
+          // window.location.reload();
+        } catch (error) {}
+      };
+
+const [loading3,setLoading3]=useState(false)
+      const ChangeState = async (statusType: number) => {
+        console.log(statusType, "jlsdjf");
+    
+        try {
+          setLoading3(false);
+          let items = {
+            meta_id: data?.data?.user_uuid,
+            user_uuid: data?.data?.user_uuid,
+            status: statusType,
+          } as any;
+          const res = await api.MetaLeads.changeStatus(items);
+          toast.success(res?.data);
+          // if (statusType == 2) {
+          //   router.push(
+          //     `/admin/purposal/sent_purposal?pearls_lead_id=${data?.getByOne[0]?.pearl_id}&user_uuid=${data?.getByOne[0]?.user_uuid}`
+          //   );
+          // }
+        } catch (error) {
+          setLoading3(false);
+        }
+      };
   return (
+    <>
+    <ToastContainer/>
     <div style={{ padding: 24, maxWidth: 800, margin: '0 auto' }}>
     {/* Header Section */}
     <Card>
@@ -171,15 +228,15 @@ getData()
                </Typography.Title>
              </div>
             <div className="flex gap-3">
-            <Tooltip title="Call">
-                 <Button className="ViewMore" >
+            <Tooltip title="Message">
+                 <Button className="ViewMore"loading={loading} onClick={()=>send("sms")}>
                    <span style={{ fontSize: "20px" }}>
                      <MessageOutlined  style={{ color: "blue" }}/>
                    </span>
                  </Button>
              </Tooltip>
                <Tooltip title="Send Mail">
-                 <Button className="ViewMore" loading={loading} onClick={send}>
+                 <Button className="ViewMore" loading={loading2} onClick={()=>send("email")}>
                    <span style={{ fontSize: "20px" }}>
                      <MailOutlined style={{ color: "orange" }}/>
                    </span>
@@ -187,7 +244,7 @@ getData()
                </Tooltip>
                <Tooltip title="Call">
                  <Button className="ViewMore" 
-                //  onClick={() => ChangeState(3)}
+                 onClick={() => ChangeState(3)}
                  >
                    <span style={{ fontSize: "20px" }}>
                      <PhoneOutlined style={{ color: "green" }}/>
@@ -198,7 +255,7 @@ getData()
                         <Popconfirm
                           title="Delete"
                           description="Are you sure you want to delete ?"
-                          // onConfirm={archive}
+                          onConfirm={archive}
                           // okButtonProps={{ loading: deleteLoading == res._id, danger: true }}
                         >
                          
@@ -215,7 +272,7 @@ getData()
       <Row gutter={[16, 16]} align="middle" >
         <Col>
           <Avatar size={64}  style={{ backgroundColor: "#a5d6a7" }} >
-          {/* {data?.getByOne[0]?.firstName.slice(0, 2).toUpperCase()} */}
+          {data?.data?.full_name.slice(0, 2).toUpperCase()}
           </Avatar>
         </Col>
         <Col flex="auto">
@@ -340,6 +397,7 @@ getData()
       /> */}
     </Card>
   </div>
+    </>
   )
 }
 

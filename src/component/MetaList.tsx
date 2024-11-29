@@ -78,6 +78,105 @@ const MetaList = ({ data, currentSearch, sendStatus }: any) => {
       key: "action",
     },
   ];
+  const leads = [
+    {
+      name: "Jenny Wilson",
+      phone: "0555 066 899",
+      email: "w.lawson@example.com",
+      label: "Priorities leads",
+      avatar: "/path/to/avatar.jpg", // You can add avatars here
+      type: "priority",
+    },
+    {
+      name: "Jane Cooper",
+      phone: "0555 066 899",
+      email: "jgraham@example.com",
+      label: "Call leads",
+      avatar: "/path/to/avatar.jpg",
+      type: "call",
+    },
+    {
+      name: "Jenny Wilson",
+      phone: "0555 066 899",
+      email: "w.lawson@example.com",
+      label: "Priorities leads",
+      avatar: "/path/to/avatar.jpg", // You can add avatars here
+      type: "priority",
+    },
+    {
+      name: "Jane Cooper",
+      phone: "0555 066 899",
+      email: "jgraham@example.com",
+      label: "Call leads",
+      avatar: "/path/to/avatar.jpg",
+      type: "call",
+    },
+    {
+      name: "Jenny Wilson",
+      phone: "0555 066 899",
+      email: "w.lawson@example.com",
+      label: "Priorities leads",
+      avatar: "/path/to/avatar.jpg", // You can add avatars here
+      type: "priority",
+    },
+    {
+      name: "Jane Cooper",
+      phone: "0555 066 899",
+      email: "jgraham@example.com",
+      label: "Call leads",
+      avatar: "/path/to/avatar.jpg",
+      type: "call",
+    },
+    {
+      name: "Jenny Wilson",
+      phone: "0555 066 899",
+      email: "w.lawson@example.com",
+      label: "Priorities leads",
+      avatar: "/path/to/avatar.jpg", // You can add avatars here
+      type: "priority",
+    },
+    {
+      name: "Jane Cooper",
+      phone: "0555 066 899",
+      email: "jgraham@example.com",
+      label: "Call leads",
+      avatar: "/path/to/avatar.jpg",
+      type: "call",
+    },
+    {
+      name: "Jenny Wilson",
+      phone: "0555 066 899",
+      email: "w.lawson@example.com",
+      label: "Priorities leads",
+      avatar: "/path/to/avatar.jpg", // You can add avatars here
+      type: "priority",
+    },
+    {
+      name: "Jane Cooper",
+      phone: "0555 066 899",
+      email: "jgraham@example.com",
+      label: "Call leads",
+      avatar: "/path/to/avatar.jpg",
+      type: "call",
+    },
+    {
+      name: "Jenny Wilson",
+      phone: "0555 066 899",
+      email: "w.lawson@example.com",
+      label: "Priorities leads",
+      avatar: "/path/to/avatar.jpg", // You can add avatars here
+      type: "priority",
+    },
+    {
+      name: "Jane Cooper",
+      phone: "0555 066 899",
+      email: "jgraham@example.com",
+      label: "Call leads",
+      avatar: "/path/to/avatar.jpg",
+      type: "call",
+    },
+    // Add more leads
+  ];
   const dataSource = data?.data?.map((res: any, index: number) => {
     return {
       key: index + 1,
@@ -115,6 +214,12 @@ const MetaList = ({ data, currentSearch, sendStatus }: any) => {
     call: "#22C55E",
     target: "#9897FF",
   };
+  const [loadingEmail, setLoadingEmail] = useState<boolean[]>(
+    new Array(leads.length).fill(false)
+  );
+  const [loadingSms, setLoadingSms] = useState<boolean[]>(
+    new Array(leads.length).fill(false)
+  );
   const [selectedLead, setSelectedLead] = useState<any>(null);
   const handleCardClick = (lead: any) => {
     setSelectedLead(lead); // Set the selected lead data
@@ -127,6 +232,43 @@ const MetaList = ({ data, currentSearch, sendStatus }: any) => {
       // setModal2Open(false)
     } catch (error) {
       setViewLoading(false);
+    }
+  };
+  
+  const sendEmail = (id: any, user_id: any, type: any, index: any) => {
+    console.log(id, user_id, type, "check mail");
+
+    try {
+      if (type === "sms") {
+        setLoadingSms((prevState) => {
+          const newState = [...prevState];
+          newState[index] = true; // Set the button at `index` to loading
+          return newState;
+        });
+      } else if (type === "email") {
+        setLoadingEmail((prevState) => {
+          const newState = [...prevState];
+          newState[index] = true; // Set the button at `index` to loading
+          return newState;
+        });
+      }
+      router.push(
+        `/admin/purposal/sent_purposal?user_id=${user_id}&field_for=welcome&fieldType=${type}&email_type=meta`
+      );
+    } catch (error) {
+      if (type === "sms") {
+        setLoadingSms((prevState) => {
+          const newState = [...prevState];
+          newState[index] = false; // Set the button at `index` to loading
+          return newState;
+        });
+      } else if (type === "email") {
+        setLoadingEmail((prevState) => {
+          const newState = [...prevState];
+          newState[index] = false; // Set the button at `index` to loading
+          return newState;
+        });
+      }
     }
   };
   const [filter, setFilter] = useState<any>(sendStatus);
@@ -285,97 +427,91 @@ const MetaList = ({ data, currentSearch, sendStatus }: any) => {
         <Row justify="space-between" style={{ marginBottom: "0px" }}>
           <div style={{ padding: "20px" }}>
             {/* <h1>Account</h1> */}
-            <Tabs
+            {/* <Tabs
               defaultActiveKey={sendStatus}
               centered
-              // onChange={handleTabChange}
+              onChange={handleTabChange}
             >
               <TabPane
                 tab={
                   <span style={{ fontWeight: 600 }}>
                     All Leads
-                    {/* [{fetchData?.data?.totalLeads}]{" "} */}
+                    [{fetchData?.data?.totalLeads}]{" "}
                   </span>
                 }
                 key="all"
               >
-                {/* Content for All Leads */}
               </TabPane>
               <TabPane
-                // tab={<span style={{ fontWeight: 'bold' }}>High-Potential Leads [{fetchData?.data?.priorityLeads}] </span>}
+                tab={<span style={{ fontWeight: 'bold' }}>High-Potential Leads [{fetchData?.data?.priorityLeads}] </span>}
                 tab={
                   <span style={{ fontWeight: 600 }}>
                     High-Potential Leads
-                    {/* [{fetchData?.data?.priorityLeads}]{" "} */}
+                    [{fetchData?.data?.priorityLeads}]{" "}
                   </span>
                 }
                 key="priority"
               >
-                {/* Content for High-Potential Leads */}
               </TabPane>
               <TabPane
-                // tab={`Potential Leads [${fetchData?.data?.}]`}
+                tab={`Potential Leads [${fetchData?.data?.}]`}
                 tab={
                   <span style={{ fontWeight: 600 }}>
                     Potential Leads
-                    {/* [{fetchData?.data?.potentialLeads}]{" "} */}
+                    [{fetchData?.data?.potentialLeads}]{" "}
                   </span>
                 }
                 key="potential"
               >
-                {/* Content for Potential Leads */}
               </TabPane>
               <TabPane
-                // tab={`Suspect Leads [${fetchData?.data?.nonPotentialLeads}]`}
+                tab={`Suspect Leads [${fetchData?.data?.nonPotentialLeads}]`}
                 tab={
                   <span style={{ fontWeight: 600 }}>
                     Suspect Leads
-                    {/* [{fetchData?.data?.nonPotentialLeads}]{" "} */}
+                    [{fetchData?.data?.nonPotentialLeads}]{" "}
                   </span>
                 }
                 key="non_potential"
               >
-                {/* Content for Suspect Leads */}
               </TabPane>
               <TabPane
-                // tab={`Call Leads [${fetchData?.data?.mailLeads}]`}
+                tab={`Call Leads [${fetchData?.data?.mailLeads}]`}
                 tab={
                   <span style={{ fontWeight: 600 }}>
                     Call Leads
-                    {/* [{fetchData?.data?.mailLeads}]{" "} */}
+                    [{fetchData?.data?.mailLeads}]{" "}
                   </span>
                 }
                 key="call_lead"
               >
-                {/* Content for Call Leads */}
               </TabPane>
               <TabPane
-                // tab={`Email Leads [${fetchData?.data?.calledLeads}]`}
+                tab={`Email Leads [${fetchData?.data?.calledLeads}]`}
                 tab={
                   <span style={{ fontWeight: 600 }}>
                     Email Leads
-                    {/* [{fetchData?.data?.calledLeads}]{" "} */}
+                    [{fetchData?.data?.calledLeads}]{" "}
                   </span>
                 }
                 key="mail"
               >
-                {/* Content for Email Leads */}
               </TabPane>
               <TabPane
-                // tab={`Sms Leads [${fetchData?.data?.smsLeads}]`}
+                tab={`Sms Leads [${fetchData?.data?.smsLeads}]`}
                 tab={
                   <span style={{ fontWeight: 600 }}>
                     Sms Leads
-                    {/* [{fetchData?.data?.smsLeads}]{" "} */}
+                    [{fetchData?.data?.smsLeads}]{" "}
                   </span>
                 }
                 key="sms"
               >
-                {/* Content for Sms Leads */}
               </TabPane>
-            </Tabs>
+            </Tabs> */}
             <Search
               size="large"
+              style={{width:"1000px"}}
               className=""
               placeholder="Search by Name & Email"
               enterButton
@@ -428,37 +564,37 @@ const MetaList = ({ data, currentSearch, sendStatus }: any) => {
     </Tooltip> */}
                       <Tooltip title="Message">
                         <Button
-                          // loading={loadingSms[index]}
-                          // onClick={() => {
-                          //   if (lead?.pearl_id) {
-                          //     sendEmail(
-                          //       lead.pearl_id,
-                          //       lead.user_uuid,
-                          //       "sms",
-                          //       index
-                          //     );
-                          //   } else {
-                          //     console.error("Pearl ID is missing");
-                          //   }
-                          // }}
+                          loading={loadingSms[index]}
+                          onClick={() => {
+                            if (lead?.user_uuid) {
+                              sendEmail(
+                                lead.pearl_id,
+                                lead.user_uuid,
+                                "sms",
+                                index
+                              );
+                            } else {
+                              console.error("Meta ID is missing");
+                            }
+                          }}
                           icon={<MessageOutlined style={{ color: "blue" }} />}
                         />
                       </Tooltip>
                       <Tooltip title="Send Email">
                         <Button
-                          // loading={loadingEmail[index]}
-                          // onClick={() => {
-                          //   if (lead?.pearl_id) {
-                          //     sendEmail(
-                          //       lead.pearl_id,
-                          //       lead.user_uuid,
-                          //       "email",
-                          //       index
-                          //     );
-                          //   } else {
-                          //     console.error("Pearl ID is missing");
-                          //   }
-                          // }}
+                          loading={loadingEmail[index]}
+                          onClick={() => {
+                            if (lead?.user_uuid) {
+                              sendEmail(
+                                lead.pearl_id,
+                                lead.user_uuid,
+                                "email",
+                                index
+                              );
+                            } else {
+                              console.error("Meta ID is missing");
+                            }
+                          }}
                           icon={<MailOutlined style={{ color: "orange" }} />}
                         />
                       </Tooltip>

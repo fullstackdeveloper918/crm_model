@@ -177,7 +177,7 @@ const toLowCase = (val: string) => {
         return newVal
     }
 }
-export const capFirst = (str: string) => {
+export const capFirst = (str: any) => {
     if (typeof str=="string") {
         return str[0]?.toUpperCase() + str.slice(1);
     } else {

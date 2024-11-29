@@ -476,7 +476,7 @@ const Pearl_diver_leads = ({
         });
       }
       router.push(
-        `/admin/purposal/sent_purposal?pearls_lead_id=${id}&user_id=${user_id}&field_for=welcome&fieldType=${type}`
+        `/admin/purposal/sent_purposal?pearls_lead_id=${id}&user_id=${user_id}&field_for=welcome&fieldType=${type}&email_type=pearl`
       );
     } catch (error) {
       if (type === "sms") {

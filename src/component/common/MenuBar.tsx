@@ -271,9 +271,9 @@ const handleLinkClick = () => {
     {
       key: henceofrthEnums.Roles.USERS,
       view: getItem(
-        <Link href="/admin/template?filter=all" className="text-decoration-none"  onClick={handleLinkClick}>
+        <Link href="/admin/template?filter=all&leads_type=pearl" className="text-decoration-none"  onClick={handleLinkClick}>
           {/* {getUserdata?.is_admin == false ? "User" : "Archive Members"} */}
-         Send Emails
+         Send Bulk Emails
         </Link>,
         "template",
         <MailOutlined style={iconSize} />

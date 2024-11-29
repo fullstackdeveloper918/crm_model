@@ -75,6 +75,8 @@ const Auth = {
 const MetaLeads={
   importCsv: (info: any) =>
     requests.post('import-metalead-data', info),
+  changeStatus: (info: any) =>
+    requests.post('update-meta-calledlead-status', info),
 }
 
 const PearlLeads={

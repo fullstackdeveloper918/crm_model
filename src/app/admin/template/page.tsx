@@ -52,9 +52,20 @@ const currentSearch=searchParams?.search
   const fetchData1= await fetchFromServer(apiUrl1,undefined)
   console.log(fetchData1,"fetchData1");
   
+
+
+  const api1: any = {
+    url: `https://srv626615.hstgr.cloud/meta-list?page=${currentPage}${
+      currentSearch ? `&search=${encodeURIComponent(currentSearch)}` : ""
+    }`,
+    method: "GET",
+    // body: { key: 'value' }
+  };
+
+  const data1= await fetchFromServer(api1,undefined);
   return (
    <>
-   <PearlsSelectUsers data={data} fetchData={fetchData} fetchData1={fetchData1} sendStatus={currentFilter} currentSearch={currentSearch}/>
+   <PearlsSelectUsers data={data} data1={data1} fetchData={fetchData} fetchData1={fetchData1} sendStatus={currentFilter} currentSearch={currentSearch}/>
    </>
   )
 }

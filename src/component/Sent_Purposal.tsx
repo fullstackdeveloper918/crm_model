@@ -103,7 +103,7 @@ const Sent_Purposal = ({ data1 }: any) => {
 
   const searchParams = useSearchParams();
   const [hiddenFields, setHiddenFields] = useState<any>({});
-  const [ hiddenFields1, setHiddenFields1] = useState<any>({});
+  const [hiddenFields1, setHiddenFields1] = useState<any>({});
   const handleDeleteField = (fieldName: string) => {
     setHiddenFields((prevState: any) => ({
       ...prevState,
@@ -122,6 +122,9 @@ const Sent_Purposal = ({ data1 }: any) => {
   const field_for: any = searchParams.get("field_for");
   const field_Type: any = searchParams.get("fieldType");
   const emailMode: any = searchParams.get("email_mode");
+  const emailType: any = searchParams.get("email_type");
+  console.log(emailType, "email_type");
+
   const [formValues, setFormValues] = useState<any>({}); // Store form values
   const [filterArrayId1, setFilterArrayId1] = useState<any>([]); // Store form values
   console.log(filterArrayId1, "filterArrayId");
@@ -130,10 +133,10 @@ const Sent_Purposal = ({ data1 }: any) => {
   // Convert the array to a JSON string
   const pearlIdsAsString = JSON.stringify(filterpearl_ids);
   const filteruser_ids = filterArrayId1.map((res: any) => res?.user_uuid);
-  console.log(filteruser_ids,"filteruser_ids");
-  
+  console.log(filteruser_ids, "filteruser_ids");
+
   const user_idssAsString = JSON.stringify(filteruser_ids);
-  console.log(user_idssAsString,"user_idssAsString");
+  console.log(user_idssAsString, "user_idssAsString");
   // Log the pearlsLeadId to the console
   console.log(pearlsLeadId, "searchParam");
   console.log(userId, "userId");
@@ -142,7 +145,7 @@ const Sent_Purposal = ({ data1 }: any) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [state, setState] = useState<any>("");
   console.log(state, "state");
-  const [storeState,setStoreState] =useState<any>([])
+  const [storeState, setStoreState] = useState<any>([]);
 
   const showModal = (values: any) => {
     // setState(values)
@@ -160,8 +163,8 @@ const Sent_Purposal = ({ data1 }: any) => {
 
   const [file, setFile] = useState<any>(null);
   const [file1, setFile1] = useState<any>(null);
-  console.log(file1,"file1");
-  
+  console.log(file1, "file1");
+
   // const handleFileChange = (info: any) => {
   //   setFile(info.file.originFileObj);
   // };
@@ -212,12 +215,21 @@ const Sent_Purposal = ({ data1 }: any) => {
     if (file) {
       formData.append("file", file);
     }
+    if (emailType === "meta") {
+      formData.append("user_uuid", emailMode ? [user_idssAsString] : userId);
+      formData.append("meta_id", emailMode ? [user_idssAsString] : userId);
+    } else {
+      formData.append("user_uuid", emailMode ? [user_idssAsString] : userId);
+      formData.append(
+        "pearl_id",
+        emailMode ? [pearlIdsAsString] : pearlsLeadId
+      );
+    }
 
-    formData.append("user_uuid", emailMode ? [user_idssAsString] : userId);
-    formData.append("pearl_id", emailMode ? [pearlIdsAsString] : pearlsLeadId);
-    formData.append("subject",JSON.stringify(values?.subject));
+    formData.append("subject", JSON.stringify(values?.subject));
     formData.append("productName", JSON.stringify(values?.productName));
     formData.append("email_content", JSON.stringify(values?.email_content));
+    formData.append("email_type", JSON.stringify(emailType));
 
     let otherFieldsObject: any = {};
 
@@ -253,6 +265,14 @@ const Sent_Purposal = ({ data1 }: any) => {
       pearl_id: pearlsLeadId,
       sender_number: `+91${values?.sender_number}`,
       sender_body: values?.sender_body,
+      email_type: emailType,
+    };
+    let items1 = {
+      user_uuid: userId,
+      meta_id: userId,
+      sender_number: `+91${values?.sender_number}`,
+      sender_body: values?.sender_body,
+      email_type: emailType,
     };
     // return;
 
@@ -270,16 +290,16 @@ const Sent_Purposal = ({ data1 }: any) => {
           toast.success("Email send successfully");
           console.log("Response:", res);
         } else {
-          const res = await api.Leads.sent_messange(items);
+          const res = await api.Leads.sent_messange(emailType==="meta"?items1:items);
           toast.success(res?.message);
           console.log(res, "gfhfh");
         }
       }
       localStorage.removeItem("extrafields");
-      if(!emailMode){
-        router.replace(`/admin/pearls?filter=all`);
-      }else{
-        router.replace(`/admin/template?filter=all`);
+      if (!emailMode) {
+        router.replace(`/admin/${emailType==="meta"?"metalist":"pearls"}?filter=all`);
+      } else {
+        router.replace(`/admin/template?filter=all&leads_type=${emailType}`);
       }
     } catch (error) {
       console.log("Error:", error);
@@ -304,8 +324,8 @@ const Sent_Purposal = ({ data1 }: any) => {
   console.log(filedTypes, "filedTypes");
   const targetName = "Document";
   const targetName1 = "Document";
-  console.log(targetName1,"targetName1");
-  
+  console.log(targetName1, "targetName1");
+
   const textCount = data1?.data.filter(
     (item: any) => item.type === "text" && item.name === targetName
   ).length;
@@ -314,9 +334,9 @@ const Sent_Purposal = ({ data1 }: any) => {
   // ).length;
   const textCount1 = Object.keys(addFields).filter(
     (key) => key.startsWith("dynamicText1-") && addFields[key]?.type === "text"
-).length;
+  ).length;
   console.log(textCount1, "textCount1");
-  // const handleFinish = (values: any) => { 
+  // const handleFinish = (values: any) => {
   //   onFinish(values); // pass values to onFinish
   //   // showModal(values);
   // };
@@ -358,8 +378,8 @@ const Sent_Purposal = ({ data1 }: any) => {
   //   setAddFields(updatedValues);
   //   localStorage.setItem("extrafields", JSON.stringify(updatedValues)); // Save to localStorage
   // };
-  console.log(storeState,"storeState");
-  
+  console.log(storeState, "storeState");
+
   const handleFieldChange2 = (field: string, value: any) => {
     console.log(value, "aaa");
     console.log(field, "qwwqw");
@@ -373,7 +393,7 @@ const Sent_Purposal = ({ data1 }: any) => {
     setStoreState(updatedValues);
   };
   // setAddFields(updatedValues);
-  // localStorage.setItem("extrafields", JSON.stringify(updatedValues)); 
+  // localStorage.setItem("extrafields", JSON.stringify(updatedValues));
   // Function to handle image change and store the image (only one image)
   const handleImageChange = (file: any, fieldName: string) => {
     const reader = new FileReader();
@@ -400,11 +420,11 @@ const Sent_Purposal = ({ data1 }: any) => {
   const filterData = data1?.data?.filter(
     (res: any) => res?.field_for === validation.toLowCase(field_for)
   );
-  
+
   const filterData1 = Array.isArray(addFields)
-  ? addFields.filter((res: any) => res?.field_name )
-  : [];
-  
+    ? addFields.filter((res: any) => res?.field_name)
+    : [];
+
   console.log(filterData1, "filterData1");
   if (typeof window !== "undefined" && filterData) {
     localStorage.setItem("filteredData", JSON.stringify(filterData));
@@ -450,7 +470,7 @@ const Sent_Purposal = ({ data1 }: any) => {
     ); // Store only field names
   };
 
-console.log(addFields,"addFields");
+  console.log(addFields, "addFields");
 
   const handleCancel1 = () => {
     setIsModalOpen(false);
@@ -460,38 +480,38 @@ console.log(addFields,"addFields");
   const showModal1 = () => {
     setIsModalOpen(true);
   };
-const [state1,setState1]=useState<any>(false)
-console.log(state1,"state1");
+  const [state1, setState1] = useState<any>(false);
+  console.log(state1, "state1");
 
-const submit = (values: any) => {
-  console.log("Form Submitted:", values);
+  const submit = (values: any) => {
+    console.log("Form Submitted:", values);
 
-  setIsModalOpen(false);
+    setIsModalOpen(false);
 
-  try {
-    const fields = JSON.parse(localStorage.getItem("extrafields") || "[]");
-    fields.push(values);
-    localStorage.setItem("extrafields", JSON.stringify(fields));
-    setState1(true);
-    form.resetFields();
-    console.log("Field added:", values);
-  } catch (error) {
-    console.error("Error saving field data to localStorage:", error);
-  }
-};
-useEffect(() => {
-  const storedValues = localStorage.getItem("extrafields");
-  console.log(storedValues, "storedValues");
+    try {
+      const fields = JSON.parse(localStorage.getItem("extrafields") || "[]");
+      fields.push(values);
+      localStorage.setItem("extrafields", JSON.stringify(fields));
+      setState1(true);
+      form.resetFields();
+      console.log("Field added:", values);
+    } catch (error) {
+      console.error("Error saving field data to localStorage:", error);
+    }
+  };
+  useEffect(() => {
+    const storedValues = localStorage.getItem("extrafields");
+    console.log(storedValues, "storedValues");
 
-  if (storedValues) {
-    setAddFields(JSON.parse(storedValues));
-  }
-}, [state1]);
-useEffect(() => {
-  if (state1) {
-    setState1(false); // Reset state1 after it's been processed
-  }
-}, [state1]);
+    if (storedValues) {
+      setAddFields(JSON.parse(storedValues));
+    }
+  }, [state1]);
+  useEffect(() => {
+    if (state1) {
+      setState1(false); // Reset state1 after it's been processed
+    }
+  }, [state1]);
   return (
     <div style={{ padding: "20px" }}>
       <ToastContainer />
@@ -572,18 +592,17 @@ useEffect(() => {
           )}
           <Card
             title={`${capFirst(activeKey || field_Type)} Form`}
-            extra={
-              <>
-                {activeKey !== "sms" ? (
-                  <Button type="primary" onClick={showModal}>
-                    Preview
-                  </Button>
-                ) : (
-                  ""
-                )}
-                {/* <Button type="primary">Add Field</Button> */}
-              </>
-            }
+            // extra={
+            //   <>
+            //     {activeKey !== "sms" ? (
+            //       <Button type="primary" onClick={showModal}>
+            //         Preview
+            //       </Button>
+            //     ) : (
+            //       ""
+            //     )}
+            //   </>
+            // }
             style={{ width: 800, margin: "auto", marginTop: "20px" }}
           >
             <Form layout="vertical" onFinish={onFinish}>
@@ -955,8 +974,8 @@ useEffect(() => {
                     }
                   })}
                   {filterData1?.map((item: any, index: any) => {
-                    console.log(item,"popopopo");
-                    
+                    console.log(item, "popopopo");
+
                     if (hiddenFields1[item.field_name]) return null;
                     const validationRules = hiddenFields1[item.field_name]
                       ? [] // No validation if the field is hidden
@@ -1169,7 +1188,7 @@ useEffect(() => {
                           >
                             <Checkbox
                               checked={addFields[item.field_name]} // Bind the value to state
-                              onChange={(e:any) =>
+                              onChange={(e: any) =>
                                 handleFieldChange2(
                                   item.filed_name,
                                   e.target.checked
@@ -1277,12 +1296,12 @@ useEffect(() => {
                       <Input
                         placeholder={`Enter text for ${targetName1}`}
                         value={addFields[`dynamicText1-`]} // Bind the value to state
-                        onChange={(e:any) =>
+                        onChange={(e: any) =>
                           handleFieldChange2(`dynamicText1-`, e.target.value)
                         } // Update value on change
                       />
                     </Form.Item>
-                   ))}
+                  ))}
                   {/* <div className=""> */}
                   {/* <Form.List
                     name="names"
@@ -1351,8 +1370,14 @@ useEffect(() => {
                     )}
                   </Form.List> */}
                   <div className="mt-5 mb-5">
-                  {/* <AddFieldsModal /> */}
-                  <AddFieldsModal    form={form} submit={submit} showModal1={showModal1} handleCancel1={handleCancel1} isModalOpen={isModalOpen}/>
+                    {/* <AddFieldsModal /> */}
+                    <AddFieldsModal
+                      form={form}
+                      submit={submit}
+                      showModal1={showModal1}
+                      handleCancel1={handleCancel1}
+                      isModalOpen={isModalOpen}
+                    />
                   </div>
                   {/* </div> */}
                   <Form.Item style={{ margin: "auto" }}>
