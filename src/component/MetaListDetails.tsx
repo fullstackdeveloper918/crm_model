@@ -173,11 +173,11 @@ getData()
       const archive = async () => {
         try {
           let item = {
-            user_uuid: data?.getByOne[0]?.user_uuid,
+            user_uuid: data?.data?.user_uuid,
           };
           console.log(item, "item");
     
-          const res = await api.PearlLeads.delete(item);
+          const res = await api.MetaLeads.delete(item);
           // data(); 
           console.log(res, "ioioio");
           toast.success(res?.message);

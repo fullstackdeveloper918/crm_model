@@ -77,6 +77,8 @@ const MetaLeads={
     requests.post('import-metalead-data', info),
   changeStatus: (info: any) =>
     requests.post('update-meta-calledlead-status', info),
+  delete: (info: any) =>
+    requests.del('delete-meta-lead', info),
 }
 
 const PearlLeads={

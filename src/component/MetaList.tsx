@@ -234,7 +234,15 @@ const MetaList = ({ data, currentSearch, sendStatus }: any) => {
       setViewLoading(false);
     }
   };
-  
+  const Send = (id: any) => {
+    console.log(id, "uiuiui");
+
+    try {
+      router.push(`/admin/metalist/${id}`);
+    } catch (error) {
+      console.error("Navigation error:", error);
+    }
+  };
   const sendEmail = (id: any, user_id: any, type: any, index: any) => {
     console.log(id, user_id, type, "check mail");
 
@@ -586,7 +594,7 @@ const MetaList = ({ data, currentSearch, sendStatus }: any) => {
                           onClick={() => {
                             if (lead?.user_uuid) {
                               sendEmail(
-                                lead.pearl_id,
+                                lead.user_uuid,
                                 lead.user_uuid,
                                 "email",
                                 index
@@ -608,13 +616,13 @@ const MetaList = ({ data, currentSearch, sendStatus }: any) => {
                       </Tooltip>
                       <Tooltip title="View">
                         <Button
-                          // onClick={() => {
-                          //   if (lead?.pearl_id) {
-                          //     Send(lead.pearl_id);
-                          //   } else {
-                          //     console.error("Pearl ID is missing");
-                          //   }
-                          // }}
+                          onClick={() => {
+                            if (lead?.user_uuid) {
+                              Send(lead.user_uuid);
+                            } else {
+                              console.error("Pearl ID is missing");
+                            }
+                          }}
                           icon={<EyeOutlined style={{ color: "black" }} />}
                         />
                       </Tooltip>
