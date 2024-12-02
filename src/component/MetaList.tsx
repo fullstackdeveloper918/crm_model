@@ -36,14 +36,15 @@ import Recent_card from "./common/Recent_card";
 import { capFirst, replaceUnderScore } from "@/utils/validation";
 import Pagination from "./common/Pagination";
 import { ToastContainer } from "react-toastify";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 const { Title, Text } = Typography;
 const { Content, Sider } = Layout;
 const { Search } = Input;
 const { TabPane } = Tabs;
-const MetaList = ({ data, currentSearch, sendStatus }: any) => {
+const { Option } = Select;
+const MetaList = ({ data, data1, currentSearch, sendStatus }: any) => {
   const router = useRouter();
-  console.log(data, "dretdfghjklata");
+  console.log(data1, "dretdfghjklata");
   const [modal2Open, setModal2Open] = useState<boolean>(false);
   const [viewLoading, setViewLoading] = useState<boolean>(false);
   const columns = [
@@ -225,6 +226,42 @@ const MetaList = ({ data, currentSearch, sendStatus }: any) => {
     setSelectedLead(lead); // Set the selected lead data
     setModal2Open(true); // Open the modal
   };
+  const searchParams = useSearchParams();
+  console.log(searchParams.get("chamber"),"searchParams");
+  const chamberVlue= searchParams.get("chamber")
+  const handleChange = (e: string) => {
+    const newSearchParams = new URLSearchParams(searchParams.toString());
+
+    newSearchParams.set('chamber', e);
+
+    router.push(`/admin/metalist?${newSearchParams.toString()}`);
+  };
+
+  // const searchParams = useSearchParams();
+  const handleTabChange =(e: any) => {
+
+    // Create a new URLSearchParams object to modify the search parameters
+    const newSearchParams = new URLSearchParams(searchParams.toString());
+  
+    // Define a mapping for the filter options
+    const filterMap: { [key: string]: string } = {
+      all: "all",
+      priority: "priority",
+      potential: "potential",
+      non_potential: "non_potential",
+      call_lead: "call_lead",
+      mail: "mail",
+      sms: "sms",
+    };
+  
+    // Check if the provided 'e' key exists in the filterMap and set the value
+    if (filterMap[e]) {
+      newSearchParams.set('filter', filterMap[e]); // Set the filter parameter to the corresponding value
+    }
+  
+    // Update the URL with the new search parameters
+    router.push(`/admin/metalist?${newSearchParams.toString()}`);
+  };
   const ViewMore = () => {
     try {
       setViewLoading(true);
@@ -243,8 +280,14 @@ const MetaList = ({ data, currentSearch, sendStatus }: any) => {
       console.error("Navigation error:", error);
     }
   };
-  const sendEmail = (id: any, user_id: any, type: any, index: any) => {
-    console.log(id, user_id, type, "check mail");
+  const sendEmail = (
+    id: any,
+    user_id: any,
+    email_number: any,
+    type: any,
+    index: any
+  ) => {
+    console.log(id, user_id, type, email_number, "check mail");
 
     try {
       if (type === "sms") {
@@ -261,7 +304,7 @@ const MetaList = ({ data, currentSearch, sendStatus }: any) => {
         });
       }
       router.push(
-        `/admin/purposal/sent_purposal?user_id=${user_id}&field_for=welcome&fieldType=${type}&email_type=meta`
+        `/admin/purposal/sent_purposal?user_id=${user_id}&field_for=welcome&send_to=${email_number}&fieldType=${type}&email_type=meta`
       );
     } catch (error) {
       if (type === "sms") {
@@ -306,6 +349,8 @@ const MetaList = ({ data, currentSearch, sendStatus }: any) => {
         return "";
     }
   };
+  console.log(data?.data[0]?.created_time, "sdfghjk");
+
   return (
     //   <Fragment>
     //   <section>
@@ -428,13 +473,64 @@ const MetaList = ({ data, currentSearch, sendStatus }: any) => {
   onChange={handleChange}
   style={{ backgroundColor: '#f5f5f5', padding: '10px', borderRadius: '5px' }}
 /> */}
-
-        <Title className="mt-3" level={3}>
-          All Meta Leads
-        </Title>
         <Row justify="space-between" style={{ marginBottom: "0px" }}>
-          <div style={{ padding: "20px" }}>
-            {/* <h1>Account</h1> */}
+          <div style={{ padding: "20px",display:"flex",gap:"30px" }}>
+            <Title className="mt-3" level={3}>
+              All Meta Leads
+            </Title>
+            <Space>
+              <Select
+                defaultValue={chamberVlue||"All chamber"}
+                style={{ width: 150 }}
+                onChange={handleChange}
+              >
+                {data1?.data?.map((res: any, index: number) => {
+                  let displayValue = "";
+                  let isDisabled = false;
+
+                  // Map the hyperbaric chamber interested in values to custom display text
+                  switch (res?.hyperbaric_chamber_interested_in) {
+                    case "not_sure_yet,_would_like_more_information":
+                      displayValue = "Not sure";
+                      break;
+                    case "hard_chamber":
+                      displayValue = "Hard Chamber";
+                      break;
+                    case "soft_chamber":
+                      displayValue = "Soft Chamber";
+                      break;
+                    case "":
+                      displayValue = "Not available";
+                      isDisabled = true; // Disable this option
+                      break;
+                    default:
+                      displayValue =
+                        res?.hyperbaric_chamber_interested_in || "Unknown"; // Default case
+                  }
+
+                  return (
+                    <Option
+                      key={index}
+                      value={res?.hyperbaric_chamber_interested_in}
+                      disabled={isDisabled}
+                    >
+                      {displayValue}
+                    </Option>
+                  );
+                })}
+              </Select>
+              {/* <Option value="all">All Leads</Option>
+          <Option value="priority">High-Potential Leads</Option>
+          <Option value="potential">Potential Leads</Option>
+          <Option value="non_potential">Suspect Leads</Option>
+          <Option value="call_lead">Call Leads</Option>
+          <Option value="mail">Email Leads</Option>
+          <Option value="sms">Sms Leads</Option> */}
+            </Space>
+          </div>
+        </Row>
+        <Row justify="space-between" style={{ marginBottom: "0px" }}>
+          <div >
             {/* <Tabs
               defaultActiveKey={sendStatus}
               centered
@@ -444,82 +540,34 @@ const MetaList = ({ data, currentSearch, sendStatus }: any) => {
                 tab={
                   <span style={{ fontWeight: 600 }}>
                     All Leads
-                    [{fetchData?.data?.totalLeads}]{" "}
                   </span>
                 }
                 key="all"
               >
               </TabPane>
+             
               <TabPane
-                tab={<span style={{ fontWeight: 'bold' }}>High-Potential Leads [{fetchData?.data?.priorityLeads}] </span>}
-                tab={
-                  <span style={{ fontWeight: 600 }}>
-                    High-Potential Leads
-                    [{fetchData?.data?.priorityLeads}]{" "}
-                  </span>
-                }
-                key="priority"
-              >
-              </TabPane>
-              <TabPane
-                tab={`Potential Leads [${fetchData?.data?.}]`}
-                tab={
-                  <span style={{ fontWeight: 600 }}>
-                    Potential Leads
-                    [{fetchData?.data?.potentialLeads}]{" "}
-                  </span>
-                }
-                key="potential"
-              >
-              </TabPane>
-              <TabPane
-                tab={`Suspect Leads [${fetchData?.data?.nonPotentialLeads}]`}
-                tab={
-                  <span style={{ fontWeight: 600 }}>
-                    Suspect Leads
-                    [{fetchData?.data?.nonPotentialLeads}]{" "}
-                  </span>
-                }
-                key="non_potential"
-              >
-              </TabPane>
-              <TabPane
-                tab={`Call Leads [${fetchData?.data?.mailLeads}]`}
-                tab={
-                  <span style={{ fontWeight: 600 }}>
-                    Call Leads
-                    [{fetchData?.data?.mailLeads}]{" "}
-                  </span>
-                }
+                tab={`Call Leads`}
+               
                 key="call_lead"
               >
               </TabPane>
               <TabPane
-                tab={`Email Leads [${fetchData?.data?.calledLeads}]`}
-                tab={
-                  <span style={{ fontWeight: 600 }}>
-                    Email Leads
-                    [{fetchData?.data?.calledLeads}]{" "}
-                  </span>
-                }
+                tab={`Email Leads`}
+               
                 key="mail"
               >
               </TabPane>
               <TabPane
-                tab={`Sms Leads [${fetchData?.data?.smsLeads}]`}
-                tab={
-                  <span style={{ fontWeight: 600 }}>
-                    Sms Leads
-                    [{fetchData?.data?.smsLeads}]{" "}
-                  </span>
-                }
+                tab={`Sms Leads`}
+               
                 key="sms"
               >
               </TabPane>
             </Tabs> */}
             <Search
               size="large"
-              style={{width:"1000px"}}
+              style={{ width: "1000px" }}
               className=""
               placeholder="Search by Name & Email"
               enterButton
@@ -551,7 +599,7 @@ const MetaList = ({ data, currentSearch, sendStatus }: any) => {
         <Row gutter={[16, 16]}>
           <Col xs={24} md={18}>
             <Row gutter={[16, 16]}>
-              {data?.data?.map((lead: any, index: number) => (
+              {data?.data?.map((lead: any, index: any) => (
                 <Col xs={24} sm={12} md={8} lg={6} key={index}>
                   <div
                     style={{
@@ -578,6 +626,7 @@ const MetaList = ({ data, currentSearch, sendStatus }: any) => {
                               sendEmail(
                                 lead.pearl_id,
                                 lead.user_uuid,
+                                lead.phone_number,
                                 "sms",
                                 index
                               );
@@ -596,6 +645,7 @@ const MetaList = ({ data, currentSearch, sendStatus }: any) => {
                               sendEmail(
                                 lead.user_uuid,
                                 lead.user_uuid,
+                                lead.email,
                                 "email",
                                 index
                               );
@@ -741,7 +791,7 @@ const MetaList = ({ data, currentSearch, sendStatus }: any) => {
                     </Dropdown> */}
                       </div>
                       <Text>
-                        {dayjs(lead?.created_at).format("DD-MM-YYYY")}
+                        {dayjs(lead?.created_time).format("DD-MM-YYYY")}
                       </Text>
                       <Divider
                         className="pearl_card_divider"
@@ -804,7 +854,7 @@ const MetaList = ({ data, currentSearch, sendStatus }: any) => {
                 </p>
                 <p>
                   <strong>Created At:</strong>{" "}
-                  {dayjs(selectedLead.created_at).format("DD-MM-YYYY")}
+                  {dayjs(selectedLead.created_time).format("DD-MM-YYYY")}
                 </p>
               </>
             ) : (

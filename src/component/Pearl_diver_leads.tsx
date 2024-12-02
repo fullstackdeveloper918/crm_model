@@ -524,6 +524,11 @@ const Pearl_diver_leads = ({
         return "";
     }
   };
+
+
+  console.log(data?.data,"gjgjkgu");
+  // &send_to=${data?.data?.phone_number}
+  
   return (
     <Layout style={{ minHeight: "100vh" }}>
       <ToastContainer />

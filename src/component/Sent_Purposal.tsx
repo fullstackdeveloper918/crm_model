@@ -79,9 +79,23 @@ const tabs = [
     label: <span>SMS</span>,
   },
 ];
-const Sent_Purposal = ({ data1 }: any) => {
+const Sent_Purposal = ({ data1, data }: any) => {
   const [form] = Form.useForm();
   console.log(data1, "data1");
+  console.log(data, "rwe");
+  const phone = data?.getByOne[0]?.phones;
+  // const phoneArray = JSON.parse(phone);
+  let phoneArray = [];
+
+  if (phone && phone !== "undefined") {
+    try {
+      phoneArray = JSON.parse(phone);
+    } catch (error) {
+      console.error("Error parsing phones:", error);
+    }
+  }
+  console.log(phone, "phonephone");
+
   const [editorValue, setEditorValue] = useState<string>("");
 
   // Handle change in editor
@@ -123,7 +137,8 @@ const Sent_Purposal = ({ data1 }: any) => {
   const field_Type: any = searchParams.get("fieldType");
   const emailMode: any = searchParams.get("email_mode");
   const emailType: any = searchParams.get("email_type");
-  console.log(emailType, "email_type");
+  const sendTo: any = searchParams.get("send_to");
+  console.log(sendTo, "sendTo");
 
   const [formValues, setFormValues] = useState<any>({}); // Store form values
   const [filterArrayId1, setFilterArrayId1] = useState<any>([]); // Store form values
@@ -211,6 +226,8 @@ const Sent_Purposal = ({ data1 }: any) => {
 
   const onFinish = async (values: any) => {
     console.log("Form submitted with values:", file, values);
+    console.log(values?.sender_number, "sender_number");
+
     const formData: any = new FormData();
     if (file) {
       formData.append("file", file);
@@ -263,14 +280,14 @@ const Sent_Purposal = ({ data1 }: any) => {
     let items = {
       user_uuid: userId,
       pearl_id: pearlsLeadId,
-      sender_number: `+91${values?.sender_number}`,
+      sender_number: emailType === "pearl" ? values?.sender_number : sendTo, // `+91${sendTo}`,
       sender_body: values?.sender_body,
       email_type: emailType,
     };
     let items1 = {
       user_uuid: userId,
       meta_id: userId,
-      sender_number: `+91${values?.sender_number}`,
+      sender_number: emailType === "pearl" ? values?.sender_number : sendTo, //`+91${sendTo}`,
       sender_body: values?.sender_body,
       email_type: emailType,
     };
@@ -290,14 +307,18 @@ const Sent_Purposal = ({ data1 }: any) => {
           toast.success("Email send successfully");
           console.log("Response:", res);
         } else {
-          const res = await api.Leads.sent_messange(emailType==="meta"?items1:items);
+          const res = await api.Leads.sent_messange(
+            emailType === "meta" ? items1 : items
+          );
           toast.success(res?.message);
           console.log(res, "gfhfh");
         }
       }
       localStorage.removeItem("extrafields");
       if (!emailMode) {
-        router.replace(`/admin/${emailType==="meta"?"metalist":"pearls"}?filter=all`);
+        router.replace(
+          `/admin/${emailType === "meta" ? "metalist" : "pearls"}?filter=all`
+        );
       } else {
         router.replace(`/admin/template?filter=all&leads_type=${emailType}`);
       }
@@ -516,6 +537,11 @@ const Sent_Purposal = ({ data1 }: any) => {
     <div style={{ padding: "20px" }}>
       <ToastContainer />
       <Row gutter={16}>
+        {/* {phoneArray?.map((res: any, index: number) => (
+                     <span className="" key={index}>
+                      {res?.number}
+                    </span>
+                  ))} */}
         <Col span={16}>
           {/* <Link href={`/admin/pearls/${pearlsLeadId}`}> */}
           <Button
@@ -1388,9 +1414,8 @@ const Sent_Purposal = ({ data1 }: any) => {
                 </>
               ) : (
                 <>
+                {emailType==="pearl" ?
                   <Form.Item
-                    // key={index}
-
                     name={"sender_number"}
                     label={"Number"}
                     rules={[
@@ -1400,15 +1425,25 @@ const Sent_Purposal = ({ data1 }: any) => {
                       },
                     ]}
                   >
-                    <Input
-                      type="number"
-                      placeholder={`Enter text number`}
-                      value={formValues["number"]} // Bind the value to state
-                      onChange={(e) =>
-                        handleFieldChange("number", e.target.value)
-                      } // Update value on change
-                    />
+                    <Select placeholder="Select a number" allowClear>
+                      {phoneArray?.map((res: any, index: number) => (
+                        <Option key={index} value={res?.number}>
+                          {res?.number}
+                        </Option>
+                      ))}
+                    </Select>
                   </Form.Item>
+           :
+                  <Input
+                    type="number"
+                    style={{ color: "black" }}
+                    disabled
+                    placeholder={`Enter text number`}
+                    value={sendTo} // Bind the value to state
+                    onChange={(e) => handleFieldChange("number", sendTo)}
+                  />
+                    }
+                  {/* </Form.Item> */}
                   <Form.Item
                     // key={index}
                     name={"sender_body"}

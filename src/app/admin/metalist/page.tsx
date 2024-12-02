@@ -8,27 +8,52 @@ import Link from "next/link";
 const page = async ({ searchParams }: { searchParams: any }) => {
   const currentPage = searchParams.page ? Number(searchParams.page) : 1;
   const currentSearch = searchParams?.search;
-  console.log(currentSearch, "currentSearch");
+  console.log(searchParams, "currentSearch");
+  const chamber=searchParams?.chamber
+  const filter=searchParams?.filter
+  console.log(chamber,"chadfddddmber");
+  
 
   const currentFilter = searchParams?.filter;
+
+  const statusMap: { [key: string]: string } = {
+    // all: "",
+    // non_potential: "0",
+    // potential: "1",
+    // priority: "2",
+    call_lead:"6",
+    mail:"5",
+    sms:"4"
+    // call: "4" // Assuming 'call' is the last option
+  };
+  const sendStatus = statusMap[currentFilter] || "0"; 
+  // console.log(sendStatus,"sendStatus");
   const api: any = {
     url: `https://srv626615.hstgr.cloud/meta-list?page=${currentPage}${
       currentSearch ? `&search=${encodeURIComponent(currentSearch)}` : ""
-    }`,
+    }${chamber? `&chamber=${encodeURIComponent(chamber)}`:""}`,
     // url: `https://srv626615.hstgr.cloud/imported-meta-list?page=${currentPage}`,
     method: "GET",
     // body: { key: 'value' }
   };
+  // const api: any = {
+  //   url: `https://srv626615.hstgr.cloud/meta-list?page=${currentPage}${
+  //     currentSearch ? `&search=${encodeURIComponent(currentSearch)}` : ""
+  //   }${chamber? `&chamber=${encodeURIComponent(chamber)}`:""}${filter? `&meta_status=${sendStatus}`:""}`,
+  //   // url: `https://srv626615.hstgr.cloud/imported-meta-list?page=${currentPage}`,
+  //   method: "GET",
+  //   // body: { key: 'value' }
+  // };
 
   const data = await fetchFromServer(api, undefined);
   const api1: any = {
-    url: "https://srv626615.hstgr.cloud/field-list",
+    url: "https://srv626615.hstgr.cloud/metachamber-columns",
     method: "GET",
     // body: { key: 'value' }
   };
 
-  const data1 = await fetchFromServer(api, undefined);
-  console.log(data, "imported-meta-list");
+  const data1 = await fetchFromServer(api1, undefined);
+  console.log(data, "checkdata");
 
   return (
     // imported-meta-list
@@ -37,6 +62,7 @@ const page = async ({ searchParams }: { searchParams: any }) => {
         data={data}
         sendStatus={currentFilter}
         currentSearch={currentSearch}
+        data1={data1}
       />
       {/* <Fragment>
     <section>

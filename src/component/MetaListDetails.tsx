@@ -123,7 +123,7 @@ const MetaListDetails = ({data,activity}:any) => {
     if(type==="sms"){
       setLoading(true)
       router.push(
-        `/admin/purposal/sent_purposal?meta_lead_id=${data?.data?.user_uuid}&field_for=welcome&fieldType=sms&email_type=meta`
+        `/admin/purposal/sent_purposal?meta_lead_id=${data?.data?.user_uuid}&send_to=${data?.data?.phone_number}&field_for=welcome&fieldType=sms&email_type=meta`
       );
       // admin/purposal/sent_purposal?user_id=f3ce7edd-203f-4f5b-9167-f34fb2fc68a2&field_for=welcome&fieldType=sms&email_type=meta
     }else{
