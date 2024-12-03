@@ -91,6 +91,7 @@ const PearlsSelectUsers = ({
   data,
   data1,
   fetchData,
+  fetchChamberlist,
   onArchive,
   sendStatus,
   currentSearch,
@@ -101,7 +102,15 @@ const PearlsSelectUsers = ({
   const searchParams = useSearchParams();
   let leads_type = searchParams.get("leads_type");
   console.log(leads_type, "leads_type");
+  console.log(searchParams.get("chamber"),"searchParams");
+  const chamberVlue= searchParams.get("chamber")
+  const handleChange11 = (e: string) => {
+    const newSearchParams = new URLSearchParams(searchParams.toString());
 
+    newSearchParams.set('chamber', e);
+
+    router.push(`/admin/template?${newSearchParams.toString()}`);
+  };
   //   let array=[
   //     {
   // name:"abhay",
@@ -327,7 +336,7 @@ const PearlsSelectUsers = ({
             </Select>
           </Space>
         </div>
-        {leads_type==="pearl"?
+        {leads_type==="pearl"&&
         <>
           <Row style={{ marginBottom: "0px" }}>
             <div className="d-flex" style={{ width: "90%", gap: "20px" }}>
@@ -341,7 +350,7 @@ const PearlsSelectUsers = ({
               />
               <Space>
                 <Select
-                  defaultValue="All Leads"
+                  defaultValue={leads_type==="pearl"?"All Leads":"All chamber"}
                   style={{ width: 150 }}
                   onChange={handleChange}
                 >
@@ -406,7 +415,8 @@ const PearlsSelectUsers = ({
             </Card> */}
             </Col>
           </Row>
-        </>:
+        </>}
+        {leads_type==="meta"&&
           <>
           <Row style={{ marginBottom: "0px" }}>
             <div className="d-flex" style={{ width: "90%", gap: "20px" }}>
@@ -418,21 +428,48 @@ const PearlsSelectUsers = ({
                 value={searchTerm}
                 onChange={handleSearch}
               />
-              {/* <Space>
-                <Select
-                  defaultValue="All Leads"
-                  style={{ width: 150 }}
-                  onChange={handleChange}
-                >
-                  <Option value="all">All Leads</Option>
-                  <Option value="priority">High-Potential Leads</Option>
-                  <Option value="potential">Potential Leads</Option>
-                  <Option value="non_potential">Suspect Leads</Option>
-                  <Option value="call_lead">Call Leads</Option>
-                  <Option value="mail">Email Leads</Option>
-                  <Option value="sms">Sms Leads</Option>
-                </Select>
-              </Space> */}
+              <Space>
+              <Select
+                defaultValue={`All Chamber`}
+                style={{ width: 150 }}
+                onChange={handleChange11}
+              >
+                {fetchChamberlist?.data?.map((res: any, index: number) => {
+                  let displayValue = "";
+                  let isDisabled = false;
+
+                  // Map the hyperbaric chamber interested in values to custom display text
+                  switch (res?.hyperbaric_chamber_interested_in) {
+                    case "not_sure_yet,_would_like_more_information":
+                      displayValue = "Not sure";
+                      break;
+                    case "hard_chamber":
+                      displayValue = "Hard Chamber";
+                      break;
+                    case "soft_chamber":
+                      displayValue = "Soft Chamber";
+                      break;
+                    case "":
+                      displayValue = "Not available";
+                      isDisabled = true; // Disable this option
+                      break;
+                    default:
+                      displayValue =
+                        res?.hyperbaric_chamber_interested_in || "Unknown"; // Default case
+                  }
+
+                  return (
+                    <Option
+                      key={index}
+                      value={res?.hyperbaric_chamber_interested_in}
+                      disabled={isDisabled}
+                    >
+                      {displayValue}
+                    </Option>
+                  );
+                })}
+              </Select>
+              </Space>
             </div>
           </Row>
           {/* <Row>

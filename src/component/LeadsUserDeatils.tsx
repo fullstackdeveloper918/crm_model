@@ -20,6 +20,7 @@ import { useRouter } from "next/navigation";
 import axios from "axios";
 import api from "@/utils/api";
 import { toast, ToastContainer } from "react-toastify";
+import Calendar from "./common/Calendar";
 const { Content, Sider } = Layout;
 const { Text, Title } = Typography;
 const leadsData = {
@@ -479,6 +480,9 @@ if (phone && phone !== "undefined") {
         )}
       />
     </Card>
+
+
+    <Calendar />
   </div>
   </>
   );

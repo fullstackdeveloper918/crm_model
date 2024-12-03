@@ -12,6 +12,8 @@ const page = async({ searchParams }: { searchParams: any },) => {
   console.log(currentPage, "currentPage");
 const currentFilter=searchParams?.filter
 const currentSearch=searchParams?.search
+const chamber=searchParams?.chamber
+  console.log(chamber,"chamber");
   console.log(currentFilter,"currentFilter");
   console.log(currentSearch,"currentSearch");
   const statusMap: { [key: string]: string } = {
@@ -57,15 +59,24 @@ const currentSearch=searchParams?.search
   const api1: any = {
     url: `https://srv626615.hstgr.cloud/meta-list?page=${currentPage}${
       currentSearch ? `&search=${encodeURIComponent(currentSearch)}` : ""
-    }`,
+    }${chamber? `&chamber=${encodeURIComponent(chamber)}`:""}`,
     method: "GET",
     // body: { key: 'value' }
   };
 
   const data1= await fetchFromServer(api1,undefined);
+
+
+  const api3: any = {
+    url: "https://srv626615.hstgr.cloud/metachamber-columns",
+    method: "GET",
+    // body: { key: 'value' }
+  };
+
+  const fetchChamberlist = await fetchFromServer(api3, undefined);
   return (
    <>
-   <PearlsSelectUsers data={data} data1={data1} fetchData={fetchData} fetchData1={fetchData1} sendStatus={currentFilter} currentSearch={currentSearch}/>
+   <PearlsSelectUsers data={data} data1={data1} fetchData={fetchData} fetchChamberlist={fetchChamberlist} fetchData1={fetchData1} sendStatus={currentFilter} currentSearch={currentSearch}/>
    </>
   )
 }

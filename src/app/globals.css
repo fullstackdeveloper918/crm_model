@@ -1,7 +1,10 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
+@fullcalendar/core/main.css;
+@fullcalendar/daygrid/main.css;
+@fullcalendar/timegrid/main.css;
+@fullcalendar/interaction/main.css;
 :root {
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;
