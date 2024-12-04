@@ -103,7 +103,7 @@ const AddCsvData = () => {
       useEffect(() => {
         getData();
       }, []);
-      
+      const[loading,setLoading]=useState(false)
       const submit=async()=>{
         const formData:any = new FormData();
         formData.append('file', file);
@@ -111,12 +111,13 @@ const AddCsvData = () => {
             console.log(`${key}:`, value);
           }
         try {
+          setLoading(true)
             const res= await api.MetaLeads.importCsv(formData)
             toast.success(res?.message)
             getData()
             setIsModalOpen(false);
         } catch (error) {
-            
+          setLoading(false)
         }
       }
     
@@ -189,7 +190,7 @@ const AddCsvData = () => {
               {/* )} */}
             </div>
           </Card>
-          <Modal className='text-item-center' title="Import Meta Leads" open={isModalOpen} onOk={submit} onCancel={handleCancel}>
+          <Modal className='text-item-center' title="Import Meta Leads" open={isModalOpen} loading={loading} onOk={submit} onCancel={handleCancel}>
           <Dragger   multiple={false} onChange={handleFileChange}>
     <p className="ant-upload-drag-icon">
       <InboxOutlined />
