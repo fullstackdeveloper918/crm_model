@@ -17,7 +17,7 @@ import Link from 'next/link';
 import { DownloadOutlined, ExportOutlined, EyeOutlined, ImportOutlined, InboxOutlined, PlusOutlined } from "@ant-design/icons";
 import Dragger from 'antd/es/upload/Dragger';
 import api from '@/utils/api';
-import { toast } from 'react-toastify';
+import { toast, ToastContainer } from 'react-toastify';
 import dayjs from 'dayjs';
 import axios from 'axios';
 const AddCsvData = () => {
@@ -96,8 +96,9 @@ const AddCsvData = () => {
         const res = await axios.get(
           `https://srv626615.hstgr.cloud/imported-file-path`
         );
-        console.log(res, "check");
+        console.log(res, "werrwetr");
         setState(res);
+        
       };
       useEffect(() => {
         getData();
@@ -123,6 +124,7 @@ const AddCsvData = () => {
   return (
     <Fragment>
     <section>
+      {/* <ToastContainer/>  */}
       <Row gutter={[20, 20]}>
         <Col span={24}>
           <Card className="common-card">
