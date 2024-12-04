@@ -27,23 +27,23 @@ const page = async ({ searchParams }: { searchParams: any }) => {
     // call: "4" // Assuming 'call' is the last option
   };
   const sendStatus = statusMap[currentFilter] || "0"; 
-  // console.log(sendStatus,"sendStatus");
-  const api: any = {
-    url: `https://srv626615.hstgr.cloud/meta-list?page=${currentPage}${
-      currentSearch ? `&search=${encodeURIComponent(currentSearch)}` : ""
-    }${chamber? `&chamber=${encodeURIComponent(chamber)}`:""}`,
-    // url: `https://srv626615.hstgr.cloud/imported-meta-list?page=${currentPage}`,
-    method: "GET",
-    // body: { key: 'value' }
-  };
+  console.log(sendStatus,"sendStatus");
   // const api: any = {
   //   url: `https://srv626615.hstgr.cloud/meta-list?page=${currentPage}${
   //     currentSearch ? `&search=${encodeURIComponent(currentSearch)}` : ""
-  //   }${chamber? `&chamber=${encodeURIComponent(chamber)}`:""}${filter? `&meta_status=${sendStatus}`:""}`,
+  //   }${chamber? `&chamber=${encodeURIComponent(chamber)}`:""}`,
   //   // url: `https://srv626615.hstgr.cloud/imported-meta-list?page=${currentPage}`,
   //   method: "GET",
   //   // body: { key: 'value' }
   // };
+  const api: any = {
+    url: `https://srv626615.hstgr.cloud/meta-list?page=${currentPage}${
+      currentSearch ? `&search=${encodeURIComponent(currentSearch)}` : ""
+    }${chamber? `&chamber=${encodeURIComponent(chamber)}`:""}${filter? `&filter=${sendStatus}`:""}`,
+    // url: `https://srv626615.hstgr.cloud/imported-meta-list?page=${currentPage}`,
+    method: "GET",
+    // body: { key: 'value' }
+  };
 
   const data = await fetchFromServer(api, undefined);
   const api1: any = {

@@ -444,7 +444,7 @@ const MetaList = ({ data, data1, currentSearch, sendStatus }: any) => {
         </Row>
         <Row justify="space-between" style={{ marginBottom: "0px" }}>
           <div >
-            {/* <Tabs
+            <Tabs
               defaultActiveKey={sendStatus}
               centered
               onChange={handleTabChange}
@@ -477,7 +477,7 @@ const MetaList = ({ data, data1, currentSearch, sendStatus }: any) => {
                 key="sms"
               >
               </TabPane>
-            </Tabs> */}
+            </Tabs>
             <Search
               size="large"
               style={{ width: "1000px" }}
