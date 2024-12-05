@@ -21,6 +21,7 @@ import axios from "axios";
 import api from "@/utils/api";
 import { toast, ToastContainer } from "react-toastify";
 import Calendar from "./common/Calendar";
+import CreatMeeting from "./CreatMeeting";
 const { Content, Sider } = Layout;
 const { Text, Title } = Typography;
 const leadsData = {
@@ -480,7 +481,7 @@ if (phone && phone !== "undefined") {
         )}
       />
     </Card>
-
+<CreatMeeting/>
 
     <Calendar />
   </div>
