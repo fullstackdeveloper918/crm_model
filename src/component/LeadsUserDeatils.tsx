@@ -1,6 +1,23 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Card, Avatar, Typography, Button, List, Layout, Tooltip, Steps, Space, Badge, Row, Tag, Col, Divider, Table, Popconfirm } from "antd";
+import {
+  Card,
+  Avatar,
+  Typography,
+  Button,
+  List,
+  Layout,
+  Tooltip,
+  Steps,
+  Space,
+  Badge,
+  Row,
+  Tag,
+  Col,
+  Divider,
+  Table,
+  Popconfirm,
+} from "antd";
 import {
   DeleteOutlined,
   DownloadOutlined,
@@ -69,82 +86,88 @@ const leadsData = {
   ],
 };
 const { Step } = Steps;
-const LeadsUserDeatils = ({ data,activitiest }: any, { data1 }: any) => {
+const LeadsUserDeatils = ({ data, activitiest }: any, { data1 }: any) => {
   const [loading, setLoading] = useState(false);
   console.log(activitiest, "activitiest");
   // console.log(data2, "datadatadata");
   // data
-  console.log(Array.isArray(data),"sadasdasddfg");
+  console.log(Array.isArray(data), "sadasdasddfg");
   const [recentActivity, RecentActivity] = useState<any>([]);
-  
+
   const dataSource2 = Array.isArray(recentActivity?.data)
-  ? recentActivity?.data.map((res: any, index: number) => {
-    const actionForText = res?.action_for === "MADE_PHONE_CALL" ? "Phone call" : res?.action_for==="SENT_EMAIL"?"Sent Email": res?.action_for==="SENT_SMS"?"Sent Sms":"";
-      return {
-        key: index + 1,
-        name:actionForText,
-        date: dayjs(res?.created_at).format("DD-MM-YYYY"),
-        product: "10 Downing Street",
-        description: "qwertyuiopqwertyui",
-        action: (
-          <ul className="m-0 list-unstyled d-flex gap-2">
-            <li>
-              <Button
-                type="text"
-                className="px-0 border-0 bg-transparent shadow-none"
-              >
-                <i className="fa-solid fa-pen-to-square"></i>
-              </Button>
-            </li>
-            <li>
-              <Popconfirm
-                title="Delete"
-                description="Are you sure you want to delete ?"
-                onConfirm={(event: any) => {
-                  // archive(res?._id);
-                }}
-              >
-                <Button type="text" danger htmlType="button" className="px-0">
-                  <i className="fa-solid fa-trash-can"></i>
+    ? recentActivity?.data.map((res: any, index: number) => {
+        const actionForText =
+          res?.action_for === "MADE_PHONE_CALL"
+            ? "Phone call"
+            : res?.action_for === "SENT_EMAIL"
+            ? "Sent Email"
+            : res?.action_for === "SENT_SMS"
+            ? "Sent Sms"
+            : "";
+        return {
+          key: index + 1,
+          name: actionForText,
+          date: dayjs(res?.created_at).format("DD-MM-YYYY"),
+          product: "10 Downing Street",
+          description: "qwertyuiopqwertyui",
+          action: (
+            <ul className="m-0 list-unstyled d-flex gap-2">
+              <li>
+                <Button
+                  type="text"
+                  className="px-0 border-0 bg-transparent shadow-none"
+                >
+                  <i className="fa-solid fa-pen-to-square"></i>
                 </Button>
-              </Popconfirm>
-            </li>
-          </ul>
-        ),
-      };
-    })
-  : [];
+              </li>
+              <li>
+                <Popconfirm
+                  title="Delete"
+                  description="Are you sure you want to delete ?"
+                  onConfirm={(event: any) => {
+                    // archive(res?._id);
+                  }}
+                >
+                  <Button type="text" danger htmlType="button" className="px-0">
+                    <i className="fa-solid fa-trash-can"></i>
+                  </Button>
+                </Popconfirm>
+              </li>
+            </ul>
+          ),
+        };
+      })
+    : [];
   const dataSource1 = [
     {
-      
-      key: '1',
-      name: 'Email',
-      date:  'Today, 10:00 AM',
-      address: '10 Downing Street',
+      key: "1",
+      name: "Email",
+      date: "Today, 10:00 AM",
+      address: "10 Downing Street",
     },
     {
-      key: '2',
-      name: 'Sms',
-      date: 'Today, 10:00 AM',
-      address: '10 Downing Street',
-    }
+      key: "2",
+      name: "Sms",
+      date: "Today, 10:00 AM",
+      address: "10 Downing Street",
+    },
   ];
-  
+
   const columns1 = [
     {
-      title: 'Sr. No',
-      dataIndex: 'key',
-      key: 'key',
+      title: "Sr. No",
+      dataIndex: "key",
+      key: "key",
     },
     {
-      title: 'Name',
-      dataIndex: 'name',
-      key: 'name',
+      title: "Name",
+      dataIndex: "name",
+      key: "name",
     },
     {
-      title: 'Date',
-      dataIndex: 'date',
-      key: 'date',
+      title: "Date",
+      dataIndex: "date",
+      key: "date",
     },
     // {
     //   title: 'Address',
@@ -152,7 +175,7 @@ const LeadsUserDeatils = ({ data,activitiest }: any, { data1 }: any) => {
     //   key: 'address',
     // },
   ];
-  const phoneValue = data?.getByOne[0]?.phone || "[]"; 
+  const phoneValue = data?.getByOne[0]?.phone || "[]";
   let phoneNumber = "N/A"; // Default to "N/A"
 
   try {
@@ -160,7 +183,7 @@ const LeadsUserDeatils = ({ data,activitiest }: any, { data1 }: any) => {
     const parsedValue = JSON.parse(phoneValue);
 
     if (Array.isArray(parsedValue) && parsedValue.length > 0) {
-      phoneNumber = parsedValue[0]?.number || "N/A"; 
+      phoneNumber = parsedValue[0]?.number || "N/A";
     }
   } catch (error) {
     console.error("Failed to parse phone value:", error);
@@ -183,13 +206,13 @@ const LeadsUserDeatils = ({ data,activitiest }: any, { data1 }: any) => {
   // const phoneArray = JSON.parse(phone);
   let phoneArray = [];
 
-if (phone && phone !== "undefined") {
-  try {
-    phoneArray = JSON.parse(phone);
-  } catch (error) {
-    console.error("Error parsing phones:", error);
+  if (phone && phone !== "undefined") {
+    try {
+      phoneArray = JSON.parse(phone);
+    } catch (error) {
+      console.error("Error parsing phones:", error);
+    }
   }
-}
   console.log(phoneArray, "rerer");
 
   const router = useRouter();
@@ -252,8 +275,8 @@ if (phone && phone !== "undefined") {
       setLoading(false);
     }
   };
-  console.log(recentActivity,"recentActivity");
-  
+  console.log(recentActivity, "recentActivity");
+
   const getActivity = async () => {
     // let item = {
     //   user_uuid: data?.getByOne[0]?.user_uuid,
@@ -282,92 +305,96 @@ if (phone && phone !== "undefined") {
       console.log(item, "item");
 
       const res = await api.PearlLeads.delete(item);
-      // data(); 
+      // data();
       console.log(res, "ioioio");
       toast.success(res?.message);
-      router.back()
+      router.back();
       // window.location.reload();
     } catch (error) {}
   };
   return (
     <>
-    <ToastContainer/>
-    <div style={{ padding: 24, maxWidth: 800, margin: '0 auto' }}>
-    {/* Header Section */}
-    <Card>
-    <div
+      <ToastContainer />
+      <div style={{ padding: 24, maxWidth: 800, margin: "0 auto" }}>
+        {/* Header Section */}
+        <Card>
+          <div
             style={{
-               display: "flex",
-               justifyContent: "space-between",
-               alignItems: "start",
-               width: "100%",
-             }}
-           >
-             <div style={{ flex: 1, textAlign: "start" }}>
-               <Typography.Title level={3} style={{ fontWeight: "bold" }}>
-                 {data?.getByOne[0]?.firstName || "N/A"}{" "}
-                 {data?.getByOne[0]?.lastName || " "} Details
-               </Typography.Title>
-             </div>
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "start",
+              width: "100%",
+            }}
+          >
+            <div style={{ flex: 1, textAlign: "start" }}>
+              <Typography.Title level={3} style={{ fontWeight: "bold" }}>
+                {data?.getByOne[0]?.firstName || "N/A"}{" "}
+                {data?.getByOne[0]?.lastName || " "} Details
+              </Typography.Title>
+            </div>
             <div className="flex gap-3">
-            <Tooltip title="Call">
-                 <Button className="ViewMore" >
-                   <span style={{ fontSize: "20px" }}>
-                     <MessageOutlined  style={{ color: "blue" }}/>
-                   </span>
-                 </Button>
-             </Tooltip>
-               <Tooltip title="Send Mail">
-                 <Button className="ViewMore" loading={loading} onClick={send}>
-                   <span style={{ fontSize: "20px" }}>
-                     <MailOutlined style={{ color: "orange" }}/>
-                   </span>
-                 </Button>
-               </Tooltip>
-               <Tooltip title="Call">
-                 <Button className="ViewMore" onClick={() => ChangeState(3)}>
-                   <span style={{ fontSize: "20px" }}>
-                     <PhoneOutlined style={{ color: "green" }}/>
-                   </span>
-                 </Button>
-             </Tooltip>
-             <Tooltip title="Delete">
-                        <Popconfirm
-                          title="Delete"
-                          description="Are you sure you want to delete ?"
-                          onConfirm={archive}
-                          // okButtonProps={{ loading: deleteLoading == res._id, danger: true }}
-                        >
-                         
-                          <Button className="ViewMore">
-                          <span style={{ fontSize: "20px" }}>
-                           <DeleteOutlined style={{ color: "red" }}/>
-                           </span>
-                            </Button>
-                        </Popconfirm>
-                      </Tooltip>
-
-           </div>
-         </div>
-      <Row gutter={[16, 16]} align="middle" >
-        <Col>
-          <Avatar size={64}  style={{ backgroundColor: "#a5d6a7" }} >
-          {data?.getByOne[0]?.firstName.slice(0, 2).toUpperCase()}
-          </Avatar>
-        </Col>
-        <Col flex="auto">
-          <Space direction="vertical" size={0}>
-            <Title level={4}> {data?.getByOne[0]?.firstName || "N/A"}{" "}  {data?.getByOne[0]?.lastName || "N/A"}{" "}</Title>
-            <Text type="secondary">{data?.getByOne[0]?.email || "N/A"}</Text>
-            <Text>
-              <PhoneOutlined style={{ marginRight: 4 }} />
-              {phoneArray?.map((res: any, index: number) => (
-                     <span className="" key={index}>
+              <Tooltip title="Call">
+                <Button className="ViewMore">
+                  <span style={{ fontSize: "20px" }}>
+                    <MessageOutlined style={{ color: "blue" }} />
+                  </span>
+                </Button>
+              </Tooltip>
+              <Tooltip title="Send Mail">
+                <Button className="ViewMore" loading={loading} onClick={send}>
+                  <span style={{ fontSize: "20px" }}>
+                    <MailOutlined style={{ color: "orange" }} />
+                  </span>
+                </Button>
+              </Tooltip>
+              <Tooltip title="Call">
+                <Button className="ViewMore" onClick={() => ChangeState(3)}>
+                  <span style={{ fontSize: "20px" }}>
+                    <PhoneOutlined style={{ color: "green" }} />
+                  </span>
+                </Button>
+              </Tooltip>
+              <Tooltip title="Delete">
+                <Popconfirm
+                  title="Delete"
+                  description="Are you sure you want to delete ?"
+                  onConfirm={archive}
+                  // okButtonProps={{ loading: deleteLoading == res._id, danger: true }}
+                >
+                  <Button className="ViewMore">
+                    <span style={{ fontSize: "20px" }}>
+                      <DeleteOutlined style={{ color: "red" }} />
+                    </span>
+                  </Button>
+                </Popconfirm>
+              </Tooltip>
+            </div>
+          </div>
+          <Row gutter={[16, 16]} align="middle">
+            <Col>
+              <Avatar size={64} style={{ backgroundColor: "#a5d6a7" }}>
+                {data?.getByOne[0]?.firstName.slice(0, 2).toUpperCase()}
+              </Avatar>
+            </Col>
+            <Col flex="auto">
+              <Space direction="vertical" size={0}>
+                <Title level={4}>
+                  {" "}
+                  {data?.getByOne[0]?.firstName || "N/A"}{" "}
+                  {data?.getByOne[0]?.lastName || "N/A"}{" "}
+                </Title>
+                <Text type="secondary">
+                  {data?.getByOne[0]?.email || "N/A"}
+                </Text>
+                <Text>
+                  <PhoneOutlined style={{ marginRight: 4 }} />
+                  {phoneArray?.map((res: any, index: number) => (
+                    <span className="" key={index}>
                       {res?.number}
                     </span>
                   ))}
-            </Text>
-            {/* <Space>
+                </Text>
+                {/* <Space>
               <Text>Gender: {data?.getByOne[0]?.gender === "M" ? "Male" : "Female"}</Text>
               <Divider type="vertical" />
               <Text>Address:  {addressesArray?.map((res: any, index: any) => (
@@ -382,49 +409,60 @@ if (phone && phone !== "undefined") {
                      "MM-DD-YYYY"
                    ) || "N/A"}</Text>
             </Space> */}
-          </Space>
-        </Col>
-        
-      </Row>
-      <Row gutter={[16, 16]}  style={{ marginTop:"10px", border: '1px solid #f0f0f0', borderRadius: 8, padding: 16 }}>
-      <Col span={6}>
-        <Space direction="vertical">
-          <Text type="secondary">Gender</Text>
-          <Text>{data?.getByOne[0]?.gender === "M" ? "Male" : "Female"}</Text>
-        </Space>
-      </Col>
-      <Col span={6}>
-        <Space direction="vertical">
-          <Text type="secondary">Address</Text>
-          <Text>
-            {addressesArray?.map((res: any, index: number) => (
-              <span key={index}>
-                {res?.city}, {res?.state}, {`(${res?.zip})`}
-              </span>
-            ))}
-          </Text>
-        </Space>
-      </Col>
-      <Col span={6}>
-        <Space direction="vertical">
-          <Text type="secondary">Income Range</Text>
-          <Text>{data?.getByOne[0]?.incomeRange || "N/A"}</Text>
-        </Space>
-      </Col>
-      <Col span={6}>
-        <Space direction="vertical">
-          <Text type="secondary">Latest Activity Date</Text>
-          <Text>
-            {data?.getByOne[0]?.latestActivityDate
-              ? dayjs(data?.getByOne[0]?.latestActivityDate).format("MM-DD-YYYY")
-              : "N/A"}
-          </Text>
-        </Space>
-      </Col>
-    </Row>
+              </Space>
+            </Col>
+          </Row>
+          <Row
+            gutter={[16, 16]}
+            style={{
+              marginTop: "10px",
+              border: "1px solid #f0f0f0",
+              borderRadius: 8,
+              padding: 16,
+            }}
+          >
+            <Col span={6}>
+              <Space direction="vertical">
+                <Text type="secondary">Gender</Text>
+                <Text>
+                  {data?.getByOne[0]?.gender === "M" ? "Male" : "Female"}
+                </Text>
+              </Space>
+            </Col>
+            <Col span={6}>
+              <Space direction="vertical">
+                <Text type="secondary">Address</Text>
+                <Text>
+                  {addressesArray?.map((res: any, index: number) => (
+                    <span key={index}>
+                      {res?.city}, {res?.state}, {`(${res?.zip})`}
+                    </span>
+                  ))}
+                </Text>
+              </Space>
+            </Col>
+            <Col span={6}>
+              <Space direction="vertical">
+                <Text type="secondary">Income Range</Text>
+                <Text>{data?.getByOne[0]?.incomeRange || "N/A"}</Text>
+              </Space>
+            </Col>
+            <Col span={6}>
+              <Space direction="vertical">
+                <Text type="secondary">Latest Activity Date</Text>
+                <Text>
+                  {data?.getByOne[0]?.latestActivityDate
+                    ? dayjs(data?.getByOne[0]?.latestActivityDate).format(
+                        "MM-DD-YYYY"
+                      )
+                    : "N/A"}
+                </Text>
+              </Space>
+            </Col>
+          </Row>
 
-      <Divider />
-      {/* <Row>
+          <Divider />
+          {/* <Row>
         <Space>
           <Button type="default"><MessageOutlined/>SMS</Button>
           <Button type="default"><MailOutlined/>Email</Button>
@@ -433,11 +471,11 @@ if (phone && phone !== "undefined") {
           <Button type="default">Closed</Button>
         </Space>
       </Row> */}
-    </Card>
+        </Card>
 
-    {/* Upcoming Activity */}
-    <Card title="Latest Activity" style={{ marginTop: 24 }}>
-      {/* <List
+        {/* Upcoming Activity */}
+        <Card title="Latest Activity" style={{ marginTop: 24 }}>
+          {/* <List
         itemLayout="vertical"
         dataSource={[
           {
@@ -461,31 +499,41 @@ if (phone && phone !== "undefined") {
           </List.Item>
         )}
       /> */}
-      <Table dataSource={dataSource2} columns={columns1} pagination={false} />
-    </Card>
+          <Table
+            dataSource={dataSource2}
+            columns={columns1}
+            pagination={false}
+          />
+        </Card>
 
-    {/* Notes Section */}
-    <Card title="Notes" style={{ marginTop: 24 }}>
-      <List
-        dataSource={[
-          { content: 'She’s interested in our new product line.', date: 'Today, 10:00 AM' },
-          { content: 'Follow up on detailed breakdown of costs.', date: 'Today, 10:00 AM' },
-        ]}
-        renderItem={(note) => (
-          <List.Item>
-            <Text>{note.content}</Text>
-            <Text type="secondary" style={{ marginLeft: 16 }}>
-              {note.date}
-            </Text>
-          </List.Item>
-        )}
-      />
-    </Card>
-<CreatMeeting/>
+        {/* Notes Section */}
+        <Card title="Notes" style={{ marginTop: 24 }}>
+          <List
+            dataSource={[
+              {
+                content: "She’s interested in our new product line.",
+                date: "Today, 10:00 AM",
+              },
+              {
+                content: "Follow up on detailed breakdown of costs.",
+                date: "Today, 10:00 AM",
+              },
+            ]}
+            renderItem={(note) => (
+              <List.Item>
+                <Text>{note.content}</Text>
+                <Text type="secondary" style={{ marginLeft: 16 }}>
+                  {note.date}
+                </Text>
+              </List.Item>
+            )}
+          />
+        </Card>
+        <CreatMeeting />
 
-    <Calendar />
-  </div>
-  </>
+        <Calendar getdata={data}/>
+      </div>
+    </>
   );
 };
 

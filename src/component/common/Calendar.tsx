@@ -6,9 +6,11 @@ import 'dhtmlx-scheduler/codebase/dhtmlxscheduler.css'; // Import DHTMLX Schedul
 // Import DHTMLX Scheduler as a global object
 import { scheduler } from 'dhtmlx-scheduler'; // Ensure you're using the default export for the scheduler
 
-const SchedulerComponent: React.FC = () => {
+const SchedulerComponent = ({getdata}:any) => {
   const schedulerContainerRef = useRef<HTMLDivElement | null>(null);
 
+  console.log(getdata.getByOne[0]?.user_uuid,"datadatadata");
+  
   useEffect(() => {
     if (!schedulerContainerRef.current) return;
 
@@ -67,14 +69,19 @@ const SchedulerComponent: React.FC = () => {
     scheduler.attachEvent('onEventSave', async (id, event) => {
       const eventData = {
         id,
-        name: event.text,
+        lead_type:2,
+        user_id:getdata.getByOne[0]?.user_uuid,
+        // user_id:getdata.getByOne[0]?.user_uuid,
+        lead_id:getdata.getByOne[0]?.pearl_id,
+        meeting_description: event.text,
+        completed_by_user:0,
         start_date: event.start_date,
         end_date: event.end_date,
       };
       console.log(eventData, "eventData");
 
       try {
-        const response = await fetch('/api/meetings', {
+        const response = await fetch('https://srv626615.hstgr.cloud/save-meeting', {
           method: 'POST', // Change to 'PUT' if updating an existing event
           headers: {
             'Content-Type': 'application/json',
@@ -83,7 +90,7 @@ const SchedulerComponent: React.FC = () => {
         });
 
         if (response.ok) {
-          console.log('Event successfully saved');
+          console.log('Event successfully saved',response);
         } else {
           console.error('Failed to save event');
         }
