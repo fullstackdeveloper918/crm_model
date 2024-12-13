@@ -22,7 +22,7 @@ const currentSearch=searchParams?.search
     mail:"4",
     sms:"5"
     // call: "4" // Assuming 'call' is the last option
-  };
+  };  
   const sendStatus = statusMap[currentFilter] || "0"; 
   console.log(sendStatus,"sendStatus");
   
@@ -58,4 +58,4 @@ const currentSearch=searchParams?.search
   )
 }
 
-export default page
+export default page    

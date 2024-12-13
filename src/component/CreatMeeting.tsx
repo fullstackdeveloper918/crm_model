@@ -112,7 +112,16 @@ const CreatMeeting = () => {
       }
     }
   };
-
+  const steps = [
+    { title: 'LEAD RECEIVED', status: 'Completed', date: 'Mar 29, 23', color: 'green' },
+    { title: 'CUSTOMER', status: 'Completed', date: 'Mar 29, 23', color: 'red' },
+    { title: 'ESTIMATE', status: 'Completed', date: 'Mar 30, 23', color: 'gold' },
+    { title: 'PROPOSAL', status: 'Completed', date: 'Apr 01, 23', color: 'cyan' },
+    { title: 'FOLLOW UP', status: 'Completed', date: 'Apr 04, 23', color: 'purple' },
+    { title: 'WORK', status: 'Ongoing', date: 'Apr 05, 23', color: 'lime' },
+    { title: 'INVOICED', status: 'Pending', date: '', color: 'default' },
+    { title: 'PAID', status: 'Pending', date: '', color: 'default' },
+  ];
   return (
     <div style={{ maxWidth: 600, margin: "auto", padding: 20 }}>
       <Title level={2} style={{ textAlign: "center" }}>
@@ -206,9 +215,9 @@ const CreatMeeting = () => {
         <div style={{ textAlign: "center", marginTop: 20 }}>
           <Title level={4}>Generated Link:</Title>
           <a href={meetingLink} target="_blank" rel="noopener noreferrer">
-            <Button type="link" style={{ fontSize: 16 }}>
+            {/* <Button type="link" style={{ fontSize: 16 }}> */}
               {meetingLink}
-            </Button>
+            {/* </Button> */}
           </a>
         </div>
       )}

@@ -27,7 +27,7 @@ import {
   MessageOutlined,
   MoreOutlined,
   PhoneOutlined,
-  ShareAltOutlined,
+  // ShareAltOutlined,
   WhatsAppOutlined,
 } from "@ant-design/icons";
 import dayjs from "dayjs";
@@ -39,6 +39,7 @@ import api from "@/utils/api";
 import { toast, ToastContainer } from "react-toastify";
 import Calendar from "./common/Calendar";
 import CreatMeeting from "./CreatMeeting";
+import { PlusOutlined, PrinterOutlined, ShareAltOutlined, EditOutlined } from '@ant-design/icons';
 const { Content, Sider } = Layout;
 const { Text, Title } = Typography;
 const leadsData = {
@@ -312,12 +313,79 @@ const LeadsUserDeatils = ({ data, activitiest }: any, { data1 }: any) => {
       // window.location.reload();
     } catch (error) {}
   };
+  const description = "This is a description.";
+  const steps = [
+    { title: 'LEAD RECEIVED', status: 'Completed', date: 'Mar 29, 23', color: 'green' },
+    { title: 'CUSTOMER', status: 'Completed', date: 'Mar 29, 23', color: 'red' },
+    { title: 'ESTIMATE', status: 'Completed', date: 'Mar 30, 23', color: 'gold' },
+    { title: 'PROPOSAL', status: 'Completed', date: 'Apr 01, 23', color: 'cyan' },
+    { title: 'FOLLOW UP', status: 'Completed', date: 'Apr 04, 23', color: 'purple' },
+    { title: 'WORK', status: 'Ongoing', date: 'Apr 05, 23', color: 'lime' },
+    { title: 'INVOICED', status: 'Pending', date: '', color: 'default' },
+    { title: 'PAID', status: 'Pending', date: '', color: 'default' },
+  ];
   return (
     <>
       <ToastContainer />
+        <div style={{ padding: '4px', paddingLeft:"200px" }}>
+      <Space direction="vertical" className="justify-content-center" style={{ width: '80%' }}>
+        {/* <Space style={{ justifyContent: 'space-between', width: '100%' }}>
+          <Text strong>Stages (17)</Text>
+          <Button type="primary" icon={<PlusOutlined />} style={{ backgroundColor: 'green' }}>
+            Add
+          </Button>
+        </Space> */}
+        <Steps progressDot current={5} size="small">
+          {steps.map((step, index) => (
+            <Step
+              key={index}
+              title={
+                <div style={{ textAlign: 'center' }}>
+                  <Text style={{ color: step.color }}>{step.title}</Text>
+                  <div>
+                    <Text type="secondary" style={{ fontSize: '12px' }}>
+                      {step.status} {step.date && `(${step.date})`}
+                    </Text>
+                  </div>
+                </div>
+              }
+            />
+          ))}
+        </Steps>
+        {/* <Space style={{ justifyContent: 'flex-end', width: '100%' }}>
+          <Button icon={<PrinterOutlined />}>Print</Button>
+          <Button icon={<ShareAltOutlined />}>Share</Button>
+          <Button icon={<EditOutlined />}>Edit</Button>
+        </Space> */}
+      </Space>
+    </div>
       <div style={{ padding: 24, maxWidth: 800, margin: "0 auto" }}>
         {/* Header Section */}
         <Card>
+          {/* <div className="mt-2 mb-5">
+            <Steps
+              current={1}
+              items={[
+                {
+                  title: "Email",
+                  description,        
+                },
+                {
+                  title: "SMS",
+                  description,
+                  // subTitle: 'Left 00:00:08',
+                },
+                {
+                  title: "Call",
+                  description,
+                },
+                {
+                  title: "Meeting",
+                  description,
+                },
+              ]}
+            />
+          </div> */}
           <div
             style={{
               display: "flex",
@@ -333,7 +401,7 @@ const LeadsUserDeatils = ({ data, activitiest }: any, { data1 }: any) => {
               </Typography.Title>
             </div>
             <div className="flex gap-3">
-              <Tooltip title="Call">
+              <Tooltip title="Send SMS">
                 <Button className="ViewMore">
                   <span style={{ fontSize: "20px" }}>
                     <MessageOutlined style={{ color: "blue" }} />
@@ -531,7 +599,7 @@ const LeadsUserDeatils = ({ data, activitiest }: any, { data1 }: any) => {
         </Card>
         <CreatMeeting />
 
-        <Calendar getdata={data}/>
+        <Calendar getdata={data} />
       </div>
     </>
   );
