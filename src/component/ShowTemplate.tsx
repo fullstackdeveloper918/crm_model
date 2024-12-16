@@ -6,6 +6,7 @@ import { CSSProperties } from "react";
 import Link from "next/link";
 import Paragraph from "antd/es/typography/Paragraph";
 import { useRouter, useSearchParams } from "next/navigation";
+import WelcomeTemplate from "./common/WelcomeTemplate";
 const { Content, Sider } = Layout;
 const { Title, Text } = Typography;
 // Array of images and template names
@@ -47,6 +48,8 @@ const ShowTemplate = ({searchQuery}:any) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [imageUrl, setImageUrl] = useState('');
   const handleCardClick = (imageUrl:any) => {
+    console.log(imageUrl,"imageUrl");
+    
     setImageUrl(imageUrl);
     setIsModalVisible(true); // Show modal with image
   };
@@ -101,10 +104,10 @@ style={{ backgroundColor: '#F5F5F5', padding: '10px', borderRadius: '5px' }}
         <Col key={index} xs={24} sm={12} md={8} lg={4}>
           <Card
             hoverable
-            onClick={() => handleCardClick(`https://picsum.photos/200/250?random=${index}`)} // Clicking opens the image
+            onClick={() => handleCardClick(`${template?.name}`)} 
+            // onClick={() => handleCardClick(`https://picsum.photos/200/250?random=${index}`)} 
             cover={
               <div style={{ position: 'relative', height: '250px' }}>
-                {/* Fake Image Placeholder */}
                 <img
                   src={template?.image}
                   alt="Placeholder"
@@ -132,7 +135,6 @@ style={{ backgroundColor: '#F5F5F5', padding: '10px', borderRadius: '5px' }}
             onMouseLeave={handleMouseLeave}
           >
             <div>{template.name}</div>
-            {/* Button for view details */}
           </Card>
             <Link href={`/admin/purposal/sent_purposal?field_for=${template?.name}&fieldType=email&email_mode=bulk&email_type=${emailType}`}>
             <Button type="primary" style={{ marginTop: '16px', width: '100%' }}>
@@ -151,11 +153,60 @@ style={{ backgroundColor: '#F5F5F5', padding: '10px', borderRadius: '5px' }}
       centered
       bodyStyle={{ padding: 0 }}
     >
-      <img
+      {/* <img
         src={imageUrl}
         alt="Preview"
         style={{ width: '100%', height: 'auto' }}
-      />
+      /> */}
+
+
+      {/* Welcome Template */}
+     <div className="container email_welcome">
+    <div className="logo">
+      {imageUrl} Template
+      {/* <img src="https://placeholder.com/wp-content/uploads/2018/10/placeholder.com-logo3.png" alt="cc-logo" /> */}
+    </div>
+    <div className="illustration">
+      <div className="hgroup">
+        <span className="name">Hello, John Doe</span>
+        <h1>Thank you for Signing Up</h1>
+        <div className="thumbs">
+          <a href="https://imgbb.com/"><img src="https://i.ibb.co/2g7tS2d/good.png" alt="good" /></a>
+        </div>
+        <p className="rad">Rad stuff is here</p>
+      </div>
+    </div>
+  
+    <div className="hgroup">
+        {/* <br></br> */}
+      <>
+        Placeholder aims at solving all lending problems in africa, we built a platform to support the lenders community with high quality, cost concious assets like: the web plug in, mobile app, chat bot, sophiscated credit analysis, bank statement analysis and more. And these products live on a site packed with the best practice and shared knowledge resources from our team to you.
+        <p>
+          <span className="raised">Hold up, there's more!</span>
+          A 7 days simulation trial, your trial starts now.
+        </p>
+        <p>If you have any questions, kindly reach out to our team on support@placeholder.com.</p>
+  
+        <p>Have an AWESOME day!
+          Brought to you by your friends at Placeholder.
+        </p>
+      </>
+  
+    </div>
+  
+    <div className="button-wrap">
+      <button className="explore">
+        Explore
+      </button>
+    </div>
+    <p>
+    Oxygen Health Systems Inc © 2024
+      {/* <br> */}
+      Somewhere in earth.
+      {/* </br> */}
+      Tel: 331 229-7714
+    </p>
+  </div>
     </Modal>
     </Content>
   </Layout>

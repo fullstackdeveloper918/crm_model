@@ -327,14 +327,16 @@ const LeadsUserDeatils = ({ data, activitiest }: any, { data1 }: any) => {
   return (
     <>
       <ToastContainer />
-        <div style={{ padding: '4px', paddingLeft:"200px" }}>
-      <Space direction="vertical" className="justify-content-center" style={{ width: '80%' }}>
+      
+        <div style={{ padding: '4px' }}>
+      <Space direction="vertical" className="justify-content-end" style={{ width: '100%' }}>
         {/* <Space style={{ justifyContent: 'space-between', width: '100%' }}>
           <Text strong>Stages (17)</Text>
           <Button type="primary" icon={<PlusOutlined />} style={{ backgroundColor: 'green' }}>
             Add
           </Button>
         </Space> */}
+         <Card title="Lead Stages" style={{ marginTop: 24 }}>
         <Steps progressDot current={5} size="small">
           {steps.map((step, index) => (
             <Step
@@ -352,6 +354,7 @@ const LeadsUserDeatils = ({ data, activitiest }: any, { data1 }: any) => {
             />
           ))}
         </Steps>
+        </Card>
         {/* <Space style={{ justifyContent: 'flex-end', width: '100%' }}>
           <Button icon={<PrinterOutlined />}>Print</Button>
           <Button icon={<ShareAltOutlined />}>Share</Button>

@@ -132,7 +132,7 @@ const CreatMeeting = () => {
         {/* Select Platform */}
         <Form.Item label="Select Platform" required>
           <Select
-            value={selectedOption}
+            value={selectedOption||"Select a platform"}
             onChange={handleSelectChange}
             placeholder="Select a platform"
           >
