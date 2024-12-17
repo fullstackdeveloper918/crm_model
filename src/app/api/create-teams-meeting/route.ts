@@ -1,7 +1,7 @@
 // app/api/create-teams-meeting/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import axios from 'axios';
-import { getAccessToken } from '../../../lib/msalAuth';
+// import { getAccessToken } from '../../../lib/msalAuth';
 
 export async function POST(req: NextRequest) {
   try {
@@ -21,13 +21,13 @@ export async function POST(req: NextRequest) {
     }
 
     // Get the access token for Microsoft Graph API
-    const accessToken = await getAccessToken();
-    console.log("Access token obtained:", accessToken);
+    // const accessToken = await getAccessToken();
+    // console.log("Access token obtained:", accessToken);
 
-    if (!accessToken) {
-      console.error("Failed to acquire access token");
-      return NextResponse.json({ error: "Failed to acquire access token" }, { status: 500 });
-    }
+    // if (!accessToken) {
+    //   console.error("Failed to acquire access token");
+    //   return NextResponse.json({ error: "Failed to acquire access token" }, { status: 500 });
+    // }
 
     // Ensure start and end times are in the correct ISO format
     const startDateTime = new Date(startTime).toISOString();
@@ -46,7 +46,7 @@ export async function POST(req: NextRequest) {
       },
       {
         headers: {
-          Authorization: `Bearer ${accessToken}`,
+          Authorization: `Bearer ${"accessToken"}`,
           'Content-Type': 'application/json',
         },
       }
