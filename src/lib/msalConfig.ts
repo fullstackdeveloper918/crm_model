@@ -1,6 +1,5 @@
 // lib/msalConfig.ts
 
-// Ensure that the environment variables are defined
 if (!process.env.MS_CLIENT_ID || !process.env.MS_TENANT_ID || !process.env.MS_CLIENT_SECRET) {
     throw new Error('Missing environment variables: MS_CLIENT_ID, MS_TENANT_ID, or MS_CLIENT_SECRET');
   }
