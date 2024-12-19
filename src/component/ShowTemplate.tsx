@@ -23,6 +23,7 @@ import WelcomeImage from "../assests/images/WelcomeTemplateImage.png";
 import OfferImage from "../assests/images/OfferTemplateImage.png";
 import GiftImage from "../assests/images/GiftTemplateImage.png";
 import ProposalImage from "../assests/images/Screenshot 2024-12-17 155122.png";
+import EmailTemplate from "./common/EmailTemplate";
 const templates = [
   {
     image: WelcomeImage,
@@ -174,7 +175,8 @@ style={{ backgroundColor: '#F5F5F5', padding: '10px', borderRadius: '5px' }}
           footer={null}
           width={800} // Adjust the width as needed
           centered
-          bodyStyle={{ padding: 0 }}
+          bodyStyle={{ padding: 0, maxHeight: '80vh', overflowY: 'auto', }} 
+
         >
           {/* <img
         src={imageUrl}
@@ -183,10 +185,11 @@ style={{ backgroundColor: '#F5F5F5', padding: '10px', borderRadius: '5px' }}
       /> */}
 
           {/* Welcome Template */}
-          <div className="container email_welcome">
+          <EmailTemplate emailTemplate={imageUrl}/>
+          {/* <div className="container email_welcome">
             <div className="logo fs-3">
               {imageUrl} Template
-              {/* <img src="https://placeholder.com/wp-content/uploads/2018/10/placeholder.com-logo3.png" alt="cc-logo" /> */}
+              <img src="https://placeholder.com/wp-content/uploads/2018/10/placeholder.com-logo3.png" alt="cc-logo" />
             </div>
             <div className="illustration">
               <div className="hgroup">
@@ -202,7 +205,6 @@ style={{ backgroundColor: '#F5F5F5', padding: '10px', borderRadius: '5px' }}
             </div>
 
             <div className="hgroup">
-              {/* <br></br> */}
               <>
                 Placeholder aims at solving all lending problems in africa, we
                 built a platform to support the lenders community with high
@@ -230,12 +232,10 @@ style={{ backgroundColor: '#F5F5F5', padding: '10px', borderRadius: '5px' }}
             </div>
             <p>
               Oxygen Health Systems Inc © 2024
-              {/* <br> */}
               Somewhere in earth.
-              {/* </br> */}
               Tel: 331 229-7714
             </p>
-          </div>
+          </div> */}
         </Modal>
       </Content>
     </Layout>

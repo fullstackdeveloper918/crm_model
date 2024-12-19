@@ -172,6 +172,9 @@ const Pearl_diver_leads = ({
   const [loadingEmail, setLoadingEmail] = useState<boolean[]>(
     new Array(leads.length).fill(false)
   );
+  const [loadingView, setLoadingView] = useState<boolean[]>(
+    new Array(leads.length).fill(false)
+  );
   const [loadingSms, setLoadingSms] = useState<boolean[]>(
     new Array(leads.length).fill(false)
   );
@@ -424,13 +427,23 @@ const Pearl_diver_leads = ({
     } catch (error) {}
   };
 
-  const Send = (id: any) => {
+  const Send = (id: any, index: any, type: any) => {
     console.log(id, "uiuiui");
 
     try {
+      setLoadingView((prevState) => {
+        const newState = [...prevState];
+        newState[index] = true; // Set the button at `index` to loading
+        return newState;
+      });
       router.push(`/admin/pearls/${id}`);
     } catch (error) {
       console.error("Navigation error:", error);
+      setLoadingView((prevState) => {
+        const newState = [...prevState];
+        newState[index] = true; // Set the button at `index` to loading
+        return newState;
+      });
     }
   };
   const ChangeState = async (
@@ -474,6 +487,12 @@ const Pearl_diver_leads = ({
           newState[index] = true; // Set the button at `index` to loading
           return newState;
         });
+      } else if (type === "view") {
+        setLoadingView((prevState) => {
+          const newState = [...prevState];
+          newState[index] = true; // Set the button at `index` to loading
+          return newState;
+        });
       }
       router.push(
         `/admin/purposal/sent_purposal?pearls_lead_id=${id}&user_id=${user_id}&field_for=welcome&fieldType=${type}&email_type=pearl`
@@ -489,6 +508,12 @@ const Pearl_diver_leads = ({
         setLoadingEmail((prevState) => {
           const newState = [...prevState];
           newState[index] = false; // Set the button at `index` to loading
+          return newState;
+        });
+      } else if (type === "view") {
+        setLoadingView((prevState) => {
+          const newState = [...prevState];
+          newState[index] = true; // Set the button at `index` to loading
           return newState;
         });
       }
@@ -525,10 +550,9 @@ const Pearl_diver_leads = ({
     }
   };
 
-
-  console.log(data?.data,"gjgjkgu");
+  console.log(data?.data, "gjgjkgu");
   // &send_to=${data?.data?.phone_number}
-  
+
   return (
     <Layout style={{ minHeight: "100vh" }}>
       <ToastContainer />
@@ -751,9 +775,10 @@ const Pearl_diver_leads = ({
                       </Tooltip>
                       <Tooltip title="View">
                         <Button
+                          loading={loadingView[index]}
                           onClick={() => {
                             if (lead?.pearl_id) {
-                              Send(lead.pearl_id);
+                              Send(lead.pearl_id, "view", index);
                             } else {
                               console.error("Pearl ID is missing");
                             }
