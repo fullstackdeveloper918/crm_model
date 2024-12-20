@@ -553,6 +553,28 @@ const Pearl_diver_leads = ({
   console.log(data?.data, "gjgjkgu");
   // &send_to=${data?.data?.phone_number}
 
+
+const SyncData=async()=>{
+try {
+  // let res=await api.SyncPearlData.getAuthorizationCode()
+  // console.log(res,"tfyghj");
+  let res = await fetch(`https://srv626615.hstgr.cloud/callback?code=vcGtjVNPxnAIrwV1aj0r6Dfql_NomCgGIWv7JOq4pdnkC`, {
+    method: "GET", // GET method, no body needed
+    headers: {
+      "Content-Type": "application/json", // Optional, but usually necessary for JSON data
+      // You can add other headers like Authorization if required:
+      // "Authorization": `Bearer ${token}`
+    },
+  });
+  // Parse the response as JSON
+  let data = await res.json();
+  console.log(data,"oioppiopio");
+  
+} catch (error) {
+  
+}
+}
+
   return (
     <Layout style={{ minHeight: "100vh" }}>
       <ToastContainer />
@@ -688,8 +710,11 @@ const Pearl_diver_leads = ({
             <Divider />
           </div>
 
-          {/* <Space>
-            <Select
+          <Space>
+            {/* <Button onClick={SyncData}>
+              Sync data
+            </Button> */}
+            {/* <Select
               defaultValue="All Leads"
               style={{ width: 150 }}
               onChange={handleChange1}
@@ -701,8 +726,8 @@ const Pearl_diver_leads = ({
               <Option value="call_lead">Call Leads</Option>
               <Option value="mail">Email Leads</Option>
               <Option value="sms">Sms Leads</Option>
-            </Select>
-          </Space> */}
+            </Select> */}
+          </Space>
         </Row>
         {/* <Row>
        

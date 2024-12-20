@@ -80,7 +80,11 @@ const MetaLeads={
   delete: (info: any) =>
     requests.del('delete-meta-lead', info),
 }
-
+const SyncPearlData={
+  getAuthorizationCode:()=>requests.get(`login`),
+  getAccessToken:()=>requests.get(`callback`),
+  getSyncData:()=>requests.get(`get_audience`),
+}
 const PearlLeads={
   changeStatus: (info: any) =>
     requests.post('update-called-status', info),
@@ -398,6 +402,7 @@ const henceforthApi = {
   API_FILE_ROOT_DOCUMENTS,
   Dashboard,
   ImageUpload,
+  SyncPearlData,
   FILES,
   Meeting,
   photo_section,
