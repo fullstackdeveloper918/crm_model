@@ -47,6 +47,8 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Pagination from "./common/Pagination";
 import Recent_card from "./common/Recent_card";
 import { toast, ToastContainer } from "react-toastify";
+import { io } from "socket.io-client";
+import SocketClient from "./common/SocketClient";
 // import Search from "antd/es/transfer/search";
 // import { Tabs } from 'antd';
 const { Search } = Input;
@@ -197,7 +199,7 @@ const Pearl_diver_leads = ({
       router.push(`/admin/pearls?filter=${filter}`);
     }
   };
-  const handleTabChange = (key: string) => {
+  const handleTabChange = (key:any) => {
     // Define a mapping from tab keys to filter values for the URL
     const filterMap: { [key: string]: string } = {
       all: "all",
@@ -556,20 +558,10 @@ const Pearl_diver_leads = ({
 
 const SyncData=async()=>{
 try {
-  // let res=await api.SyncPearlData.getAuthorizationCode()
-  // console.log(res,"tfyghj");
-  let res = await fetch(`https://srv626615.hstgr.cloud/callback?code=vcGtjVNPxnAIrwV1aj0r6Dfql_NomCgGIWv7JOq4pdnkC`, {
-    method: "GET", // GET method, no body needed
-    headers: {
-      "Content-Type": "application/json", // Optional, but usually necessary for JSON data
-      // You can add other headers like Authorization if required:
-      // "Authorization": `Bearer ${token}`
-    },
-  });
-  // Parse the response as JSON
-  let data = await res.json();
-  console.log(data,"oioppiopio");
-  
+  // router.push(`https://srv626615.hstgr.cloud/login`)
+  window.open('https://srv626615.hstgr.cloud/login', '_blank');
+  window.location.reload();
+  toast.success("Data Synced Successfully")
 } catch (error) {
   
 }
@@ -578,6 +570,7 @@ try {
   return (
     <Layout style={{ minHeight: "100vh" }}>
       <ToastContainer />
+      <SocketClient />
       <Content style={{ padding: "20px" }}>
         {/* <Row gutter={[16, 16]} justify="start">
           {data2.map((item: any, index: number) => (
@@ -711,9 +704,9 @@ try {
           </div>
 
           <Space>
-            {/* <Button onClick={SyncData}>
+            <Button onClick={SyncData}>
               Sync data
-            </Button> */}
+            </Button>
             {/* <Select
               defaultValue="All Leads"
               style={{ width: 150 }}

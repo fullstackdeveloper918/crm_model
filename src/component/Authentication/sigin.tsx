@@ -7,6 +7,7 @@ import api from '@/utils/api';
 import { toast } from 'react-toastify';
 import { setCookie } from 'nookies';
 import LogoImage from "../../assests/images/OxygenLogo.jpg"
+import SocketClient from '../common/SocketClient';
 const Sigin = () => {
   const setCookie = (name: string, value: string, days: number) => {
     const expires = new Date();
@@ -74,6 +75,7 @@ const router= useRouter()
       backgroundColor: '#f7f8fc',
     }}
   >
+    {/* <SocketClient /> */}
     <div
       className="container mt-5"
       style={{
