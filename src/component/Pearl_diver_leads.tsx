@@ -49,6 +49,9 @@ import Recent_card from "./common/Recent_card";
 import { toast, ToastContainer } from "react-toastify";
 import { io } from "socket.io-client";
 import SocketClient from "./common/SocketClient";
+import useSocket from "@/app/hooks/useSocket";
+// import { useSocket } from "@/app/hooks/useSocket";
+// import useSocket from "../app/hooks/useSocket"; 
 // import Search from "antd/es/transfer/search";
 // import { Tabs } from 'antd';
 const { Search } = Input;
@@ -566,12 +569,21 @@ try {
   
 }
 }
+const { socket, connected } = useSocket();  // Automatically connects to socket
 
+  useEffect(() => {
+    if (socket && connected) {
+      // Automatically send a message after the socket is connected
+      console.log("Sending automatic message...");
+      socket.emit("chatMessage", "Hello from the Dashboard!");
+    }
+  }, [socket, connected]); 
   return (
     <Layout style={{ minHeight: "100vh" }}>
       <ToastContainer />
-      <SocketClient />
+      {/* <SocketClient /> */}
       <Content style={{ padding: "20px" }}>
+      <p>{connected ? "Socket connected" : "Not connected"}</p>
         {/* <Row gutter={[16, 16]} justify="start">
           {data2.map((item: any, index: number) => (
             <Col key={index}>

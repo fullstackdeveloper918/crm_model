@@ -1,4 +1,3 @@
-// components/SocketClient.tsx
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -9,15 +8,15 @@ const SocketClient = () => {
   const [connected, setConnected] = useState<boolean>(false);
 
   useEffect(() => {
-    // Connect to the socket server at the appropriate endpoint
-    const socketIo = io();
+    // Replace this with your actual backend server URL if needed
+    const socketIo = io('http://localhost:4000'); // specify your backend URL here
 
     socketIo.on('connect', () => {
       console.log('Connected to Socket.IO server');
       setConnected(true);
     });
 
-    // Listen for messages from the server
+    // Listen for a message from the server
     socketIo.on('message', (message: string) => {
       console.log('Message from server:', message);
     });
