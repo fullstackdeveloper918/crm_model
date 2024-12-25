@@ -16,7 +16,7 @@ const useSocket = (): UseSocketReturn => {
     // Ensure the URL matches where your Socket.IO server is running
     const socketInstance = io("https://srv626615.hstgr.cloud/");
 
-    socketInstance.on("connect", () => {
+    socketInstance.on("connection", () => {
       setConnected(true);
       console.log("Socket connected:", socketInstance.id);  // Log socket ID
       // Automatically send a message once connected
