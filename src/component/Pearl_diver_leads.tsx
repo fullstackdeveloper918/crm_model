@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Layout,
   Row,
@@ -50,6 +50,10 @@ import { toast, ToastContainer } from "react-toastify";
 import { io } from "socket.io-client";
 import SocketClient from "./common/SocketClient";
 import useSocket from "@/app/hooks/useSocket";
+import Chat from "./Chat";
+
+let socket: any;
+// import useSocket from "@/app/hooks/useSocket";
 // import { useSocket } from "@/app/hooks/useSocket";
 // import useSocket from "../app/hooks/useSocket"; 
 // import Search from "antd/es/transfer/search";
@@ -60,7 +64,7 @@ const { TabPane } = Tabs;
 const { Content, Sider } = Layout;
 const { Title, Text } = Typography;
 const { Option } = Select;
-
+import nookies from "nookies";
 const leads = [
   {
     name: "Jenny Wilson",
@@ -172,7 +176,16 @@ const Pearl_diver_leads = ({
   const [filter, setFilter] = useState<any>(sendStatus);
   const [searchTerm, setSearchTerm] = useState<any>(currentSearch);
   console.log(searchTerm, "searchTerm");
-
+  const [cookieValue, setCookieValue] = useState<string | null>(null);
+  useEffect(() => {
+    const cookies = nookies.get(); // retrieves cookies from document.cookie
+    console.log(cookies,"cookies");
+    
+    const userData = cookies.user_uuid;
+    console.log(userData,"userData");
+    
+    setCookieValue(userData || null);
+  }, []);
   const [activeKey, setActiveKey] = useState("all");
   const [loadingEmail, setLoadingEmail] = useState<boolean[]>(
     new Array(leads.length).fill(false)
@@ -228,6 +241,114 @@ const Pearl_diver_leads = ({
     //   router.push(`/admin/pearls?filter=${filterValue}&search=${searchTerm}`);
     // }
   };
+
+
+  const [messages, setMessages] = useState<string[]>([]);
+  const [input, setInput] = useState<string>('');
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  console.log(messages,"messages");
+  const [isEditing, setIsEditing] = useState(false);
+  const [editingUser, setEditingUser] = useState<any>(null);
+console.log(editingUser,"editingUser");
+console.log(isEditing,"isEditing");
+useEffect(() => {
+  // Initialize socket connection
+  socket = io('https://srv626615.hstgr.cloud/');  // Ensure you're using the same server URL
+
+  // Listen for "activityfor" events from the server
+  socket.on('activityfor', (msg: string) => {
+      setMessages((prevMessages) => [...prevMessages, msg]);
+  });
+
+  // Listen for 'edit-granted' to lock the pearl for editing
+  socket.on('edit-granted', (data: any) => {
+      console.log("Received data:", data); 
+      setIsEditing(true);
+      setEditingUser(data);
+  });
+
+  // Listen for 'edit-denied' if someone else is editing
+  socket.on('edit-denied', (currentEditor: any) => {
+      setIsEditing(false);
+      setEditingUser(currentEditor);
+  });
+
+  // Handle 'edit-locked' when the pearl is locked for editing
+  socket.on('edit-locked', (currentEditor: any) => {
+      setEditingUser(currentEditor);
+  });
+
+  // Handle 'edit-released' when the pearl is unlocked
+  socket.on('edit-released', () => {
+      setEditingUser(null);  // Pearl is now available for editing
+      setIsEditing(false);  // Disable editing mode
+  });
+
+  // Cleanup socket event listeners when the component unmounts
+  return () => {
+      socket.off('edit-granted');
+      socket.off('edit-denied');
+      socket.off('edit-locked');
+      socket.off('edit-released');
+      socket.disconnect();
+  };
+}, []);
+
+//   useEffect(() => {
+//     // Connect to the socket server (automatically when the component loads)
+//     socket = io('https://srv626615.hstgr.cloud/'); // Replace with your backend URL
+  
+//     // Listen for "activityfor" events from the server
+//     socket.on('activityfor', (msg: string) => {
+//       setMessages((prevMessages) => [...prevMessages, msg]);
+//     });
+  
+//     // Automatically send a message after connecting (optional)
+//     socket.emit('activity', 'Hello, Server!'); // Example message sent automatically after connection
+
+
+//   //   socket.on('edit-granted', (data:any) => {
+//   //     console.log(data,"fghjkl");
+      
+//   //     setIsEditing(true);
+//   //     setEditingUser(data);
+//   //     // setEditingUser(socket.id);
+//   // });
+//   socket.on('edit-granted', (data:any) => {
+//     console.log("Received data:", data); // Log the incoming data
+//     setIsEditing(true);
+//     setEditingUser(data);
+// });
+//   socket.on('edit-denied', (currentEditor:any) => {
+//       setIsEditing(false);
+//       setEditingUser(currentEditor);
+//   });
+
+//   socket.on('edit-locked', (currentEditor:any) => {
+//       setEditingUser(currentEditor);
+//   });
+
+//   socket.on('edit-released', () => {
+//       setEditingUser(null);
+//   });
+//     // Clean up the socket connection when the component is unmounted
+//     return () => {
+//       socket.off('edit-granted');
+//             socket.off('edit-denied');
+//             socket.off('edit-locked');
+//             socket.off('edit-released');
+//       // socket.disconnect();
+//     };
+//   }, []);
+  const requestEdit = () => {
+    socket.emit('request-edit');
+};
+
+const releaseEdit = () => {
+    socket.emit('release-edit');
+    setIsEditing(false);
+};
+
   const handleChange = (key: any) => {
     setActiveKey(key);
     setClickedTabs((prev: any) => ({ ...prev, [key]: true }));
@@ -487,11 +608,17 @@ const Pearl_diver_leads = ({
           return newState;
         });
       } else if (type === "email") {
+        socket.emit('request-edit', {
+          type: "email",
+          user_id: cookieValue,
+          pearl_id:id
+      });
         setLoadingEmail((prevState) => {
           const newState = [...prevState];
           newState[index] = true; // Set the button at `index` to loading
           return newState;
         });
+        // socket.emit('activity', id, user_id);
       } else if (type === "view") {
         setLoadingView((prevState) => {
           const newState = [...prevState];
@@ -569,21 +696,42 @@ try {
   
 }
 }
-const { socket, connected } = useSocket();  // Automatically connects to socket
+// const { socket, isConnected, error } = useSocket('https://srv626615.hstgr.cloud/');
 
-  useEffect(() => {
-    if (socket && connected) {
-      // Automatically send a message after the socket is connected
-      console.log("Sending automatic message...");
-      socket.emit("chatMessage", "Hello from the Dashboard!");
-    }
-  }, [socket, connected]); 
+
+const handleSubmit = (e: React.FormEvent) => {
+  e.preventDefault();
+  if (input.trim()) {
+    // Emit an "activity" event to the server with the message
+    socket.emit('activity', input);
+    setInput('');
+  }
+};
+
+const stopActivity = () => {
+  // Emit "activity_stop" event to the server
+  socket.emit('activity_stop', 'Activity has stopped');
+};
+
+// Scroll to the bottom of the messages list
+useEffect(() => {
+  messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+}, [messages]);
   return (
     <Layout style={{ minHeight: "100vh" }}>
       <ToastContainer />
       {/* <SocketClient /> */}
       <Content style={{ padding: "20px" }}>
-      <p>{connected ? "Socket connected" : "Not connected"}</p>
+      {/* {isEditing ? (
+                <div>
+                    <p>You are editing.</p>
+                    <button onClick={releaseEdit}>Release Edit</button>
+                </div>
+            ) : editingUser ? (
+                <p>Dashboard is being edited by another user.</p>
+            ) : (
+                <button >Request to Edit</button>
+            )} */}
         {/* <Row gutter={[16, 16]} justify="start">
           {data2.map((item: any, index: number) => (
             <Col key={index}>
@@ -777,8 +925,14 @@ const { socket, connected } = useSocket();  // Automatically connects to socket
                           icon={<MessageOutlined style={{ color: "blue" }} />}
                         />
                       </Tooltip>
-                      <Tooltip title="Send Email">
+                      {/* {
+                         editingUser ? (
+                          <p>Dashboard is being edited by another user.</p>
+                      ) : ( */}
+                          {/* // <button >Request to Edit</button> */}
+                      <Tooltip title={editingUser?.pearl_id == lead?.pearl_id?"Pearl edited by another Admin.":"Send Email"}>
                         <Button
+ disabled={editingUser?.pearl_id == lead?.pearl_id}
                           loading={loadingEmail[index]}
                           onClick={() => {
                             if (lead?.pearl_id) {
@@ -795,6 +949,8 @@ const { socket, connected } = useSocket();  // Automatically connects to socket
                           icon={<MailOutlined style={{ color: "orange" }} />}
                         />
                       </Tooltip>
+                      {/* // )
+                      // } */}
                       <Tooltip title="Call">
                         <Button
                           onClick={() =>

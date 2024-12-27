@@ -50,13 +50,14 @@ const { Option } = Select;
 import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
 import AddFieldsModal from "../component/common/AddFieldsModal";
 // import AddFieldsModal from "./common/addFieldsModal";
-
+import { io } from "socket.io-client";
+import nookies from "nookies";
 interface Contact {
   id: number;
   initials: string;
   color: string;
 }
-
+let socket: any;
 const contacts: Contact[] = [
   { id: 1, initials: "OS", color: "#a5d6a7" },
   { id: 2, initials: "CJ", color: "#80cbc4" },
@@ -83,6 +84,73 @@ const Sent_Purposal = ({ data1, data }: any) => {
   const [form] = Form.useForm();
   console.log(data1, "data1");
   console.log(data, "rwe");
+  const [cookieValue, setCookieValue] = useState<string | null>(null);
+  useEffect(() => {
+    const cookies = nookies.get(); // retrieves cookies from document.cookie
+    console.log(cookies,"cookies");
+    
+    const userData = cookies.user_uuid;
+    console.log(userData,"userData");
+    
+    setCookieValue(userData || null);
+  }, []);
+  const [messages, setMessages] = useState<string[]>([]);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editingUser, setEditingUser] = useState<any>(null);
+console.log(editingUser,"editingUser");
+console.log(isEditing,"isEditing");
+
+  useEffect(() => {
+    // Connect to the socket server (automatically when the component loads)
+    socket = io('https://srv626615.hstgr.cloud/'); // Replace with your backend URL
+  
+    // Listen for "activityfor" events from the server
+    socket.on('activityfor', (msg: string) => {
+      setMessages((prevMessages) => [...prevMessages, msg]);
+    });
+  
+    // Automatically send a message after connecting (optional)
+    socket.emit('activity', 'Hello, Server!'); // Example message sent automatically after connection
+
+
+  //   socket.on('edit-granted', (data:any) => {
+  //     console.log(data,"fghjkl");
+      
+  //     setIsEditing(true);
+  //     setEditingUser(data);
+  //     // setEditingUser(socket.id);
+  // });
+  socket.on('edit-granted', (data:any) => {
+    console.log("Received data:", data); // Log the incoming data
+    setIsEditing(true);
+    setEditingUser(data);
+});
+  socket.on('edit-denied', (currentEditor:any) => {
+      setIsEditing(false);
+      setEditingUser(currentEditor);
+  });
+
+  socket.on('edit-locked', (currentEditor:any) => {
+      setEditingUser(currentEditor);
+  });
+
+  socket.on('edit-released', () => {
+      setEditingUser(null);
+  });
+    // Clean up the socket connection when the component is unmounted
+    return () => {
+      socket.off('edit-granted');
+            socket.off('edit-denied');
+            socket.off('edit-locked');
+            socket.off('edit-released');
+      socket.disconnect();
+    };
+  }, []);
+  const requestEdit = () => {
+    socket.emit('request-edit');
+};
+
+
   const phone = data?.getByOne[0]?.phones;
   // const phoneArray = JSON.parse(phone);
   let phoneArray = [];
@@ -292,7 +360,7 @@ const Sent_Purposal = ({ data1, data }: any) => {
       email_type: emailType,
     };
     // return;
-
+             
     try {
       if (emailMode) {
         console.log(formData, "formData");
@@ -533,6 +601,17 @@ const Sent_Purposal = ({ data1, data }: any) => {
       setState1(false); // Reset state1 after it's been processed
     }
   }, [state1]);
+  const releaseEdit = () => {
+    // Emit 'release-edit' event when the user clicks the back button
+    socket.emit('release-edit', {
+        type: "email",
+        user_id: cookieValue,
+        pearl_id: pearlsLeadId  // Ensure this is the pearl being edited
+    });
+
+    localStorage.removeItem("formValues"); // Optional, remove form data if needed
+    router.back(); // Navigate back to the previous page
+};
   return (
     <div style={{ padding: "20px" }}>
       <ToastContainer />
@@ -547,7 +626,7 @@ const Sent_Purposal = ({ data1, data }: any) => {
           <Button
             icon={<LeftOutlined />}
             type="link"
-            onClick={handleClearLocalStorage}
+            onClick={releaseEdit}
           >
             Back
           </Button>
