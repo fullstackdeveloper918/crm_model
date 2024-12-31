@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Button,
   Col,
@@ -40,6 +40,8 @@ import Link from "next/link";
 import dayjs from "dayjs";
 import Pagination from "./common/Pagination";
 import { capFirst } from "@/utils/validation";
+import EmailScheduleModal from "./common/EmailScheduleModal";
+import nookies from "nookies";
 const { Content, Sider } = Layout;
 const { Title, Text } = Typography;
 const { Search } = Input;
@@ -52,11 +54,6 @@ interface DataType {
   age: number;
   address: string;
 }
-
-const array = [
-  { name: "abhay", age: "32", address: "xyz", id: "1123" },
-  { name: "abhishek", age: "42", address: "abc", id: "2587" },
-];
 
 const columns: TableColumnsType<DataType> = [
   {
@@ -87,7 +84,7 @@ const columns1: TableColumnsType<DataType> = [
   { title: "Action", dataIndex: "action", key: "action" },
 ];
 
-const PearlsSelectUsers = ({
+const Campaigns = ({
   data,
   data1,
   fetchData,
@@ -102,14 +99,14 @@ const PearlsSelectUsers = ({
   const searchParams = useSearchParams();
   let leads_type = searchParams.get("leads_type");
   console.log(leads_type, "leads_type");
-  console.log(searchParams.get("chamber"),"searchParams");
-  const chamberVlue= searchParams.get("chamber")
+  console.log(searchParams.get("chamber"), "searchParams");
+  const chamberVlue = searchParams.get("chamber");
   const handleChange11 = (e: string) => {
     const newSearchParams = new URLSearchParams(searchParams.toString());
 
-    newSearchParams.set('chamber', e);
+    newSearchParams.set("chamber", e);
 
-    router.push(`/admin/template?${newSearchParams.toString()}`);
+    router.push(`/admin/campaigns?${newSearchParams.toString()}`);
   };
   //   let array=[
   //     {
@@ -147,11 +144,11 @@ const PearlsSelectUsers = ({
           </Typography.Text>
         </div>
       ),
-      email: item.email
-        ? item.email?.length >= 20
-          ? `${item.email.slice(0, 20)}...`
-          : item.email
-        : "N/A",
+      email: item.email,
+        // ? item.email?.length >= 20
+        //   ? `${item.email.slice(0, 20)}...`
+        //   : item.email
+        // : "N/A",
       phone:
         item.phones.map((res: any, index: number) => res.number).join(", ") ||
         "N/A",
@@ -182,12 +179,12 @@ const PearlsSelectUsers = ({
           key={item._id}
         >
           <Typography.Text className="text-capitalize">
-            {item.full_name||"N/A"}
+            {item.full_name || "N/A"}
           </Typography.Text>
         </div>
       ),
-      email: item.email|| "N/A",
-      phone:item.phone_number||"N/A",
+      email: item.email || "N/A",
+      phone: item.phone_number || "N/A",
       // gender: item?.gender ? (item?.gender === "M" ? "Male" : "Female") : "N/A",
       created_at: dayjs(item?.created_time).format("DD-MM-YYYY") || "N/A",
       // status: item?.status || "N/A",
@@ -210,10 +207,10 @@ const PearlsSelectUsers = ({
   const handleChange = (value: string) => {
     // Update the URL with the selected value
     if (searchTerm?.trim()) {
-      router.push(`/admin/template?search=${searchTerm}&filter=${value}`);
+      router.push(`/admin/campaigns?search=${searchTerm}&filter=${value}`);
     } else {
       // If there is no search term, update the URL only with the selected filter
-      router.push(`/admin/template?filter=${value}`);
+      router.push(`/admin/campaigns?filter=${value}`);
     }
     // router.push(`/admin/template?filter=${value}`);
   };
@@ -222,10 +219,10 @@ const PearlsSelectUsers = ({
     console.log(value, "hsakhd");
 
     if (searchTerm?.trim()) {
-      router.push(`/admin/template?search=${searchTerm}&leads_type=${value}`);
+      router.push(`/admin/campaigns?search=${searchTerm}&leads_type=${value}`);
     } else {
       // If there is no search term, update the URL only with the selected filter
-      router.push(`/admin/template?leads_type=${value}`);
+      router.push(`/admin/campaigns?leads_type=${value}`);
     }
     // router.push(`/admin/template?filter=${value}`);
   };
@@ -234,17 +231,21 @@ const PearlsSelectUsers = ({
     setSearchTerm(value);
     // router.push(`/admin/pearls?search=${value}&filter=${filter}`);
     if (value?.trim()) {
-      router.push(`/admin/template?search=${value}&filter=${value}`);
+      router.push(`/admin/campaigns?search=${value}&filter=${value}`);
     } else {
       // If the search input is empty, just update the filter (and keep it in the same tab, if any)
-      router.push(`/admin/template?filter=${value}`);
+      router.push(`/admin/campaigns?filter=${value}`);
     }
   };
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]); // To track row selections
   const [selectedRowIds, setSelectedRowIds] = useState<string[]>([]); // Store selected ids in the state
   console.log(selectedRowIds, "selectedRowIds");
   const [selectedData, setSelectedData] = useState<any[]>([]);
+  const [selectedDataID, setSelectedDataID] = useState<any[]>([]);
+  const [selectedDataEmail, setSelectedDataEmail] = useState<any[]>([]);
   console.log(selectedData, "selectedData");
+  console.log(selectedDataID, "selectedDataID");
+  console.log(selectedDataEmail, "selectedDataEmail");
   const sanitizeData = (data: any) => {
     return data.map((item: any) => {
       const { _context, ...rest } = item; // Remove React context or unwanted properties
@@ -277,6 +278,8 @@ const PearlsSelectUsers = ({
     }
     console.log(filterArrayId, "filterArrayId");
     setSelectedData(selectedItems);
+    setSelectedDataID(selectedItems.map((res:any)=>res?.pearl_id))
+    setSelectedDataEmail(selectedItems.map((res:any)=>res?.email))
   };
 
   const rowSelection: TableProps<DataType>["rowSelection"] = {
@@ -309,6 +312,8 @@ const PearlsSelectUsers = ({
     }
     console.log(filterArrayId, "filterArrayId");
     setSelectedData(selectedItems);
+    setSelectedDataID(selectedItems.map((res:any)=>res?.pearl_id))
+    setSelectedDataEmail(selectedItems.map((res:any)=>res?.email))
   };
 
   const rowSelection1: TableProps<DataType>["rowSelection"] = {
@@ -317,26 +322,79 @@ const PearlsSelectUsers = ({
   };
 
   const hasSelected = selectedRowKeys.length > 0;
+//   console.log(hasSelected,"hasSelected");
+  
+  const [cookieValue, setCookieValue] = useState<string | null>(null);
+  useEffect(() => {
+    const cookies = nookies.get(); // retrieves cookies from document.cookie
+    console.log(cookies,"cookies");
+    
+    const userData = cookies.user_uuid;
+    console.log(userData,"userData");
+    
+    setCookieValue(userData || null);
+  }, []);
+  console.log(cookieValue,"cookieValue");
+  
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedDates, setSelectedDates] = useState<Date[]>([]);
+  console.log(selectedDates, "selectedDates");
+
+  const handleModalOpen = () => setIsModalOpen(true);
+  const handleModalClose = () => setIsModalOpen(false);
+
+  const handleSubmitDates = async(dates: Date[]) => {
+    console.log("Selected Dates:", dates);
+    setSelectedDates(dates); // Optionally store them in state
+
+
+    const item1 = selectedDataID.map((receiver_id, index) => ({
+        sender_id: cookieValue,
+        receiver_id: receiver_id,
+        receiver_email: selectedDataEmail[index],
+        schedule_email_date: dates
+      }));
+    let item = {
+      sender_id:cookieValue,
+      receiver_id:selectedDataID,
+    //   receiver_email: selectedDataEmail,
+      schedule_email_date: dates,
+    };
+    try {
+
+        let res= await fetch("https://srv626615.hstgr.cloud/customize-email-template", {
+            method:"Post",
+            headers:{
+                "Content-Type":'application/json'
+            },
+            body:JSON.stringify(item)
+        })
+        let data=await res.json()
+        console.log(data,"poiuytreww")
+    } catch (error: any) {
+      console.log(error, "error");
+    }
+  };
   return (
-      <Layout style={{ minHeight: "100vh" }}>
-        <ToastContainer />
-        <Content style={{ padding: "20px" }}>
-          <div className="d-flex" style={{ width: "90%", gap: "20px" }}>
-            <Title className="mt-3" level={3}>
-              All {capFirst(leads_type)} Diver Leads
-            </Title>
-            <Space>
-              <Select
-                defaultValue={leads_type}
-                style={{ width: 150 }}
-                onChange={handleChange1}
-              >
-                <Option value="pearl">Pearl Leads</Option>
-                <Option value="meta">Meta Leads</Option>
-              </Select>
-            </Space>
-          </div>
-          {leads_type==="pearl"&&
+    <Layout style={{ minHeight: "100vh" }}>
+      <ToastContainer />
+      <Content style={{ padding: "20px" }}>
+        <div className="d-flex" style={{ width: "90%", gap: "20px" }}>
+          <Title className="mt-3" level={3}>
+            All {capFirst(leads_type)} Diver Leads
+          </Title>
+          <Space>
+            <Select
+              defaultValue={leads_type}
+              style={{ width: 150 }}
+              onChange={handleChange1}
+            >
+              <Option value="pearl">Pearl Leads</Option>
+              <Option value="meta">Meta Leads</Option>
+            </Select>
+          </Space>
+        </div>
+        {leads_type === "pearl" && (
           <>
             <Row style={{ marginBottom: "0px" }}>
               <div className="d-flex" style={{ width: "90%", gap: "20px" }}>
@@ -350,7 +408,9 @@ const PearlsSelectUsers = ({
                 />
                 <Space>
                   <Select
-                    defaultValue={leads_type==="pearl"?"All Leads":"All chamber"}
+                    defaultValue={
+                      leads_type === "pearl" ? "All Leads" : "All chamber"
+                    }
                     style={{ width: 150 }}
                     onChange={handleChange}
                   >
@@ -366,8 +426,8 @@ const PearlsSelectUsers = ({
               </div>
             </Row>
             {/* <Row>
-      
-        </Row> */}
+   
+    </Row> */}
             <Row gutter={[16, 16]} className="mt-5">
               <Col xs={24} md={18}>
                 <Flex gap="middle" vertical>
@@ -375,18 +435,19 @@ const PearlsSelectUsers = ({
                     {`Selected ${selectedRowKeys.length} leads`}
                     {hasSelected ? (
                       // <Link href={`/admin/purposal/sent_purposal?pearls_lead_id={37267659}&user_id=208b7baa-54e3-4029-a94f-38be548217a3&field_for=welcome&fieldType=email`}>
-                      <Link
-                        href={`/admin/template/show_template?email_type=${leads_type}`}
+                      //   <Link
+                      //     href={`/admin/template/show_template?email_type=${leads_type}`}
+                      //   >
+                      <Button
+                        type="primary"
+                        disabled={!hasSelected}
+                        loading={loading}
+                        onClick={handleModalOpen}
                       >
-                        <Button
-                          type="primary"
-                          disabled={!hasSelected}
-                          loading={loading}
-                        >
-                          Send Email
-                        </Button>
-                      </Link>
+                        Schedule Email
+                      </Button>
                     ) : (
+                      //   </Link>
                       ""
                     )}
                     {/* {hasSelected ? `Selected ${selectedRowKeys.length} items` : null} */}
@@ -406,18 +467,19 @@ const PearlsSelectUsers = ({
               <Col xs={24} md={6} className="mt-5">
                 <Recent_card />
                 {/* <Card title="Call Leads" style={{ marginBottom: '20px' }}>
-                <Space direction="vertical">
-                
-                  <Text><Avatar size={25} icon={<UserOutlined />}  /> Jane Cooper - Toledo</Text>
-                  <Text><Avatar size={25} icon={<UserOutlined />}  /> Dianne Russell - Naperville</Text>
-                  <Button type="link">See All Call Leads</Button>
-                </Space>
-              </Card> */}
+            <Space direction="vertical">
+            
+              <Text><Avatar size={25} icon={<UserOutlined />}  /> Jane Cooper - Toledo</Text>
+              <Text><Avatar size={25} icon={<UserOutlined />}  /> Dianne Russell - Naperville</Text>
+              <Button type="link">See All Call Leads</Button>
+            </Space>
+          </Card> */}
               </Col>
             </Row>
-          </>}
-          {leads_type==="meta"&&
-            <>
+          </>
+        )}
+        {leads_type === "meta" && (
+          <>
             <Row style={{ marginBottom: "0px" }}>
               <div className="d-flex" style={{ width: "90%", gap: "20px" }}>
                 <Search
@@ -429,52 +491,52 @@ const PearlsSelectUsers = ({
                   onChange={handleSearch}
                 />
                 <Space>
-                <Select
-                  defaultValue={`All Chamber`}
-                  style={{ width: 150 }}
-                  onChange={handleChange11}
-                >
-                  {fetchChamberlist?.data?.map((res: any, index: number) => {
-                    let displayValue = "";
-                    let isDisabled = false;
+                  <Select
+                    defaultValue={`All Chamber`}
+                    style={{ width: 150 }}
+                    onChange={handleChange11}
+                  >
+                    {fetchChamberlist?.data?.map((res: any, index: number) => {
+                      let displayValue = "";
+                      let isDisabled = false;
 
-                    // Map the hyperbaric chamber interested in values to custom display text
-                    switch (res?.hyperbaric_chamber_interested_in) {
-                      case "not_sure_yet,_would_like_more_information":
-                        displayValue = "Not sure";
-                        break;
-                      case "hard_chamber":
-                        displayValue = "Hard Chamber";
-                        break;
-                      case "soft_chamber":
-                        displayValue = "Soft Chamber";
-                        break;
-                      case "":
-                        displayValue = "Not available";
-                        isDisabled = true; // Disable this option
-                        break;
-                      default:
-                        displayValue =
-                          res?.hyperbaric_chamber_interested_in || "Unknown"; // Default case
-                    }
+                      // Map the hyperbaric chamber interested in values to custom display text
+                      switch (res?.hyperbaric_chamber_interested_in) {
+                        case "not_sure_yet,_would_like_more_information":
+                          displayValue = "Not sure";
+                          break;
+                        case "hard_chamber":
+                          displayValue = "Hard Chamber";
+                          break;
+                        case "soft_chamber":
+                          displayValue = "Soft Chamber";
+                          break;
+                        case "":
+                          displayValue = "Not available";
+                          isDisabled = true; // Disable this option
+                          break;
+                        default:
+                          displayValue =
+                            res?.hyperbaric_chamber_interested_in || "Unknown"; // Default case
+                      }
 
-                    return (
-                      <Option
-                        key={index}
-                        value={res?.hyperbaric_chamber_interested_in}
-                        disabled={isDisabled}
-                      >
-                        {displayValue}
-                      </Option>
-                    );
-                  })}
-                </Select>
+                      return (
+                        <Option
+                          key={index}
+                          value={res?.hyperbaric_chamber_interested_in}
+                          disabled={isDisabled}
+                        >
+                          {displayValue}
+                        </Option>
+                      );
+                    })}
+                  </Select>
                 </Space>
               </div>
             </Row>
             {/* <Row>
-      
-        </Row> */}
+   
+    </Row> */}
             <Row gutter={[16, 16]} className="mt-5">
               <Col xs={24} md={18}>
                 <Flex gap="middle" vertical>
@@ -482,9 +544,9 @@ const PearlsSelectUsers = ({
                     {`Selected ${selectedRowKeys.length} leads`}
                     {hasSelected ? (
                       // <Link href={`/admin/purposal/sent_purposal?pearls_lead_id={37267659}&user_id=208b7baa-54e3-4029-a94f-38be548217a3&field_for=welcome&fieldType=email`}>
-                      <Link
-                        href={`/admin/template/show_template?email_type=${leads_type}`}
-                      >
+                    //   <Link
+                    //     href={`/admin/campaigns/show_template?email_type=${leads_type}`}
+                    //   >
                         <Button
                           type="primary"
                           disabled={!hasSelected}
@@ -492,7 +554,7 @@ const PearlsSelectUsers = ({
                         >
                           Send Email
                         </Button>
-                      </Link>
+                    //   </Link>
                     ) : (
                       ""
                     )}
@@ -513,19 +575,25 @@ const PearlsSelectUsers = ({
               <Col xs={24} md={6} className="mt-5">
                 <Recent_card />
                 {/* <Card title="Call Leads" style={{ marginBottom: '20px' }}>
-                <Space direction="vertical">
-                
-                  <Text><Avatar size={25} icon={<UserOutlined />}  /> Jane Cooper - Toledo</Text>
-                  <Text><Avatar size={25} icon={<UserOutlined />}  /> Dianne Russell - Naperville</Text>
-                  <Button type="link">See All Call Leads</Button>
-                </Space>
-              </Card> */}
+            <Space direction="vertical">
+            
+              <Text><Avatar size={25} icon={<UserOutlined />}  /> Jane Cooper - Toledo</Text>
+              <Text><Avatar size={25} icon={<UserOutlined />}  /> Dianne Russell - Naperville</Text>
+              <Button type="link">See All Call Leads</Button>
+            </Space>
+          </Card> */}
               </Col>
             </Row>
-          </>}
-        </Content>
-      </Layout>
+          </>
+        )}
+      </Content>
+      <EmailScheduleModal
+        isOpen={isModalOpen}
+        onClose={handleModalClose}
+        onSubmit={handleSubmitDates}
+      />
+    </Layout>
   );
 };
 
-export default PearlsSelectUsers;
+export default Campaigns;

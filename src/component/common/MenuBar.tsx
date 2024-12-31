@@ -282,6 +282,17 @@ const handleLinkClick = () => {
     {
       key: henceofrthEnums.Roles.USERS,
       view: getItem(
+        <Link href="/admin/campaigns?filter=all&leads_type=pearl" className="text-decoration-none"  onClick={handleLinkClick}>
+          {/* {getUserdata?.is_admin == false ? "User" : "Archive Members"} */}
+         Email Campaigns
+        </Link>,
+        "campaigns",
+        <MailOutlined style={iconSize} />
+      ),
+    },
+    {
+      key: henceofrthEnums.Roles.USERS,
+      view: getItem(
         <Link href="/admin/purposal" className="text-decoration-none"  onClick={handleLinkClick}>
           {/* {getUserdata?.is_admin == false ? "User" : "Archive Members"} */}
           Proposals
